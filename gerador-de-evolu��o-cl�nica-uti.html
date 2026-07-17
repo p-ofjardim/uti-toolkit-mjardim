@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Evolução Clínica - UTI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .header-controls .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input[type="number"], input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.secondary {
+            background-color: #95a5a6;
+        }
+        
+        button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        button.success {
+            background-color: #2ecc71;
+        }
+        
+        button.success:hover {
+            background-color: #27ae60;
+        }
+        
+        .section {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .result-text {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: white;
+            resize: vertical;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Gerador de Evolução Clínica - UTI</h1>
+        
+        <div class="header-controls">
+            <div class="form-group">
+                <label for="box">Box:</label>
+                <select id="box">
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="data">Data:</label>
+                <input type="date" id="data">
+            </div>
+            <div class="form-group">
+                <label for="sexo">Sexo:</label>
+                <select id="sexo">
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                </select>
+            </div>
+        </div>
+        
+        <button class="success" onclick="preencherEstabilidade()">🟢 Preencher Estabilidade Clínica</button>
+        <button class="secondary" onclick="limparFormulario()">🗑️ Limpar</button>
+        
+        <!-- HEMODINÂMICA -->
+        <div class="section">
+            <h2 class="section-title">🫀 HEMODINÂMICA</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="nora">Noradrenalina:</label>
+                    <input type="number" id="nora" step="0.1" min="0" placeholder="mL/h">
+                </div>
+                <div class="form-group">
+                    <label for="vaso">Vasopressina:</label>
+                    <input type="number" id="vaso" step="0.01" min="0" placeholder="U/min">
+                </div>
+                <div class="form-group">
+                    <label for="dobuta">Dobutamina:</label>
+                    <input type="number" id="dobuta" step="0.1" min="0" placeholder="mcg/kg/min">
+                </div>
+                <div class="form-group">
+                    <label for="tridil">Nitroglicerina:</label>
+                    <input type="number" id="tridil" step="1" min="0" placeholder="mcg/min">
+                </div>
+                <div class="form-group">
+                    <label for="nipride">Nitroprussiato:</label>
+                    <input type="number" id="nipride" step="0.1" min="0" placeholder="mcg/kg/min">
+                </div>
+            </div>
+        </div>
+        
+        <!-- VENTILAÇÃO -->
+        <div class="section">
+            <h2 class="section-title">🫁 VENTILAÇÃO E SUPORTE</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="ventilac">Estado Ventilatório:</label>
+                    <select id="ventilac">
+                        <option value="">-- Selecione --</option>
+                        <option value="Estabilidade em ar ambiente">Estabilidade em ar ambiente</option>
+                        <option value="Estabilidade em oxigenoterapia">Estabilidade em oxigenoterapia</option>
+                        <option value="Traqueostomia com oxigenoterapia">Traqueostomia com oxigenoterapia</option>
+                        <option value="Traqueostomia em ar ambiente">Traqueostomia em ar ambiente</option>
+                        <option value="Instabilidade">Instabilidade</option>
+                        <option value="Masc. Alto Fluxo">Máscara de alto fluxo</option>
+                        <option value="Masc. Venturi">Máscara de Venturi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ventilac-valor">Valor (se Máscara):</label>
+                    <input type="text" id="ventilac-valor" placeholder="ex: 15 L/min ou 40%">
+                </div>
+                <div class="form-group">
+                    <label for="vm">Modo VM:</label>
+                    <input type="text" id="vm" placeholder="PC-ACV, VC-ACV, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="adapt">Adaptação:</label>
+                    <select id="adapt">
+                        <option value="">-- Selecione --</option>
+                        <option value="Bem adaptado">Bem adaptado</option>
+                        <option value="Mal adaptado">Mal adaptado</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- NEUROLÓGICO -->
+        <div class="section">
+            <h2 class="section-title">🧠 NEUROLÓGICO E SEDAÇÃO</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="neuro">Estado Neurológico:</label>
+                    <select id="neuro">
+                        <option value="">-- Selecione --</option>
+                        <option value="Estável">Estável</option>
+                        <option value="Instável">Instável</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sedacao">Sedação:</label>
+                    <select id="sedacao">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem sedação">Sem sedação</option>
+                        <option value="Com sedação">Com sedação</option>
+                    </select>
+                </div>
+				<div class="form-group">
+					<label for="rass">Escala RASS (opcional):</label>
+					<input type="number" id="rass" min="-5" max="4" step="1" placeholder="-5 a +4">
+				</div>
+            </div>
+        </div>
+        
+        <!-- INFECÇÃO -->
+        <div class="section">
+            <h2 class="section-title">🦠 INFECÇÃO</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="atb">Antibioticoterapia:</label>
+                    <select id="atb">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem antibiótico">Sem antibiótico</option>
+                        <option value="Com antibiótico">Com antibiótico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="febre">Febre:</label>
+                    <select id="febre">
+                        <option value="">-- Selecione --</option>
+                        <option value="Febril">Febril</option>
+                        <option value="Subfebril">Subfebril</option>
+                        <option value="Afebril">Afebril</option>
+                        <option value="Hipotérmico">Hipotérmico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="infecto">Parâmetros Infecciosos:</label>
+                    <select id="infecto">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem critérios infecciosos">Sem critérios infecciosos</option>
+                        <option value="Parâmetros infecciosos em melhora">Parâmetros infecciosos em melhora</option>
+                        <option value="Parâmetros infecciosos em piora">Parâmetros infecciosos em piora</option>
+                        <option value="Mantendo critérios infecciosos">Mantendo critérios infecciosos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- RENAL -->
+        <div class="section">
+            <h2 class="section-title">💧 RENAL E HIDROELETRÓLITOS</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="diurese">Diurese:</label>
+                    <select id="diurese">
+                        <option value="">-- Selecione --</option>
+                        <option value="Diurese satisfatória">Diurese satisfatória</option>
+                        <option value="Oligúrico">Oligúrico</option>
+                        <option value="Anúrico">Anúrico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="diuretico">Diurético:</label>
+                    <select id="diuretico">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem diurético">Sem diurético</option>
+                        <option value="Com diurético">Com diurético</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bh">Balanço Hídrico:</label>
+                    <select id="bh">
+                        <option value="">-- Selecione --</option>
+                        <option value="Positivo">Positivo</option>
+                        <option value="Negativo">Negativo</option>
+                        <option value="Neutro">Neutro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="esc-renal">Função Renal:</label>
+                    <select id="esc-renal">
+                        <option value="">-- Selecione --</option>
+                        <option value="Função renal preservada">Função renal preservada</option>
+                        <option value="Disfunção renal">Disfunção renal</option>
+                        <option value="Função renal em piora">Função renal em piora</option>
+                        <option value="Função renal em melhora">Função renal em melhora</option>
+                        <option value="Em TSR">Em TSR</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- HEMATOLÓGICO -->
+        <div class="section">
+			<h2 class="section-title">🩸 HEMATOLÓGICO</h2>
+			<div class="row">
+				<div class="form-group">
+					<label for="hemato">Estado Hematológico:</label>
+					<select id="hemato">
+						<option value="">-- Selecione --</option>
+						<option value="Estável">Estável</option>
+						<option value="Instável">Instável</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="hemoterapia">Hemoterapia:</label>
+					<select id="hemoterapia">
+						<option value="">-- Selecione --</option>
+						<option value="Sem hemoterapia">Sem hemoterapia</option>
+						<option value="Em hemoterapia">Em hemoterapia</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		
+		<!-- METABÓLICO -->
+		<div class="section">
+			<h2 class="section-title">⚖️ ESTADO METABÓLICO</h2>
+			<div class="row">
+				<div class="form-group">
+					<label for="glicemias">Glicemias:</label>
+					<select id="glicemias">  <!-- ID deve ser EXATAMENTE "glicemias" -->
+						<option value="">-- Selecione --</option>
+						<option value="Normoglicêmico">Normoglicêmico</option>
+						<option value="Disglicêmico">Disglicêmico</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="dhes">Desequilíbrios Hidroeletrolíticos:</label>
+					<select id="dhes">  <!-- ID deve ser EXATAMENTE "dhes" -->
+						<option value="">-- Selecione --</option>
+						<option value="Sem DHEs">Sem DHEs</option>
+						<option value="DHEs">DHEs</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="bic">Estado Ácido-Base:</label>
+					<select id="bic">  <!-- ID deve ser EXATAMENTE "bic" -->
+						<option value="">-- Selecione --</option>
+						<option value="Sem DABs">Sem DABs</option>
+						<option value="Acidose metabólica">Acidose metabólica</option>
+						<option value="Alcalose metabólica">Alcalose metabólica</option>
+						<option value="Acidose respiratória">Acidose respiratória</option>
+						<option value="Alcalose respiratória">Alcalose respiratória</option>
+						<option value="Acidose mista">Acidose mista</option>
+					</select>
+				</div>
+			</div>
+		</div>
+        
+        <!-- NUTRIÇÃO -->
+        <div class="section">
+            <h2 class="section-title">🍽️ NUTRIÇÃO E ELIMINAÇÃO</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="dieta">Dieta:</label>
+                    <select id="dieta">
+                        <option value="">-- Selecione --</option>
+                        <option value="Via oral">Via oral</option>
+                        <option value="Dieta enteral">Dieta enteral</option>
+						<option value="NPT">Nutrição parenteral total</option>
+						<option value="NPP">Nutrição parenteral parcial</option>
+                        <option value="Sem dieta">Sem dieta</option>
+                        <option value="Não tolera dieta">Não tolera dieta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dieta-valor">Valor (se Dieta Enteral):</label>
+                    <input type="text" id="dieta-valor" placeholder="ex: 50 mL/h">
+                </div>
+                <div class="form-group">
+                    <label for="evacuac">Evacuações:</label>
+                    <select id="evacuac">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem evacuações">Sem evacuações</option>
+                        <option value="Evacuações presentes">Evacuações presentes</option>
+                    </select>
+                </div>
+				<div class="form-group">
+					<label for="disf-tgi">Disfunção do TGI:</label>
+					<select id="disf-tgi">
+						<option value="">-- Selecione --</option>
+						<option value="Sem disfunção do TGI">Sem disfunção do TGI</option>
+						<option value="Com disfunção do TGI">Com disfunção do TGI</option>
+					</select>
+				</div>
+            </div>
+        </div>
+        
+        <!-- INVASÕES -->
+        <div class="section">
+            <h2 class="section-title">🩺 INVASÕES E PROFILAXIA</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="cvc">CVC:</label>
+                    <select id="cvc">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem CVC">Sem CVC</option>
+                        <option value="Veia Femural Esquerda">Veia Femural Esquerda</option>
+                        <option value="Veia Femural Direita">Veia Femural Direita</option>
+                        <option value="Veia Subclávia Esquerda">Veia Subclávia Esquerda</option>
+                        <option value="Veia Subclávia Direita">Veia Subclávia Direita</option>
+                        <option value="Veia Jugular Esquerda">Veia Jugular Esquerda</option>
+                        <option value="Veia Jugular Direita">Veia Jugular Direita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cdl">CDL:</label>
+                    <select id="cdl">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem CDL">Sem CDL</option>
+                        <option value="Veia Femural Esquerda">Veia Femural Esquerda</option>
+                        <option value="Veia Femural Direita">Veia Femural Direita</option>
+                        <option value="Veia Subclávia Esquerda">Veia Subclávia Esquerda</option>
+                        <option value="Veia Subclávia Direita">Veia Subclávia Direita</option>
+                        <option value="Veia Jugular Esquerda">Veia Jugular Esquerda</option>
+                        <option value="Veia Jugular Direita">Veia Jugular Direita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pia">PIA:</label>
+                    <select id="pia">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem PIA">Sem PIA</option>
+                        <option value="Artéria Radial Esquerda">Artéria Radial Esquerda</option>
+                        <option value="Artéria Radial Direita">Artéria Radial Direita</option>
+                        <option value="Artéria Femural Esquerda">Artéria Femural Esquerda</option>
+                        <option value="Artéria Femural Direita">Artéria Femural Direita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="svd">SVD:</label>
+                    <select id="svd">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem SVD">Sem SVD</option>
+                        <option value="Com SVD">Com SVD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="les-pele">Lesões de Pele:</label>
+                    <select id="les-pele">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem lesões de pele">Sem lesões de pele</option>
+                        <option value="Lesão sacral grau 1">Lesão sacral grau 1</option>
+                        <option value="Lesão sacral grau 2">Lesão sacral grau 2</option>
+                        <option value="Lesão sacral grau 3">Lesão sacral grau 3</option>
+                        <option value="Lesão sacral grau 4">Lesão sacral grau 4</option>
+                        <option value="Lesão sacral inclassificável">Lesão sacral inclassificável</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="profilax">Profilaxia:</label>
+                    <select id="profilax">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem profilaxias farmacológicas">Sem profilaxias farmacológicas</option>
+                        <option value="Omeprazol profilático">Omeprazol profilático</option>
+                        <option value="Enoxaparina profilática">Enoxaparina profilática</option>
+                        <option value="Enoxaparina e Omeprazol profiláticos">Enoxaparina e Omeprazol profiláticos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>ATENÇÃO:</strong> Preencha apenas os campos relevantes. Deixe em branco os campos não aplicáveis.
+        </div>
+        
+        <button onclick="gerarEvolucao()">🔄 Gerar Evolução</button>
+        <button class="secondary" onclick="copyResult()">📋 Copiar Texto</button>
+        
+        <div class="result-container">
+            <h2 class="section-title">✅ TEXTO GERADO:</h2>
+            <textarea id="resultado" class="result-text" readonly></textarea>
+        </div>
+    </div>
+    
+    <script>
+        // Função para limpar o formulário
+        function limparFormulario() {
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                if (el.id !== 'box' && el.id !== 'data' && el.id !== 'sexo') {
+                    el.value = '';
+                }
+            });
+            document.getElementById('resultado').value = '';
+        }
+        
+        // Função para preencher estabilidade clínica
+		function preencherEstabilidade() {
+			const fieldsToClear = [
+				'nora', 'vaso', 'dobuta', 'tridil', 'nipride',
+				'ventilac', 'ventilac-valor', 'vm', 'adapt',
+				'neuro', 'rass', 'sedacao',
+				'atb', 'febre', 'infecto',
+				'diurese', 'diuretico', 'bh', 'esc-renal',
+				'hemato', 'hemoterapia',
+				'glicemias', 'dhes', 'bic',
+				'dieta', 'dieta-valor', 'disf-tgi', 'evacuac',
+				'cvc', 'cdl', 'pia', 'svd', 'les-pele', 'profilax'
+			];
+
+			// Limpa campos (só se existirem)
+			fieldsToClear.forEach(id => {
+				const el = document.getElementById(id);
+				if (el) el.value = '';
+			});
+
+			// Preenche com valores de estabilidade (só se existirem)
+			const preenchimentos = {
+				'ventilac': 'Estabilidade em ar ambiente',
+				'neuro': 'Estável',
+				'rass': '',
+				'sedacao': 'Sem sedação',
+				'atb': 'Sem antibiótico',
+				'febre': 'Afebril',
+				'infecto': 'Sem critérios infecciosos',
+				'diurese': 'Diurese satisfatória',
+				'diuretico': 'Sem diurético',
+				'bh': 'Neutro',
+				'esc-renal': 'Função renal preservada',
+				'hemato': 'Estável',
+				'hemoterapia': 'Sem hemoterapia',
+				'glicemias': 'Normoglicêmico',
+				'dhes': 'Sem DHEs',
+				'bic': 'Sem DABs',
+				'dieta': 'Via oral',
+				'disf-tgi': 'Sem disfunção do TGI',
+				'evacuac': 'Evacuações presentes',
+				'cvc': 'Sem CVC',
+				'cdl': 'Sem CDL',
+				'pia': 'Sem PIA',
+				'svd': 'Sem SVD',
+				'les-pele': 'Sem lesões de pele',
+				'profilax': 'Sem profilaxias farmacológicas'
+			};
+
+			Object.entries(preenchimentos).forEach(([id, value]) => {
+				const el = document.getElementById(id);
+				if (el) el.value = value;
+			});
+
+			// Gera a evolução automaticamente após preencher
+			gerarEvolucao();
+		}
+        
+        // Função para copiar o resultado
+        function copyResult() {
+            const text = document.getElementById('resultado').value;
+            if (!text || text.trim() === '') {
+                alert('Nenhum texto para copiar');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Texto copiado para a área de transferência!');
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+        
+        // Função principal para gerar a evolução
+        function gerarEvolucao() {
+            const box = document.getElementById('box').value;
+            const data = document.getElementById('data').value;
+            const sexo = document.getElementById('sexo').value;
+            
+            const linhas = [];
+            
+            // 1. HEMODINÂMICA
+            const hemo = processarHemodinamica();
+            if (hemo) linhas.push(hemo);
+            
+            // 2. VENTILAÇÃO
+            const vent = processarVentilacao();
+            if (vent) linhas.push(vent);
+            
+            // 3. NEUROLÓGICO + SEDAÇÃO
+            const neuro = processarNeuro();
+            if (neuro) linhas.push(neuro);
+            
+            // 4. INFECÇÃO (ATB + Febre + Infecção)
+            const infecto = processarInfecto();
+            if (infecto) linhas.push(infecto);
+            
+            // 5. RENAL (Diurese + Diurético + BH + Esc. Renal)
+            const renal = processarRenal();
+            if (renal) linhas.push(renal);
+            
+            // 6. HEMATOLÓGICO
+            const hematologico = processarHematologico();
+			if (hematologico) linhas.push(hematologico);
+
+			// 7. METABÓLICO (Glicemias + DHEs + Bic)
+			const metabolico = processarMetabolico();
+			if (metabolico) linhas.push(metabolico);
+            
+            // 8. NUTRIÇÃO + ELIMINAÇÃO
+            const nutricao = processarNutricao();
+            if (nutricao) linhas.push(nutricao);
+
+			// 9. LESÕES DE PELE
+			const lesoesPele = processarLesoesPele();
+			if (lesoesPele) linhas.push(lesoesPele);
+            
+            // 10. INVASÕES
+			const invasoes = processarInvasoes();
+			if (invasoes) linhas.push(invasoes);
+
+			// 11. PROFILAXIA
+			const profilaxia = processarProfilaxia();
+			if (profilaxia) linhas.push(profilaxia);
+            
+            // Monta o texto final
+            let textoFinal = `# Box ${box}\n\n`;
+            textoFinal += linhas.join('\n\n');
+            
+            // Ajusta gênero
+            textoFinal = ajustarGenero(textoFinal, sexo);
+            
+            document.getElementById('resultado').value = textoFinal;
+        }
+        
+        // Função para ajustar gênero
+        function ajustarGenero(texto, sexo) {
+            if (sexo === 'F') {
+                // Feminino
+                texto = texto.replace(/adaptado/g, 'adaptada');
+                texto = texto.replace(/oligúrico/g, 'oligúrica');
+                texto = texto.replace(/anúrico/g, 'anúrica');
+                texto = texto.replace(/normoglicêmico/g, 'normoglicêmica');
+                texto = texto.replace(/disglicêmico/g, 'disglicêmica');
+                texto = texto.replace(/hipoglicêmico/g, 'hipoglicêmica');
+                texto = texto.replace(/hipotérmico/g, 'hipotérmica');
+            }
+            return texto;
+        }
+        
+        // Processadores por seção
+        function processarHemodinamica() {
+            const nora = document.getElementById('nora').value;
+            const vaso = document.getElementById('vaso').value;
+            const dobuta = document.getElementById('dobuta').value;
+            const tridil = document.getElementById('tridil').value;
+            const nipride = document.getElementById('nipride').value;
+            
+            // Se todos vazios ou zero
+            if (!nora && !vaso && !dobuta && !tridil && !nipride) {
+                return 'Estabilidade hemodinâmica.';
+            }
+            
+            // Se algum tem valor
+            const drogas = [];
+            if (nora) drogas.push(`Noradrenalina a ${nora} mL/h`);
+            if (vaso) drogas.push(`Vasopressina a ${vaso} U/min`);
+            if (dobuta) drogas.push(`Dobutamina a ${dobuta} mcg/kg/min`);
+            if (tridil) drogas.push(`Nitroglicerina a ${tridil} mcg/min`);
+            if (nipride) drogas.push(`Nitroprussiato a ${nipride} mcg/kg/min`);
+            
+            return `Instabilidade hemodinâmica, em uso de ${drogas.join(', ')}.`;
+        }
+        
+        function processarVentilacao() {
+            const ventilac = document.getElementById('ventilac').value;
+            const ventilacValor = document.getElementById('ventilac-valor').value;
+            const vm = document.getElementById('vm').value;
+            const adapt = document.getElementById('adapt').value;
+            
+            if (!ventilac) return '';
+            
+            let texto = '';
+            
+            switch(ventilac) {
+                case 'Estabilidade em ar ambiente':
+                    texto = 'Estabilidade ventilatória';
+                    break;
+                case 'Estabilidade em oxigenoterapia':
+                    texto = 'Estabilidade ventilatória, em oxigenoterapia de baixo fluxo';
+                    break;
+                case 'Traqueostomia com oxigenoterapia':
+                    texto = 'Estabilidade ventilatória, em oxigenoterapia pela traqueostomia';
+                    break;
+                case 'Traqueostomia em ar ambiente':
+                    texto = 'Estabilidade ventilatória, traqueostomia em ar ambiente';
+                    break;
+                case 'Instabilidade':
+                    texto = 'Instabilidade ventilatória';
+                    break;
+                case 'Masc. Alto Fluxo':
+                    texto = `Instabilidade ventilatória, em uso de máscara de alto fluxo a ${ventilacValor || '???'} L/min`;
+                    break;
+                case 'Masc. Venturi':
+                    texto = `Instabilidade ventilatória, em uso de máscara de Venturi a ${ventilacValor || '???'}%`;
+                    break;
+                default:
+                    return '';
+            }
+            
+            // Adiciona VM e adaptação se preenchidos
+            if (vm) {
+                const adaptText = adapt ? `, ${adapt.toLowerCase()}` : '';
+                texto += ` em ${vm}${adaptText}`;
+            }
+            
+            return texto + '.';
+        }
+        
+        // neuro:
+		function processarNeuro() {
+			const neuro = document.getElementById('neuro').value;
+			const rass = document.getElementById('rass').value;
+			const sedacao = document.getElementById('sedacao').value;
+
+			if (!neuro) return '';
+
+			let texto = neuro === 'Estável' ? 'Estabilidade neurológica' : 'Instabilidade neurológica';
+
+			if (rass) {
+				texto += `, RASS ${rass}`;
+			}
+
+			if (sedacao) {
+				texto += `; ${sedacao.toLowerCase()}`;
+			}
+
+			return texto + '.';
+		}
+        
+        function processarInfecto() {
+            const atb = document.getElementById('atb').value;
+            const febre = document.getElementById('febre').value;
+            const infecto = document.getElementById('infecto').value;
+            
+            const partes = [];
+            if (atb) partes.push(atb);
+            if (febre) partes.push(febre.toLowerCase());
+            if (infecto) partes.push(infecto.toLowerCase());
+            
+            if (partes.length === 0) return '';
+            			            
+            return partes.join(', ') + '.';			
+        }
+        
+        function processarRenal() {
+            const diurese = document.getElementById('diurese').value;
+            const diuretico = document.getElementById('diuretico').value;
+            const bh = document.getElementById('bh').value;
+            const escRenal = document.getElementById('esc-renal').value;
+            
+            const partes = [];
+            if (diurese) partes.push(diurese);
+            if (diuretico) partes.push(diuretico.toLowerCase());
+            if (bh) partes.push(`balanço hídrico ${bh.toLowerCase()}`);
+            if (escRenal) partes.push(escRenal.toLowerCase());
+            
+            if (partes.length === 0) return '';
+            
+            // Formata com ponto e vírgula
+            return partes.join('; ') + '.';
+        }
+        
+        // hematologico:
+		function processarHematologico() {
+			const hemato = document.getElementById('hemato').value;
+			const hemoterapia = document.getElementById('hemoterapia').value;
+
+			if (!hemato) return '';
+
+			let texto = hemato === 'Estável' ? 'Estabilidade hematológica' : 'Instabilidade hematológica';
+
+			if (hemoterapia && hemoterapia !== 'Sem hemoterapia') {
+				texto += `, ${hemoterapia.toLowerCase()}`;
+			}
+
+			return texto.charAt(0).toUpperCase() + texto.slice(1) + '.';
+		}
+		// metabolico
+		function processarMetabolico() {
+			const glicemias = document.getElementById('glicemias').value;
+			const dhes = document.getElementById('dhes').value;
+			const bic = document.getElementById('bic').value;
+
+			// Valores considerados "normais"
+			const glicemiasNormal = glicemias === 'Normoglicêmico' || !glicemias;
+			const dhesNormal = dhes === 'Sem DHEs' || !dhes;
+			const bicNormal = bic === 'Sem DABs' || !bic;
+
+			// Se todos estiverem normais
+			if (glicemiasNormal && dhesNormal && bicNormal) {
+				return 'Estabilidade metabólica.';
+			}
+
+			// Caso contrário, lista apenas os não normais
+			const partes = [];
+			if (glicemias && !glicemiasNormal) partes.push(glicemias.toLowerCase());
+			if (dhes && !dhesNormal) partes.push(dhes);
+			if (bic && !bicNormal) partes.push(bic.toLowerCase());
+
+			if (partes.length === 0) return '';
+
+			return 'Instabilidade metabólica; ' + partes.join('; ') + '.';
+		}
+        
+		// nutricao
+		function processarNutricao() {
+			const dieta = document.getElementById('dieta').value;
+			const dietaValor = document.getElementById('dieta-valor').value;
+			const disfTgi = document.getElementById('disf-tgi').value;
+			const evacuac = document.getElementById('evacuac').value;
+
+			const partes = [];
+			if (dieta) {
+				if (dieta === 'Dieta enteral' && dietaValor) {
+					partes.push(`Tolerando dieta enteral a ${dietaValor}`);
+				} else if (dieta === 'NPT') {
+					partes.push(`Tolerando ${dieta} a ${dietaValor || '???'} mL/h`);
+				} else if (dieta === 'NPP') {
+					partes.push(`Tolerando ${dieta} a ${dietaValor || '???'} mL/h`);
+				} else if (dieta === 'Via oral') {
+					partes.push('Tolerando dieta via oral');
+				} else if (dieta) {
+					partes.push(dieta.charAt(0).toUpperCase() + dieta.slice(1));
+				}
+			}
+			if (disfTgi && disfTgi !== 'Sem disfunção do TGI') {
+				partes.push(disfTgi.toLowerCase());
+			}
+			if (evacuac) {
+				partes.push(evacuac.toLowerCase());
+			}
+
+			if (partes.length === 0) return '';
+
+			return partes.join('; ') + '.';
+		}
+        
+		// Função para lesões de pele
+		function processarLesoesPele() {
+			const lesPele = document.getElementById('les-pele').value;
+			if (!lesPele) return '';
+			return lesPele + '.';
+		}
+		
+        function processarInvasoes() {
+			const cvc = document.getElementById('cvc').value;
+			const cdl = document.getElementById('cdl').value;
+			const pia = document.getElementById('pia').value;
+			const svd = document.getElementById('svd').value;
+
+			const invasoes = [];
+			if (cvc && cvc !== 'Sem CVC') invasoes.push(`CVC em ${cvc}`);
+			if (cdl && cdl !== 'Sem CDL') invasoes.push(`CDL em ${cdl}`);
+			if (pia && pia !== 'Sem PIA') invasoes.push(`PIA em ${pia}`);
+			if (svd === 'Com SVD') invasoes.push('em uso de SVD');
+
+			if (invasoes.length === 0) {
+				return 'Sem invasões.';
+			}
+
+			return invasoes.join('; ') + '.';
+		}
+
+		// Função para profilaxia
+		function processarProfilaxia() {
+			const profilax = document.getElementById('profilax').value;
+			if (!profilax) return '';
+			return profilax + '.';
+		}
+        
+        // Preencher data atual por padrão
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('data').value = today;
+        };
+    </script>
+</body>
+</html>

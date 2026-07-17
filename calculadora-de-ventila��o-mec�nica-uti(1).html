@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ventilação Mecânica - UTI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-button {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .tab-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .tab-button.active {
+            background-color: #2c3e50;
+        }
+        
+        .tab {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .calc-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .calc-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        .inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        input[type="number"], select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.copy-btn {
+            background-color: #2ecc71;
+        }
+        
+        button.copy-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .result-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        
+        .formula {
+            font-family: monospace;
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-top: 10px;
+            background: #ecf0f1;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .checklist {
+            margin: 15px 0;
+        }
+        
+        .checklist-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .checklist-result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .checklist-result.ok {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .checklist-result.not-ok {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            .inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            font-size: 12px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🫁 Calculadora de Ventilação Mecânica - UTI</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'ventilacao')">Ventilação</button>
+            <button class="tab-button" onclick="openTab(event, 'peso')">Peso</button>
+            <button class="tab-button" onclick="openTab(event, 'gasometria')">Gasometria</button>
+            <button class="tab-button" onclick="openTab(event, 'ajustes')">Ajustes</button>
+            <button class="tab-button" onclick="openTab(event, 'desmame')">Desmame</button>
+        </div>
+
+        <!-- ===== ABA 1: VENTILAÇÃO MECÂNICA ===== -->
+        <div id="ventilacao" class="tab">
+            <div class="calc-card">
+                <h3>📊 Volume Minuto (VE)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="ve-vt">Volume Corrente (VT):</label>
+                        <input type="number" id="ve-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="ve-fr">Frequência Respiratória (FR):</label>
+                        <input type="number" id="ve-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button onclick="calcVE()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('ve-result')">📋 Copiar</button>
+                <div id="ve-result" class="result"></div>
+                <div class="formula">Fórmula: VE = VT × FR / 1000</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>⚖️ Relação I:E</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="ie-tinsp">Tempo Inspiratório (Tinsp):</label>
+                        <input type="number" id="ie-tinsp" step="0.1" min="0.5" max="5" placeholder="segundos">
+                    </div>
+                    <div class="input-group">
+                        <label for="ie-fr">Frequência Respiratória (FR):</label>
+                        <input type="number" id="ie-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button onclick="calcIE()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('ie-result')">📋 Copiar</button>
+                <div id="ie-result" class="result"></div>
+                <div class="formula">Fórmula: I:E = Tinsp / (Ttotal - Tinsp)</div>
+                <div class="note">Onde Ttotal = 60/FR (em segundos)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📉 Complacência Estática</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="c-vt">Volume Corrente (VT):</label>
+                        <input type="number" id="c-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="c-pplat">Pressão de Platô (Pplat):</label>
+                        <input type="number" id="c-pplat" step="1" min="5" max="50" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="c-peep">PEEP:</label>
+                        <input type="number" id="c-peep" step="1" min="0" max="20" placeholder="cmH₂O" value="5">
+                    </div>
+                </div>
+                <button onclick="calcComplacencia()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('c-result')">📋 Copiar</button>
+                <div id="c-result" class="result"></div>
+                <div class="formula">Fórmula: C = VT / (Pplat - PEEP)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🔄 Resistência das Vias Aéreas</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="r-ppeak">Pressão de Pico (Ppeak):</label>
+                        <input type="number" id="r-ppeak" step="1" min="5" max="60" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="r-pplat">Pressão de Platô (Pplat):</label>
+                        <input type="number" id="r-pplat" step="1" min="5" max="50" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="r-fluxo">Fluxo:</label>
+                        <input type="number" id="r-fluxo" step="0.1" min="0.1" max="10" placeholder="L/s" value="1">
+                    </div>
+                </div>
+                <button onclick="calcResistencia()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('r-result')">📋 Copiar</button>
+                <div id="r-result" class="result"></div>
+                <div class="formula">Fórmula: R = (Ppeak - Pplat) / Fluxo</div>
+                <div class="note">Fluxo deve ser informado em L/s (ex: 60 L/min = 1 L/s)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>💪 Driving Pressure (ΔP)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="dp-pplat">Pressão de Platô (Pplat):</label>
+                        <input type="number" id="dp-pplat" step="1" min="5" max="50" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="dp-peep">PEEP:</label>
+                        <input type="number" id="dp-peep" step="1" min="0" max="20" placeholder="cmH₂O" value="5">
+                    </div>
+                </div>
+                <button onclick="calcDrivingPressure()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('dp-result')">📋 Copiar</button>
+                <div id="dp-result" class="result"></div>
+                <div class="formula">Fórmula: ΔP = Pplat - PEEP</div>
+                <div class="note">Meta: manter < 15 cmH₂O</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🏋️ Volume Corrente por Peso Ideal</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="vtpi-pi">Peso Ideal (kg):</label>
+                        <input type="number" id="vtpi-pi" step="0.1" min="20" max="150" placeholder="kg">
+                    </div>
+                </div>
+                <button onclick="calcVolumePesoIdeal()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('vtpi-result')">📋 Copiar</button>
+                <div id="vtpi-result" class="result"></div>
+                <div class="formula">Fórmula: VT = 6-8 mL/kg (Peso Ideal)</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 2: PESO E ANTROPOMETRIA ===== -->
+        <div id="peso" class="tab">
+            <div class="calc-card">
+                <h3>👨 Peso Ideal (Homem)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="pih-altura">Altura (cm):</label>
+                        <input type="number" id="pih-altura" step="1" min="100" max="220" placeholder="cm">
+                    </div>
+                </div>
+                <button onclick="calcPesoIdealHomem()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('pih-result')">📋 Copiar</button>
+                <div id="pih-result" class="result"></div>
+                <div class="formula">Fórmula: PI = 50 + 0.91 × (Altura - 152.4)</div>
+                <div class="note">Fórmula de Devine (1974)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>👩 Peso Ideal (Mulher)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="pim-altura">Altura (cm):</label>
+                        <input type="number" id="pim-altura" step="1" min="100" max="220" placeholder="cm">
+                    </div>
+                </div>
+                <button onclick="calcPesoIdealMulher()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('pim-result')">📋 Copiar</button>
+                <div id="pim-result" class="result"></div>
+                <div class="formula">Fórmula: PI = 45.5 + 0.91 × (Altura - 152.4)</div>
+                <div class="note">Fórmula de Devine (1974)</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 3: GASOMETRIA ===== -->
+        <div id="gasometria" class="tab">
+            <div class="calc-card">
+                <h3>📊 P/F Ratio</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="pf-pao2">PaO₂:</label>
+                        <input type="number" id="pf-pao2" step="1" min="40" max="500" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="pf-fio2">FiO₂:</label>
+                        <input type="number" id="pf-fio2" step="0.01" min="0.21" max="1" placeholder="0.21-1.0" value="0.21">
+                    </div>
+                </div>
+                <button onclick="calcPF()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('pf-result')">📋 Copiar</button>
+                <div id="pf-result" class="result"></div>
+                <div class="formula">Fórmula: P/F = PaO₂ / FiO₂</div>
+                <div class="note">Normal: >400 | SARA leve: 200-300 | SARA moderada: 100-200 | SARA grave: <100</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>💨 PaCO₂ Esperado (Acidose Metabólica Aguda)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="paco2e-hco3">HCO₃⁻:</label>
+                        <input type="number" id="paco2e-hco3" step="1" min="5" max="50" placeholder="mEq/L">
+                    </div>
+                </div>
+                <button onclick="calcPaCO2Esperado()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('paco2e-result')">📋 Copiar</button>
+                <div id="paco2e-result" class="result"></div>
+                <div class="formula">Fórmula: PaCO₂ = 1.5 × HCO₃⁻ + 8 ± 2</div>
+                <div class="note">Winter's formula - Compensação respiratória esperada</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🧪 HCO₃⁻ Esperado (Acidose Respiratória Crônica)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="hco3e-delta">ΔPaCO₂ (variação):</label>
+                        <input type="number" id="hco3e-delta" step="1" min="1" max="50" placeholder="mmHg">
+                    </div>
+                </div>
+                <button onclick="calcHCO3Esperado()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('hco3e-result')">📋 Copiar</button>
+                <div id="hco3e-result" class="result"></div>
+                <div class="formula">Fórmula: ΔHCO₃⁻ = 0.35 × ΔPaCO₂</div>
+                <div class="note">Aumento esperado no bicarbonato para cada mmHg de ↑PaCO₂</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 4: AJUSTES VENTILATÓRIOS ===== -->
+        <div id="ajustes" class="tab">
+            <div class="calc-card">
+                <h3>🔄 Ajuste de FR para Corrigir PaCO₂</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="afr-fr">FR Atual:</label>
+                        <input type="number" id="afr-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                    <div class="input-group">
+                        <label for="afr-paco2">PaCO₂ Atual:</label>
+                        <input type="number" id="afr-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="afr-paco2d">PaCO₂ Desejado:</label>
+                        <input type="number" id="afr-paco2d" step="1" min="35" max="50" placeholder="mmHg" value="40">
+                    </div>
+                </div>
+                <button onclick="calcAjusteFR()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('afr-result')">📋 Copiar</button>
+                <div id="afr-result" class="result"></div>
+                <div class="formula">Fórmula: FRₙₒᵥₐ = FR × (PaCO₂ / PaCO₂ₙₒᵥₐ)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🔄 Ajuste de VT para Corrigir PaCO₂</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="avt-vt">VT Atual:</label>
+                        <input type="number" id="avt-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="avt-paco2d">PaCO₂ Desejado:</label>
+                        <input type="number" id="avt-paco2d" step="1" min="35" max="50" placeholder="mmHg" value="40">
+                    </div>
+                    <div class="input-group">
+                        <label for="avt-paco2">PaCO₂ Atual:</label>
+                        <input type="number" id="avt-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                </div>
+                <button onclick="calcAjusteVT()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('avt-result')">📋 Copiar</button>
+                <div id="avt-result" class="result"></div>
+                <div class="formula">Fórmula: VTₙₒᵥₐ = VT × (PaCO₂ / PaCO₂ₙₒᵥₐ)</div>
+                <div class="note">Mantém VE constante</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🔄 Ajuste de VE para Corrigir PaCO₂</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="ave-ve">VE Atual:</label>
+                        <input type="number" id="ave-ve" step="0.1" min="2" max="20" placeholder="L/min">
+                    </div>
+                    <div class="input-group">
+                        <label for="ave-paco2">PaCO₂ Atual:</label>
+                        <input type="number" id="ave-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="ave-paco2d">PaCO₂ Desejado:</label>
+                        <input type="number" id="ave-paco2d" step="1" min="35" max="50" placeholder="mmHg" value="40">
+                    </div>
+                </div>
+                <button onclick="calcAjusteVE()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('ave-result')">📋 Copiar</button>
+                <div id="ave-result" class="result"></div>
+                <div class="formula">Fórmula: VEₙₒᵥₐ = VE × (PaCO₂ / PaCO₂ₙₒᵥₐ)</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 5: DESMAME/EXTUBAÇÃO ===== -->
+        <div id="desmame" class="tab">
+            <div class="calc-card">
+                <h3>🫁 Rapid Shallow Breathing Index (RSBI)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="rsbi-fr">Frequência Respiratória:</label>
+                        <input type="number" id="rsbi-fr" step="1" min="5" max="50" placeholder="irpm">
+                    </div>
+                    <div class="input-group">
+                        <label for="rsbi-vt">Volume Corrente:</label>
+                        <input type="number" id="rsbi-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                </div>
+                <button onclick="calcRSBI()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('rsbi-result')">📋 Copiar</button>
+                <div id="rsbi-result" class="result"></div>
+                <div class="formula">Fórmula: RSBI = FR / VT</div>
+                <div class="note">RSBI < 105: sucesso | RSBI > 105: falha. Sensibilidade: 97%, Especificidade: 64%</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📊 CROP Index</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="crop-cdin">Complacência Dinâmica (Cdin):</label>
+                        <input type="number" id="crop-cdin" step="1" min="10" max="100" placeholder="mL/cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-pimax">Pimáx:</label>
+                        <input type="number" id="crop-pimax" step="1" min="-100" max="0" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-pao2">PaO₂:</label>
+                        <input type="number" id="crop-pao2" step="1" min="40" max="500" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-paco2">PaCO₂:</label>
+                        <input type="number" id="crop-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-fr">FR:</label>
+                        <input type="number" id="crop-fr" step="1" min="5" max="50" placeholder="irpm">
+                    </div>
+                </div>
+                <button onclick="calcCROP()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('crop-result')">📋 Copiar</button>
+                <div id="crop-result" class="result"></div>
+                <div class="formula">Fórmula: CROP = (Cdin × Pimáx × PaO₂/PaCO₂) / FR</div>
+                <div class="note">Valor > 13-15 prediz sucesso no desmame</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📉 Volume Corrente Espontâneo</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="vtesp-ve">VE:</label>
+                        <input type="number" id="vtesp-ve" step="0.1" min="2" max="20" placeholder="L/min">
+                    </div>
+                    <div class="input-group">
+                        <label for="vtesp-fr">FR:</label>
+                        <input type="number" id="vtesp-fr" step="1" min="5" max="50" placeholder="irpm">
+                    </div>
+                </div>
+                <button onclick="calcVTEsp()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('vtesp-result')">📋 Copiar</button>
+                <div id="vtesp-result" class="result"></div>
+                <div class="formula">Fórmula: VTesp = VE / FR × 1000</div>
+                <div class="note">Ideal: 5-8 mL/kg (Peso Ideal)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📊 Ventilação Minuto Espontânea</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="veesp-vt">VT:</label>
+                        <input type="number" id="veesp-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="veesp-fr">FR:</label>
+                        <input type="number" id="veesp-fr" step="1" min="5" max="50" placeholder="irpm">
+                    </div>
+                </div>
+                <button onclick="calcVEEsp()">Calcular</button>
+                <button class="copy-btn" onclick="copyResult('veesp-result')">📋 Copiar</button>
+                <div id="veesp-result" class="result"></div>
+                <div class="formula">Fórmula: VE = VT × FR / 1000</div>
+                <div class="note">Normal: 5-10 L/min</div>
+            </div>
+
+            <div class="warning">
+                <strong>CHECKLISTS DE EXTUBAÇÃO</strong>
+            </div>
+
+            <div class="calc-card">
+                <h3>✅ Critérios de Prontidão para SBT</h3>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pront-pf"> P/F > 120-200
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pront-peep"> PEEP ≤ 5-8 cmH₂O
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pront-fio2"> FiO₂ ≤ 0.4-0.5
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pront-ph"> pH > 7.25
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pront-hemo"> Hemodinâmica estável
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pront-sed"> Sem sedação contínua
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="pront-tosse"> Tosse efetiva
+                    </div>
+                </div>
+                <button onclick="verificarProntidao()">Verificar Prontidão</button>
+                <div id="prontidao-result" class="checklist-result"></div>
+            </div>
+
+            <div class="calc-card">
+                <h3>✅ Critérios de Tolerância ao SBT</h3>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-fr"> FR < 35 irpm por 5 min
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-vt"> VT > 5 mL/kg
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-sato2"> SatO₂ > 90%
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-fc"> FC < 140 bpm
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-pas"> PAS 90-180 mmHg
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-diaforese"> Sem diaforese
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-ansiedade"> Sem ansiedade
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="tol-ph"> pH > 7.30
+                    </div>
+                </div>
+                <button onclick="verificarTolerancia()">Verificar Tolerância</button>
+                <div id="tolerancia-result" class="checklist-result"></div>
+            </div>
+
+            <div class="calc-card">
+                <h3>✅ Fatores do Paciente para Extubação</h3>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="fator-va"> Via aérea pérvia
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="fator-tosse"> Tosse forte
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="fator-secrecoes"> Secreções controladas (< 2.5 mL/h)
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="fator-nivel"> Nível de consciência adequado
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="fator-forca"> Força muscular preservada (Pimáx > -20 cmH₂O)
+                    </div>
+                </div>
+                <button onclick="verificarFatores()">Verificar Fatores</button>
+                <div id="fatores-result" class="checklist-result"></div>
+            </div>
+
+            <div class="calc-card">
+                <h3>❌ Contraindicações para Extubação</h3>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="contra-coma"> Coma (Glasgow < 8)
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="contra-hemo"> Instabilidade hemodinâmica
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="contra-hipox"> Hipoxemia grave (P/F < 150)
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="contra-acidose"> Acidose respiratória não corrigida
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="contra-sang"> Sangramento ativo das vias aéreas
+                    </div>
+                </div>
+                <button onclick="verificarContraindicacoes()">Verificar Contraindicações</button>
+                <div id="contra-result" class="checklist-result"></div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📋 Monitorização Pós-Extubação</h3>
+                <p>Monitorar FR, SatO₂, FC, PAS, estado mental por 24-48h.</p>
+                <p><strong>Reintubar se:</strong> FR > 35, SatO₂ < 90%, sinais de fadiga respiratória.</p>
+            </div>
+        </div>
+    </div>
+<div class="footer">
+    Desenvolvido por MJardim Serviços Médicos LTDA
+</div>
+
+    <script>
+        // Função para trocar abas
+        function openTab(evt, tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const buttons = document.querySelectorAll('.tab-button');
+            
+            tabs.forEach(tab => tab.style.display = 'none');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            document.getElementById(tabName).style.display = 'block';
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Função para copiar resultado
+        function copyResult(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            if (!text || text.includes('Preencha')) {
+                alert('Nenhum resultado para copiar');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Resultado copiado para a área de transferência!');
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+
+        // ===== CÁLCULOS VENTILAÇÃO =====
+        function calcVE() {
+            const vt = parseFloat(document.getElementById('ve-vt').value);
+            const fr = parseFloat(document.getElementById('ve-fr').value);
+            
+            if (isNaN(vt) || isNaN(fr)) {
+                document.getElementById('ve-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const ve = (vt * fr) / 1000;
+            document.getElementById('ve-result').innerHTML = 
+                `<span class="result-label">Volume Minuto:</span> <span class="result-value">${ve.toFixed(1)} L/min</span>`;
+        }
+
+        function calcIE() {
+            const tinsp = parseFloat(document.getElementById('ie-tinsp').value);
+            const fr = parseFloat(document.getElementById('ie-fr').value);
+            
+            if (isNaN(tinsp) || isNaN(fr)) {
+                document.getElementById('ie-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const ttotal = 60 / fr; // Ttotal em segundos
+            if (ttotal <= tinsp) {
+                document.getElementById('ie-result').innerHTML = '❌ Tinsp não pode ser ≥ Ttotal';
+                return;
+            }
+            
+            // Fórmula correta: I:E = Tinsp / (Ttotal - Tinsp)
+            const ie = tinsp / (ttotal - tinsp);
+            document.getElementById('ie-result').innerHTML = 
+                `<span class="result-label">Relação I:E:</span> <span class="result-value">1:${ie.toFixed(1)}</span>`;
+        }
+
+        function calcComplacencia() {
+            const vt = parseFloat(document.getElementById('c-vt').value);
+            const pplat = parseFloat(document.getElementById('c-pplat').value);
+            const peep = parseFloat(document.getElementById('c-peep').value);
+            
+            if (isNaN(vt) || isNaN(pplat) || isNaN(peep)) {
+                document.getElementById('c-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const deltaP = pplat - peep;
+            if (deltaP <= 0) {
+                document.getElementById('c-result').innerHTML = '❌ Pplat deve ser > PEEP';
+                return;
+            }
+            
+            const c = vt / deltaP;
+            document.getElementById('c-result').innerHTML = 
+                `<span class="result-label">Complacência:</span> <span class="result-value">${c.toFixed(1)} mL/cmH₂O</span>`;
+        }
+
+        function calcResistencia() {
+            const ppeak = parseFloat(document.getElementById('r-ppeak').value);
+            const pplat = parseFloat(document.getElementById('r-pplat').value);
+            const fluxo = parseFloat(document.getElementById('r-fluxo').value);
+            
+            if (isNaN(ppeak) || isNaN(pplat) || isNaN(fluxo)) {
+                document.getElementById('r-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const deltaP = ppeak - pplat;
+            if (deltaP < 0) {
+                document.getElementById('r-result').innerHTML = '❌ Ppeak deve ser ≥ Pplat';
+                return;
+            }
+            
+            // Fluxo deve estar em L/s (não L/min)
+            const r = deltaP / fluxo;
+            document.getElementById('r-result').innerHTML = 
+                `<span class="result-label">Resistência:</span> <span class="result-value">${r.toFixed(1)} cmH₂O/L/s</span>`;
+        }
+
+        function calcDrivingPressure() {
+            const pplat = parseFloat(document.getElementById('dp-pplat').value);
+            const peep = parseFloat(document.getElementById('dp-peep').value);
+            
+            if (isNaN(pplat) || isNaN(peep)) {
+                document.getElementById('dp-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const dp = pplat - peep;
+            let interpretation = '';
+            if (dp < 15) interpretation = ' ✅ (Meta: < 15 cmH₂O)';
+            else if (dp < 20) interpretation = ' ⚠️ (Elevado)';
+            else interpretation = ' ❌ (Muito elevado)';
+            
+            document.getElementById('dp-result').innerHTML = 
+                `<span class="result-label">Driving Pressure:</span> <span class="result-value">${dp.toFixed(1)} cmH₂O</span>${interpretation}`;
+        }
+
+        function calcVolumePesoIdeal() {
+            const pi = parseFloat(document.getElementById('vtpi-pi').value);
+            
+            if (isNaN(pi)) {
+                document.getElementById('vtpi-result').innerHTML = '❌ Preencha o campo';
+                return;
+            }
+            
+            const min = 6 * pi;
+            const max = 8 * pi;
+            document.getElementById('vtpi-result').innerHTML = 
+                `<span class="result-label">Volume Corrente:</span> <span class="result-value">${min.toFixed(0)}-${max.toFixed(0)} mL</span>`;
+        }
+
+        // ===== CÁLCULOS PESO =====
+        function calcPesoIdealHomem() {
+            const altura = parseFloat(document.getElementById('pih-altura').value);
+            
+            if (isNaN(altura)) {
+                document.getElementById('pih-result').innerHTML = '❌ Preencha o campo';
+                return;
+            }
+            
+            const pi = 50 + 0.91 * (altura - 152.4);
+            document.getElementById('pih-result').innerHTML = 
+                `<span class="result-label">Peso Ideal:</span> <span class="result-value">${pi.toFixed(1)} kg</span>`;
+        }
+
+        function calcPesoIdealMulher() {
+            const altura = parseFloat(document.getElementById('pim-altura').value);
+            
+            if (isNaN(altura)) {
+                document.getElementById('pim-result').innerHTML = '❌ Preencha o campo';
+                return;
+            }
+            
+            const pi = 45.5 + 0.91 * (altura - 152.4);
+            document.getElementById('pim-result').innerHTML = 
+                `<span class="result-label">Peso Ideal:</span> <span class="result-value">${pi.toFixed(1)} kg</span>`;
+        }
+
+        // ===== CÁLCULOS GASOMETRIA =====
+        function calcPF() {
+            const pao2 = parseFloat(document.getElementById('pf-pao2').value);
+            const fio2 = parseFloat(document.getElementById('pf-fio2').value);
+            
+            if (isNaN(pao2) || isNaN(fio2) || fio2 <= 0) {
+                document.getElementById('pf-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const pf = pao2 / fio2;
+            let interpretation = '';
+            if (pf > 400) interpretation = ' ✅ (Normal)';
+            else if (pf >= 200) interpretation = ' ⚠️ (SARA leve)';
+            else if (pf >= 100) interpretation = ' ❌ (SARA moderada)';
+            else interpretation = ' ❌ (SARA grave)';
+            
+            document.getElementById('pf-result').innerHTML = 
+                `<span class="result-label">P/F Ratio:</span> <span class="result-value">${pf.toFixed(0)}</span>${interpretation}`;
+        }
+
+        function calcPaCO2Esperado() {
+            const hco3 = parseFloat(document.getElementById('paco2e-hco3').value);
+            
+            if (isNaN(hco3)) {
+                document.getElementById('paco2e-result').innerHTML = '❌ Preencha o campo';
+                return;
+            }
+            
+            const paco2 = 1.5 * hco3 + 8;
+            document.getElementById('paco2e-result').innerHTML = 
+                `<span class="result-label">PaCO₂ Esperado:</span> <span class="result-value">${paco2.toFixed(0)} ± 2 mmHg</span>`;
+        }
+
+        function calcHCO3Esperado() {
+            const deltaPaco2 = parseFloat(document.getElementById('hco3e-delta').value);
+            
+            if (isNaN(deltaPaco2)) {
+                document.getElementById('hco3e-result').innerHTML = '❌ Preencha o campo';
+                return;
+            }
+            
+            const deltaHCO3 = 0.35 * deltaPaco2;
+            document.getElementById('hco3e-result').innerHTML = 
+                `<span class="result-label">ΔHCO₃⁻:</span> <span class="result-value">+${deltaHCO3.toFixed(1)} mEq/L</span>`;
+        }
+
+        // ===== CÁLCULOS AJUSTES =====
+        function calcAjusteFR() {
+            const fr = parseFloat(document.getElementById('afr-fr').value);
+            const paco2 = parseFloat(document.getElementById('afr-paco2').value);
+            const paco2d = parseFloat(document.getElementById('afr-paco2d').value);
+            
+            if (isNaN(fr) || isNaN(paco2) || isNaN(paco2d) || paco2d <= 0) {
+                document.getElementById('afr-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const frNova = fr * (paco2 / paco2d);
+            document.getElementById('afr-result').innerHTML = 
+                `<span class="result-label">FR Ajustada:</span> <span class="result-value">${frNova.toFixed(1)} irpm</span>`;
+        }
+
+        function calcAjusteVT() {
+            const vt = parseFloat(document.getElementById('avt-vt').value);
+            const paco2d = parseFloat(document.getElementById('avt-paco2d').value);
+            const paco2 = parseFloat(document.getElementById('avt-paco2').value);
+            
+            if (isNaN(vt) || isNaN(paco2d) || isNaN(paco2) || paco2 <= 0) {
+                document.getElementById('avt-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const vtNovo = vt * (paco2 / paco2d);
+            document.getElementById('avt-result').innerHTML = 
+                `<span class="result-label">VT Ajustado:</span> <span class="result-value">${vtNovo.toFixed(0)} mL</span>`;
+        }
+
+        function calcAjusteVE() {
+            const ve = parseFloat(document.getElementById('ave-ve').value);
+            const paco2 = parseFloat(document.getElementById('ave-paco2').value);
+            const paco2d = parseFloat(document.getElementById('ave-paco2d').value);
+            
+            if (isNaN(ve) || isNaN(paco2) || isNaN(paco2d) || paco2d <= 0) {
+                document.getElementById('ave-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const veNovo = ve * (paco2 / paco2d);
+            document.getElementById('ave-result').innerHTML = 
+                `<span class="result-label">VE Ajustado:</span> <span class="result-value">${veNovo.toFixed(1)} L/min</span>`;
+        }
+
+        // ===== CÁLCULOS DESMAME =====
+        function calcRSBI() {
+            const fr = parseFloat(document.getElementById('rsbi-fr').value);
+            const vt = parseFloat(document.getElementById('rsbi-vt').value);
+            
+            if (isNaN(fr) || isNaN(vt) || vt <= 0) {
+                document.getElementById('rsbi-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const rsbi = fr / (vt / 1000);
+            let interpretation = '';
+            if (rsbi < 105) interpretation = ' ✅ (Sucesso provável)';
+            else interpretation = ' ❌ (Falha provável)';
+            
+            document.getElementById('rsbi-result').innerHTML = 
+                `<span class="result-label">RSBI:</span> <span class="result-value">${rsbi.toFixed(1)} respirações/min/L</span>${interpretation}`;
+        }
+
+        function calcCROP() {
+            const cdin = parseFloat(document.getElementById('crop-cdin').value);
+            const pimax = parseFloat(document.getElementById('crop-pimax').value);
+            const pao2 = parseFloat(document.getElementById('crop-pao2').value);
+            const paco2 = parseFloat(document.getElementById('crop-paco2').value);
+            const fr = parseFloat(document.getElementById('crop-fr').value);
+            
+            if (isNaN(cdin) || isNaN(pimax) || isNaN(pao2) || isNaN(paco2) || isNaN(fr) || paco2 <= 0 || fr <= 0) {
+                document.getElementById('crop-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const crop = (cdin * pimax * (pao2 / paco2)) / fr;
+            let interpretation = '';
+            if (crop > 15) interpretation = ' ✅ (Sucesso provável)';
+            else if (crop > 13) interpretation = ' ⚠️ (Inconclusivo)';
+            else interpretation = ' ❌ (Falha provável)';
+            
+            document.getElementById('crop-result').innerHTML = 
+                `<span class="result-label">CROP Index:</span> <span class="result-value">${crop.toFixed(1)}</span>${interpretation}`;
+        }
+
+        function calcVTEsp() {
+            const ve = parseFloat(document.getElementById('vtesp-ve').value);
+            const fr = parseFloat(document.getElementById('vtesp-fr').value);
+            
+            if (isNaN(ve) || isNaN(fr) || fr <= 0) {
+                document.getElementById('vtesp-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const vt = (ve * 1000) / fr;
+            document.getElementById('vtesp-result').innerHTML = 
+                `<span class="result-label">VT Espontâneo:</span> <span class="result-value">${vt.toFixed(0)} mL</span>`;
+        }
+
+        function calcVEEsp() {
+            const vt = parseFloat(document.getElementById('veesp-vt').value);
+            const fr = parseFloat(document.getElementById('veesp-fr').value);
+            
+            if (isNaN(vt) || isNaN(fr)) {
+                document.getElementById('veesp-result').innerHTML = '❌ Preencha todos os campos';
+                return;
+            }
+            
+            const ve = (vt * fr) / 1000;
+            document.getElementById('veesp-result').innerHTML = 
+                `<span class="result-label">VE Espontânea:</span> <span class="result-value">${ve.toFixed(1)} L/min</span>`;
+        }
+
+        // ===== CHECKLISTS =====
+        function verificarProntidao() {
+            const checks = [
+                'pront-pf', 'pront-peep', 'pront-fio2', 'pront-ph', 
+                'pront-hemo', 'pront-sed', 'pront-tosse'
+            ];
+            const allChecked = checks.every(id => document.getElementById(id).checked);
+            
+            const resultDiv = document.getElementById('prontidao-result');
+            if (allChecked) {
+                resultDiv.innerHTML = '✅ Paciente PRONTO para SBT';
+                resultDiv.className = 'checklist-result ok';
+            } else {
+                resultDiv.innerHTML = '❌ Paciente NÃO está pronto para SBT';
+                resultDiv.className = 'checklist-result not-ok';
+            }
+        }
+
+        function verificarTolerancia() {
+            const checks = [
+                'tol-fr', 'tol-vt', 'tol-sato2', 'tol-fc', 
+                'tol-pas', 'tol-diaforese', 'tol-ansiedade', 'tol-ph'
+            ];
+            const allChecked = checks.every(id => document.getElementById(id).checked);
+            
+            const resultDiv = document.getElementById('tolerancia-result');
+            if (allChecked) {
+                resultDiv.innerHTML = '✅ Paciente TOLEROU SBT - Extubar';
+                resultDiv.className = 'checklist-result ok';
+            } else {
+                resultDiv.innerHTML = '❌ Paciente NÃO tolerou SBT';
+                resultDiv.className = 'checklist-result not-ok';
+            }
+        }
+
+        function verificarFatores() {
+            const checks = [
+                'fator-va', 'fator-tosse', 'fator-secrecoes', 
+                'fator-nivel', 'fator-forca'
+            ];
+            const allChecked = checks.every(id => document.getElementById(id).checked);
+            
+            const resultDiv = document.getElementById('fatores-result');
+            if (allChecked) {
+                resultDiv.innerHTML = '✅ Fatores do paciente FAVORÁVEIS para extubação';
+                resultDiv.className = 'checklist-result ok';
+            } else {
+                resultDiv.innerHTML = '⚠️ Alguns fatores NÃO favoráveis';
+                resultDiv.className = 'checklist-result not-ok';
+            }
+        }
+
+        function verificarContraindicacoes() {
+            const checks = [
+                'contra-coma', 'contra-hemo', 'contra-hipox', 
+                'contra-acidose', 'contra-sang'
+            ];
+            const anyChecked = checks.some(id => document.getElementById(id).checked);
+            
+            const resultDiv = document.getElementById('contra-result');
+            if (!anyChecked) {
+                resultDiv.innerHTML = '✅ NENHUMA contraindicação para extubação';
+                resultDiv.className = 'checklist-result ok';
+            } else {
+                resultDiv.innerHTML = '❌ CONTRAINDICAÇÃO para extubação';
+                resultDiv.className = 'checklist-result not-ok';
+            }
+        }
+
+        // Abrir a primeira aba por padrão
+        window.onload = function() {
+            document.querySelector('.tab-button').classList.add('active');
+            document.getElementById('ventilacao').style.display = 'block';
+        };
+    </script>
+</body>
+</html>
