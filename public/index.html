@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1a3a5c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="UTI Toolkit">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml">
+  <title>UTI Toolkit – MJardim</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --nav-h: 64px;
+      --header-h: 58px;
+      --blue: #1a3a5c;
+      --accent: #3498db;
+      --accent-light: #d6eaf8;
+      --text-light: #ecf0f1;
+      --text-muted: #a0b4c8;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .app-header {
+      background: var(--blue);
+      height: var(--header-h);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      /* Safe area for notched phones */
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .header-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-light);
+      letter-spacing: 0.3px;
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .header-tool-badge {
+      margin-left: auto;
+      background: rgba(255,255,255,0.12);
+      color: var(--text-light);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ── CONTENT / IFRAMES ── */
+    .app-content {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .tool-frame.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      height: var(--nav-h);
+      background: var(--blue);
+      display: flex;
+      align-items: stretch;
+      flex-shrink: 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.25);
+      /* Safe area for home indicator (iPhone X+) */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 6px 4px;
+      position: relative;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-item:active { background: rgba(255,255,255,0.08); }
+
+    .nav-icon {
+      font-size: 22px;
+      line-height: 1;
+      transition: transform 0.2s;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.2s;
+      letter-spacing: 0.2px;
+    }
+
+    .nav-item.active .nav-label { color: var(--accent); }
+    .nav-item.active .nav-icon { transform: scale(1.15); }
+
+    /* Active indicator bar */
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 0 0 3px 3px;
+    }
+
+    /* ── INSTALL BANNER ── */
+    #install-banner {
+      display: none;
+      background: var(--accent);
+      color: white;
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
+      cursor: pointer;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #install-banner.show {
+      display: flex;
+    }
+
+    #install-banner span { font-size: 11px; opacity: 0.85; }
+    #install-banner button {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ── LOADING OVERLAY ── */
+    .frame-loader {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: opacity 0.3s;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #e0e0e0;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-icon">🏥</div>
+    <div class="header-text">
+      <h1>UTI Toolkit</h1>
+      <p>MJardim Serviços Médicos</p>
+    </div>
+    <div class="header-tool-badge" id="tool-badge">Ventilação</div>
+  </header>
+
+  <!-- Install-to-home-screen banner (shown when browser fires beforeinstallprompt) -->
+  <div id="install-banner">
+    📲 Instalar app no celular —
+    <button id="install-btn">Instalar</button>
+    <button id="dismiss-install" style="background:transparent;border:none;color:rgba(255,255,255,0.6);font-size:18px;padding:0 4px;">×</button>
+  </div>
+
+  <main class="app-content">
+    <iframe id="frame-ventilacao" class="tool-frame active"  src="/tools/ventilacao.html" title="Ventilação Mecânica"></iframe>
+    <iframe id="frame-rsi"        class="tool-frame"         src="/tools/rsi.html"        title="Doses RSI"></iframe>
+    <iframe id="frame-infusao"    class="tool-frame"         src="/tools/infusao.html"    title="Infusão UTI"></iframe>
+    <iframe id="frame-agua"       class="tool-frame"         src="/tools/agua-livre.html" title="Água Livre"></iframe>
+    <iframe id="frame-evolucao"   class="tool-frame"         src="/tools/evolucao.html"   title="Evolução Clínica"></iframe>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-frame="ventilacao" data-label="Ventilação">
+      <span class="nav-icon">🫁</span>
+      <span class="nav-label">Ventilação</span>
+    </button>
+    <button class="nav-item" data-frame="rsi" data-label="Doses RSI">
+      <span class="nav-icon">💉</span>
+      <span class="nav-label">RSI</span>
+    </button>
+    <button class="nav-item" data-frame="infusao" data-label="Infusão UTI">
+      <span class="nav-icon">💊</span>
+      <span class="nav-label">Infusão</span>
+    </button>
+    <button class="nav-item" data-frame="agua" data-label="Água Livre">
+      <span class="nav-icon">💧</span>
+      <span class="nav-label">Sódio / Água</span>
+    </button>
+    <button class="nav-item" data-frame="evolucao" data-label="Evolução Clínica">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Evolução</span>
+    </button>
+  </nav>
+
+  <script>
+    // ── PWA install prompt ──
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('install-banner');
+    const installBtn    = document.getElementById('install-btn');
+    const dismissBtn    = document.getElementById('dismiss-install');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBanner.classList.add('show');
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBanner.classList.remove('show');
+    });
+
+    dismissBtn.addEventListener('click', () => {
+      installBanner.classList.remove('show');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBanner.classList.remove('show');
+      deferredPrompt = null;
+    });
+
+    // ── Service Worker ──
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    // ── Navigation ──
+    const navItems = document.querySelectorAll('.nav-item');
+    const frames   = document.querySelectorAll('.tool-frame');
+    const badge    = document.getElementById('tool-badge');
+
+    navItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        const id = item.dataset.frame;
+        const label = item.dataset.label;
+
+        navItems.forEach((n) => n.classList.remove('active'));
+        frames.forEach((f) => f.classList.remove('active'));
+
+        item.classList.add('active');
+        document.getElementById(`frame-${id}`).classList.add('active');
+        badge.textContent = label;
+      });
+    });
+  </script>
+</body>
+</html>
