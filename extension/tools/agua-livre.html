@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Calculadora de Déficit de Água Livre</title>
+    <style>
+        /* ===== ESTILOS CSS ===== */
+        body {
+            padding-bottom: 80px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4fc;
+            border-radius: 6px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        
+        .result h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        
+        .explanation {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 30px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .formula {
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 15px;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .reference {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 15px;
+            text-align: right;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💧 Calculadora de Déficit de Água Livre</h1>
+        
+        <form id="waterDeficitForm">
+            <div class="form-group">
+                <label for="sodium">Sódio Sérico Atual (Na⁺ em mEq/L):</label>
+                <input type="number" id="sodium" step="0.1" min="100" max="200" required>
+                <p class="note">Valor normal: 135-145 mEq/L</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="desiredSodium">Sódio Desejado (Na⁺ em mEq/L):</label>
+                <input type="number" id="desiredSodium" step="0.1" min="100" max="200" value="140" required>
+                <p class="note">Padrão: 140 mEq/L (ajustável conforme necessidade clínica)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="weight">Peso (kg):</label>
+                <input type="number" id="weight" step="0.1" min="1" max="200" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="age">Idade (anos):</label>
+                <input type="number" id="age" min="0" max="120" value="40">
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Sexo:</label>
+                <select id="gender">
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+            </div>
+            
+            <button type="submit">Calcular Déficit de Água Livre</button>
+        </form>
+        
+        <div id="result" class="result">
+            <h3>Resultado:</h3>
+            <div id="deficitValue" class="result-value"></div>
+            <p id="deficitDescription"></p>
+            <p><strong>Volume de água livre a ser reposto:</strong> <span id="waterVolume"></span></p>
+            <p id="correctionRate"></p>
+        </div>
+        
+        <div class="warning">
+            <strong>Taxa de correção máxima:</strong> Reduzir Na⁺ em até 8-10 mEq/L nas primeiras 24 horas para evitar síndrome de desmielinização osmótica.
+        </div>
+        
+        <div class="explanation">
+            <h3>📚 Explicação:</h3>
+            <p>Calcula o déficit de água livre baseando-se na <strong>quantidade total de soluto</strong> no corpo e no volume de água necessário para diluir o sódio ao nível desejado.</p>
+            
+            <p><strong>Fórmula (NEJM, Adrogue & Madias, 2000):</strong></p>
+            <p class="formula">
+                Déficit (L) = %TBW × Peso (kg) × (Na<sub>atual</sub> / Na<sub>desejado</sub> - 1)
+            </p>
+            
+            <p><strong>%TBW (Total Body Water):</strong></p>
+            <ul>
+                <li><strong>Homem adulto:</strong> 60% (0.6)</li>
+                <li><strong>Mulher adulta:</strong> 50% (0.5)</li>
+                <li><strong>Homem idoso (≥65 anos):</strong> 50% (0.5)</li>
+                <li><strong>Mulher idosa (≥65 anos):</strong> 45% (0.45)</li>
+                <li><strong>Criança:</strong> 60% (0.6)</li>
+            </ul>
+            
+            <p><strong>Interpretação:</strong></p>
+            <ul>
+                <li><strong>Resultado positivo:</strong> Volume de água livre a ser <strong>adicionado</strong> (hipenatremia)</li>
+                <li><strong>Resultado negativo:</strong> Volume de água livre a ser <strong>removido</strong> (hiponatremia)</li>
+            </ul>
+            
+            <p><strong>Exemplo:</strong> Paciente masculino, 70kg, 40 anos, Na⁺ atual = 125 mEq/L, Na⁺ desejado = 140 mEq/L</p>
+            <p class="formula">
+                Déficit = 0.6 × 70 × (125/140 - 1) = 0.6 × 70 × (-0.1071) = -4.497 L ≈ -4.5 L
+            </p>
+            <p class="note">*Resultado negativo indica que é necessário REMOVER 4.5 L de água livre para aumentar a concentração do sódio</p>
+            
+            <p><strong>Soluções recomendadas:</strong> Soro glicosado 5% ou salina 3%</p>
+        </div>
+        
+        <div class="reference">
+            Referência: Adrogue HJ, Madias NE. NEJM 2000; 342(20):1493-1499 e 342(21):1581-1589
+        </div>
+    </div>
+    
+    <script>
+        /* ===== CÓDIGO JAVASCRIPT ===== */
+        
+        // 1. Seleciona o formulário e o elemento de resultado
+        const form = document.getElementById('waterDeficitForm');
+        const resultDiv = document.getElementById('result');
+        
+        // 2. Adiciona um ouvinte de evento para o submit do formulário
+        form.addEventListener('submit', function(event) {
+            // Previne o comportamento padrão (recarregar a página)
+            event.preventDefault();
+            
+            // 3. Obtém os valores dos inputs
+            const sodium = parseFloat(document.getElementById('sodium').value);
+            const desiredSodium = parseFloat(document.getElementById('desiredSodium').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const age = parseInt(document.getElementById('age').value) || 0;
+            const gender = document.getElementById('gender').value;
+            
+            // 4. Define %TBW (Total Body Water) conforme idade e sexo
+            let tbw;
+            if (age >= 65) {
+                // Idoso
+                tbw = gender === 'male' ? 0.5 : 0.45;
+            } else {
+                // Adulto
+                tbw = gender === 'male' ? 0.6 : 0.5;
+            }
+            
+            // 5. CÁLCULO PRINCIPAL - Fórmula do NEJM
+            // Déficit (L) = %TBW × Peso × (Na_atual / Na_desejado - 1)
+            const waterDeficitLiters = tbw * weight * (sodium / desiredSodium - 1);
+            
+            // 6. Converte para mL (1 L = 1000 mL)
+            const waterDeficitML = waterDeficitLiters * 1000;
+            
+            // 7. Arredonda para 2 casas decimais
+            const roundedDeficitL = Math.round(waterDeficitLiters * 100) / 100;
+            const roundedDeficitML = Math.round(waterDeficitML * 100) / 100;
+            
+            // 8. Formata o resultado
+            const resultElement = document.getElementById('deficitValue');
+            const descriptionElement = document.getElementById('deficitDescription');
+            const waterVolumeElement = document.getElementById('waterVolume');
+            const correctionRateElement = document.getElementById('correctionRate');
+            
+            // 9. Determina a descrição com base no resultado
+            let descriptionText = '';
+            let volumeText = '';
+            let correctionText = '';
+            
+            if (sodium < desiredSodium) {
+                // Hiponatremia: déficit negativo (precisa remover água)
+                descriptionText = `Excesso de água livre: <strong>Hiponatremia (Na⁺ ${sodium} < ${desiredSodium})</strong>`;
+                volumeText = `${Math.abs(roundedDeficitML)} mL de água livre`;
+                
+                // Calcula taxa de correção máxima
+                const maxCorrection = 10; // 10 mEq/L em 24h
+                const currentDeficit = desiredSodium - sodium;
+                const correctionPercentage = Math.min((maxCorrection / currentDeficit) * 100, 100);
+                correctionText = `⚠️ Correção máxima recomendada: até ${maxCorrection} mEq/L nas primeiras 24 horas (${correctionPercentage.toFixed(1)}% do déficit total).`;
+            } else if (sodium > desiredSodium) {
+                // Hipernatremia: déficit positivo (precisa adicionar água)
+                descriptionText = `Déficit de água livre: <strong>Hipernatremia (Na⁺ ${sodium} > ${desiredSodium})</strong>`;
+                volumeText = `${Math.abs(roundedDeficitML)} mL de água livre a ser reposta (Solução glicosada 5%)`;
+                
+                // Calcula taxa de correção máxima
+                const maxCorrection = 10; // 10 mEq/L em 24h
+                const currentExcess = sodium - desiredSodium;
+                const correctionPercentage = Math.min((maxCorrection / currentExcess) * 100, 100);
+                correctionText = `⚠️ Correção máxima recomendada: reduzir até ${maxCorrection} mEq/L nas primeiras 24 horas (${correctionPercentage.toFixed(1)}% do excesso total).`;
+            } else {
+                descriptionText = `Sódio dentro do alvo (Na⁺ = ${sodium} mEq/L)`;
+                volumeText = `Nenhum déficit`;
+                correctionText = ``;
+            }
+            
+            // 10. Exibe os resultados
+            resultElement.textContent = `${roundedDeficitL} L (${roundedDeficitML} mL)`;
+            descriptionElement.innerHTML = descriptionText;
+            waterVolumeElement.textContent = volumeText;
+            correctionRateElement.innerHTML = correctionText;
+            
+            // 11. Mostra o resultado
+            resultDiv.style.display = 'block';
+            
+            // 12. Rola a tela até o resultado
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // 13. Função para limpar o resultado (opcional)
+        function clearResult() {
+            resultDiv.style.display = 'none';
+        }
+        
+        // 14. Adiciona evento para limpar ao clicar nos inputs
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', clearResult);
+        });
+    </script>
+</body>
+</html>
