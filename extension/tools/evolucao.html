@@ -197,7 +197,7 @@
             </div>
             <div class="form-group">
                 <label for="sexo">Sexo:</label>
-                <select id="sexo">
+                <select id="sexo" onchange="atualizarOpcoesDiurese()">
                     <option value="M">Masculino</option>
                     <option value="F">Feminino</option>
                 </select>
@@ -341,8 +341,8 @@
                     <select id="diurese">
                         <option value="">-- Selecione --</option>
                         <option value="Diurese satisfatória">Diurese satisfatória</option>
-                        <option value="Oligúrica">Oligúrica</option>
-                        <option value="Anúrica">Anúrica</option>
+                        <option value="Oligúrico">Oligúrico</option>
+                        <option value="Anúrico">Anúrico</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -704,17 +704,35 @@
             document.getElementById('resultado').value = textoFinal;
         }
         
-        // Função para ajustar gênero
+        // Atualiza as opções do select Diurese conforme o sexo selecionado
+        function atualizarOpcoesDiurese() {
+            const isFem = document.getElementById('sexo').value === 'F';
+            const select = document.getElementById('diurese');
+            const pares = [
+                ['Oligúrico', 'Oligúrica'],
+                ['Anúrico',   'Anúrica'  ]
+            ];
+            const currentVal = select.value;
+            pares.forEach(([masc, fem]) => {
+                const opt = Array.from(select.options).find(o => o.value === masc || o.value === fem);
+                if (!opt) return;
+                const novo = isFem ? fem : masc;
+                opt.value = novo;
+                opt.text  = novo;
+                if (currentVal === masc || currentVal === fem) select.value = novo;
+            });
+        }
+
+        // Função para ajustar gênero no texto gerado
         function ajustarGenero(texto, sexo) {
             if (sexo === 'F') {
-                // Feminino
-                texto = texto.replace(/adaptado/g, 'adaptada');
-                texto = texto.replace(/oligúrico/g, 'oligúrica');
-                texto = texto.replace(/anúrico/g, 'anúrica');
-                texto = texto.replace(/normoglicêmico/g, 'normoglicêmica');
-                texto = texto.replace(/disglicêmico/g, 'disglicêmica');
-                texto = texto.replace(/hipoglicêmico/g, 'hipoglicêmica');
-                texto = texto.replace(/hipotérmico/g, 'hipotérmica');
+                texto = texto.replace(/adaptado/gi,      'adaptada');
+                texto = texto.replace(/oligúrico/gi,     'oligúrica');
+                texto = texto.replace(/anúrico/gi,       'anúrica');
+                texto = texto.replace(/normoglicêmico/gi,'normoglicêmica');
+                texto = texto.replace(/disglicêmico/gi,  'disglicêmica');
+                texto = texto.replace(/hipoglicêmico/gi, 'hipoglicêmica');
+                texto = texto.replace(/hipotérmico/gi,   'hipotérmica');
             }
             return texto;
         }

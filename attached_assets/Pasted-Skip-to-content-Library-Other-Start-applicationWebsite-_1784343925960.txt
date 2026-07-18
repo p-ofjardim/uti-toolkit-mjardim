@@ -1,0 +1,123 @@
+Skip to content
+
+Library
+Other
+Start applicationWebsite
+Files
+UTI Toolkit – Extensão Firefox (.xpi)File
+PK␃␄␔␀␀␀␈␀�␖�\a׶�N␁␀␀M␂␀␀
+␀␜␀manifest.jsonUT	␀␃:�Zj:�Zjux␋␀␁␄�␃␀␀␄�␃␀␀uQKN�0␐�␔�C�QU�ݲ*R7�␐�␓L␝�*q␇N␀,*␖�8�o�I␘')�*!K�̼7�=�␎@T�␒␙�nUqc�V�␔␆q␀␔␖�n9�r#␜�␆M*�&�~�KzM5�␙�u-r�␒Sm�␂�K	F�␖
+␂�O�	�?4␔�v1�A�␄�`�w*t׿�%�␔�@�Ҳl:�I3␅�Q�0@;2,�?h␋s�
+�mäHY"�(�t8�v�}5␜'�k2␁�%>␙�A␐8ǩR␓␈�׎k�-7+d�'�)ϰ�n儓�•�?r�?�|�mr�K�<�݄�ޟ�ɓ�␞Z�mتu�␕"e(-�␓$�␐6�␑p�ξ�␋PK␃␄␔␀␀␀␈␀�␖�\�␖�␑c␁␀␀p␂␀␀
+␀␜␀background.jsUT	␀␃>�Zj>�Zjux␋␀␁␄�␃␀␀␄�␃␀␀m�ON␂1␘�s�␗VCB
+k␌$�␘�aA␔VƘ�~@e�N�?␒␒␏�␅�kO�M<�␌ B\�^_�^Gg�	␎�A␗␃璙	�y*!G␒�QR�Jx�a␝�_�Y␂˴␌d�␓Q�;�E�␅�q0Q.şQ�␇Y�)	K	�+Ӡ�a�˃�"�␘�␅t�~�
+-�[d�m0)�	�m/�␘�i)�!M*Ջ(:�׎
+�Y�%?aFZH�{�,�Xf+�␐W�jc␝␁;f�yr!�]!�*^#�I�␘m�X�␑�C	�I�F�4␅�C7�[ͮ
+|�␟�(�␁�Z␆*�␛␏�␚֐�95␑|N�␐�␗\␎�n�<#}b�␁%␙␝ӗ�I�ۺy␙�<8I�<␕�D�␃PK␃␄␔␀␀␀␈␀␎␗�\~|L�D␇␀␀�␖␀␀
+␀␜␀index.htmlUT	␀␃[�Zj[�Zjux␋␀␁␄�␃␀␀␄�␃␀␀�X�n�F␐�)6L␋I�?ۉ+K␂␒GA]�q`+␁zˊ\J[S$�␆␁�c�C�&�␂-�(z�#�M�␄}�KJ� �og�␝�{�ۧ␃4␑Ӱ•�+�␐G㞓␈�#�␈�␐�N�ț`Ɖ�9φ�C�
+"<%=gN�U␒3� /�␄�`�␕�Ť�9�>�"␚QAq�r␏�ת7�!AEH�φ'h␘�%␕�w�␛�|:�6�Xn�b�␐�E;�Έ␄1#�␑␇�0�
+�.�?�h܁g�␓�␑�b6�Q␇5�P�}_�-e�X�W�␙!׍�ܝt�Q�(C␂�`�0�>
+g�␞>�2�<�␄␈�:�GV �K�t<�B�␅͠�"�␄�A�}�P␋
+R�]8�N�j6�<B� �:hB}�D�n�"�␌�␁�p�A�␋2�	zvR�E|�␅�3�\�$!q�
+Hp�]N␘
+R�#�]�Y<�$J8�~p�|ʓ␐� $Y�SF<AcȂ␗�iT8Xc␇}|�␆~�׃�␏␇�駝�␒�␁�@v�<�9fU�Z�4�␖�٫]␋␔C^"�±9�␑�,mP�␘'�vR<+�0␚]J�X%/'ؗ�i"؎�C�G�U�Z! u�BMA�Uހ�@�t�B␚␑7c�Ѫ�U3�Xh�*�@�k�ˡ�W�f�␟2␖�4�Y4C" V.O�T�K�␁IJq�,�u•�(j�8�-N]箈eV6!�6㎰?&␙
+�␖�␀�ᙈ˘�>8�M•�V�v�␈�␏�␐� ␙ݠ␇A�[␅�␘�␌H�Ή�&�\�␃p␒�W␌'␛j�p�d�␚�EY�fnS␅␌�TK␑Ɯ�rf$Ă�I*Y�D�,�␇␌n�̲5�G␜z�L�␈�\␝�t�:ϯ� � D�,�w� kf�X�$1�9␜�␗�␈␆�Ѐ5�@�!G␄s�u�␀e␇�|�6�$\Kރ�␔=�|5k�X�x*�S�␋�V␖�␆�Cr�&�ܶ�s�␏V�D*�lb�'�3�6�f\�`�R~U�^�␆s�S�H0␃�␘�y�̡�ܸ�␄�8$␇␏xy␈;)�u�a�␆�5�{�␄�z�Im
+ �%␘C<"a�'␏�␗E␞�ڛ␃Qvm�W/�4�i	�!␗�O�p�
+)hfA�*�p�␅	\
+�U�&�؆�:eV�
+�k�f�tP�-�]N�q�&|CŠ�␘␀#|�݆~�ٴ/�5Ý␗b�{�␝�␜=�w}:O�/•v␛ ݸO�X�~Z�w
+␀�DI߼u�␋�t�!�t�␏�x�␘␇�f␋␇Q�>�C�h�␟�•ę␕␝	�t␐�F�␐�4�1�)␖␓�d�␁ޗ�#8#␁�␃�␒<&␜�␒␄X�N�bH58p]c�kX␂UO�\C�p�0r׵�␐g�␖�ը�w␓␇�?,:%�z�w␛�&␄�S␇�5␄�$�␀4�k�e␐<�9�d�S␚␅3.�|c�F�:6NO�<2pl�_<�J
+␘,�␔ý|␋␂�X
+�%sh␏�>�ܦ␚�y�ہ\�9>␎�ې�c�qg␇�ڣ␙�d�n�r>␖X�9y�uՍ�␎�h�t�B7␂�ƍ�j�Z�nCC�␖•␑�v␞q�D�␕C␞i�[�t3�D�(␏�P␎[�~�␙ڋ�>�IY�L̶␆�K�i␛�w?�␌�5�	{�␁�u�r�D�-�␋␄�␓9;�␞�co6�•?#lqAB␘�cv?␌�lp�@+�Ss�x�mCEu�^T␟␓1␈�||�8�␕{�J]�B�à5�ޤZ�j�␆)=c�@v�ǔ�mIX�Ի�jas
+�␚�R�Ժ�}�S␏�+;բ�X␎3Rn�J�DUgd
+�Պn�Z�zұ�AM�z�L_a�[!␘v�)�/�+�~Q�nGe�.g�c�␞2␁�␛^�o�/P�0␑�E�␇PK␃␄
+␀␀␀␀␀␑␗�\␀␀␀␀␀␀␀␀␀␀␀␀␆␀␜␀icons/UT	␀␃b�Zj^�Zjux␋␀␁␄�␃␀␀␄�␃␀␀PK␃␄␔␀␀␀␈␀␏␗�\B�M␅�␀␀␀�␁␀␀␑␀␜␀icons/icon-48.svgUT	␀␃^�Zj^�Zjux␋␀␁␄�␃␀␀␄�␃␀␀�␎� ␔␀�{�␅Q�5�7!!a�t�>H�f�qq8?�v�~�`�ַ�!eL{�Z␛�8l�
+SB␈v␝␈␆-�␙␙"@ �C`�0�!␟*�+e�q␑␀�,�F␝:�D␄�E�5C�<-␑^�\�}j�␕Bg�89d�aD�A␗�{�컑
+.�6-/�q�$�g6�␒s•�"x␀PK␃␄␔␀␀␀␈␀␐␗�\>k�Ϸ␀␀␀�␁␀␀␑␀␜␀icons/icon-96.svgUT	␀␃`�Zj`�Zjux␋␀␁␄�␃␀␀␄�␃␀␀�K␎�0␐␆�=�{Z�#`(␋o�B␓␔␂
+�۪␑4AM�t�I�q�a>�c�u�'�␘�0J)�7␐&%͡�9R�%� ␘%t�ѕ�Tu�u�␁䃬�␜␆�␄)�I�-�]P�e\!Y�<�␈W�^	VJ�T�␗␒FY*�␟␈{ т�+$�␏�ĵߑX�B2�/+�&�\g;�␖�)�␛PK␃␄␔␀␀␀␈␀␑␗�\�>%ν␀␀␀�␁␀␀␒␀␜␀icons/icon-128.svgUT	␀␃b�Zjb�Zjux␋␀␁␄�␃␀␀␄�␃␀␀�␎� ␔␇�{�t/�␟Y␓/z␓SS6K�L�Lm5�␋6␘�␀Q�␗0\�[Ǳ�9␒�k�mA␘�
+�^�T␏␜)PpXh␆�␒�,9>�e.�RN�␂�<�␕�j�y␈␗QU␜wN�&~�dM�}_,XNbte�␄␋�z�0;�!&=N�␓1�␙1�␟�N�%Y�␐�&I�Ij␇?�z}�Ͼ�|Pl�␁PK␃␄
+␀␀␀␀␀␖␗�\␀␀␀␀␀␀␀␀␀␀␀␀␆␀␜␀tools/UT	␀␃l�Zjl�Zjux␋␀␁␄�␃␀␀␄�␃␀␀PK␃␄␔␀␀␀␈␀␖␗�\AEɔ�␜␀␀�␀␀␕␀␜␀tools/ventilacao.htmlUT	␀␃l�Zjl�Zjux␋␀␁␄�␃␀␀␄�␃␀␀�]ms�u�_q-�#�␖�&i�%M�Zʫt�j;�␒�$o␖o␆@�~�&m�IgR;�v�i'�یkg�d&3�V~�•�'�{␁␐␄␁
+ �%#�
+88�<�܋{q␎߼�W�M�␌�C|!:5{G␛�km�w�j�o␐�;4�G�ڧ�˼�'�3�`#�I
+v�1�m9�␆Q-�c&␜�k^�HcC�2E|�&�␞�TgG�r5A�au�␎g�Bm[Q�M;:�␈~�4�{:;>�:Щf9�h�\�Q\�G�n�␋�2�J�B�␏+�␔y�=␏�_�Ҟ�•�gSM�fO�X�g␙
+rP�oޛ8�␋j)]jp�y�l^�ȓ�mҦ}ˠ�}f�!�^3G�&�q�*.sxwR�␇�:=n6H�Ёg�T�ԧ�P�iϱ␆�n9
+�V�{�K'␏␋~�␙�"|␗�b�␑�XWw�^uR�n<�␇j�␇�y/�)w&�O�x٣␝7v}�N�:�ޣv�␛$v�␖CA�3␇O�ߪ�␙�(3�O␚�V�o�␃�/�c1␁�1�ɴ�_␔�j|�6�␝�>�W%�Q␇�m�O�b�•�D␗•�x�j�␝�g�␅�␞7�T�;n�&m�!sb
+�p�␇�ݬR�T�e␐␛s�␔�i␎9�1�`:�.�␌�5~܍�A�y�w�uh�-�)׶f[␄D�␂�:Z�|•�@�ҹF�bU�6�␆3�9[�NL[_�g␁�n?�^•�s�␞x�|�s�␖�#�F�␁�{␌�l`�D␎�␙�J�J�{�AoJ�*4�6�u� �Z
+�_�-~+tW�*�Q�␎S%�	3/�␎�cWX�Z�ۛ�;{�0�6�␗�0g�{␐�␎�␒�4h}H�ǐ�4m&␞�Mj�Z7�:p␃�姘␅�ӹ�f�␈�Cb�[b0�h�␄�}� ��V�
+�•~�S-�2�_�~-�Sv�␖zr�;�H�r�#�␝e�G�+�	G
+0�S␁y׏�␌S�T␟�3�3␞�tƎ�k�z�;j&␕R�V�␞�␇�t-ǀ␑X�`hdX�Te�ܙBs�
+�7�␞3␓�ڭvk)�3�(&�v�f�m=�Q�D␜�6␈�`,�␛}[�+�}�>չ�␌�l�C(C␁␒7R␄␝L�␙i�␘!
+q�81�␎Ѱ(~�,x�{�䑕�#�X�f�␌␖�0$b4�␙e�i*C�B�.Ӵ�~}7�␀␋�Kv␏�K�k�m�YA.�p*␎�6�m�:␘�3�i�␒d�rn�A�␀␎�bJ�w�b�J�␔�8␔�O^R␛?�	�|{l�v�;jb␆<1p�v�Zu?
+3S␄yۘ2�/O~␝�ht␘␄�8�
+�•�)وJ�>␈␀�D(�\� �)֘�␝Z�V�␔␖␙Գxn~{�$�O�␞V�t�!Ο�3�␚␟␒U�␋␜
+␚S␘�8␛�~�'$�-�4݋�K�a�*�g•␄3>"�B␛�2U�O�6,�m�)�!h�M6�R␙�Z�[␛�Q�␎+RF�K͸�\!�␒^�ڣ�e0�␔e�␟~*�
+�␇␃�c.�?�o�1נ␆C�iه␕�1
+␏�T␔r�•�	�5�u�Q�F?|L.�OO�c␔�xҁ�v�1��q•�zv0!␕;Fz�␎x�~L�␙�H麹␅�pBD�␄�␇�y�␙2�␇�C#�␇�,�:�␜␇�	�jo5␎+�␙�Ĕ�t(�␟�G␛�
+
+"There was an issue publishing your artifact" "Your app built successfully but failed to start. This is usually caused by a runtime error. Fix with Agent to continue publishing."
+
+2026-07-17T22:26:22Z info: Deployment: 5f47ce22-6d3d-4c17-ab7e-0284e1f7440c 2026-07-17T22:26:22Z info: Build: 8fddf5f7-0893-4fe8-a7b0-1a4e14a747d9 2026-07-17T22:26:23Z info: Running Security Scan 2026-07-17T22:26:24Z info: Installing packages 2026-07-17T22:26:25Z info: Skipping Build as no Build command set 2026-07-17T22:26:25Z info: Security Scan Complete 2026-07-17T22:26:26Z info: Pushing pid1 binary layer... 2026-07-17T22:26:27Z info: Created pid1 binary layer 2026-07-17T22:26:28Z info: Pushing hosting layer... 2026-07-17T22:26:28Z info: Pushing Repl layer... 2026-07-17T22:26:28Z info: Nix layers for this Repl are uncached. 2026-07-17T22:26:28Z info: Pushing nix-0 layer... 2026-07-17T22:26:28Z info: Created hosting layer 2026-07-17T22:26:28Z info: Created Repl layer 2026-07-17T22:27:53Z info: Created nix-0 layer 2026-07-17T22:27:53Z info: verifying nix store path integrity before caching layer 2026-07-17T22:28:05Z info: uploading image for cached layer 2026-07-17T22:28:06Z info: pushed cache image manifest 2026-07-17T22:28:06Z info: pushed cache soci index manifest 2026-07-17T22:28:06Z info: uploading cached layer 2026-07-17T22:28:06Z info: successfully uploaded cached layer 2026-07-17T22:28:09Z info: Pushed image manifest 2026-07-17T22:28:09Z info: Skipping container streaming artifacts (SOCI/ZTOC) for non-reserved-VM deployment 2026-07-17T22:29:10Z info: Creating Autoscale service 2026-07-17T22:39:44Z info: Creating Autoscale service 2026-07-17T22:51:17Z info: Creating Autoscale service
+Jul 17, 2026, 9:55 PM
+
+The app is fully static — server.js only serves files from public/, with no server-side logic. The autoscale startup probe is timing out because the container environment differs from dev. The right fix is to switch to static deployment, which serves public/ directly with no server to start or fail.
+
+Pronto. O problema era que o app é 100% estático (só arquivos HTML/CSS/JS no public/) mas estava configurado como autoscale, que tenta iniciar um servidor e fica esperando uma resposta HTTP — o que causava o timeout.
+
+A correção: mudei o tipo de deployment para static, que serve a pasta public/ diretamente, sem servidor para iniciar ou falhar.
+
+Tente publicar novamente agora.
+Waiting for user action
+
+O trabalho está completo — é só tentar publicar novamente pelo botão Publish.
+Republish
+
+corrija a adequação ao gênero feminino do status da "diurese" na seção de função renal do Gerador de Evolução Clínica Adapte este App para transformá-lo em extensão do Firefox
+Jul 17, 2026, 11:54 PM
+Reading evolucao.html
+
+Duas tarefas independentes — vou buscar o código relevante em paralelo enquanto já leio o que uma extensão Firefox precisa.
+
+Encontrei tudo. A correção de gênero é em 2 opções do <select> (o JS já fazia substituição no output, mas o valor base estava errado). Vou fazer tudo em paralelo: corrigir o evolucao.html, criar a estrutura da extensão Firefox e copiar os arquivos de ferramentas.
+
+Agora crio o index.html da extensão e copio os arquivos de ferramentas e ícones — tudo em paralelo.
+
+O grep revelou que a linha 345 ficou corrompida com um artefato de edição. Vou corrigir isso e copiar os arquivos de ferramentas para a extensão em paralelo.
+
+Preciso limpar a linha corrompida no evolucao.html e depois replicar a correção no arquivo copiado para a extensão.
+
+Agora copio o evolucao.html corrigido para a extensão e empacoto o .xpi para download.
+Summarizing completed work
+
+Tudo pronto. Resumo do que foi feito:
+
+1. Correção de gênero — Diurese (Evolução Clínica)
+
+No <select> de Diurese, as opções agora concordam com o substantivo feminino diurese:
+
+    Oligúrico → Oligúrica
+    Anúrico → Anúrica
+
+2. Extensão Firefox
+
+Criada a pasta extension/ com tudo necessário:
+Arquivo	Função
+manifest.json	Manifesto WebExtension (MV2, compatível com Firefox)
+background.js	Abre o app numa aba dedicada ao clicar no ícone
+index.html	Shell do app (iframes com caminhos relativos, sem Service Worker)
+tools/*.html	As 5 ferramentas copiadas
+icons/	Ícones SVG em 48, 96 e 128 px
+
+O arquivo .xpi está pronto para instalar. Para carregar no Firefox:
+
+Modo temporário (para testar):
+
+    Abra about:debugging no Firefox
+    Clique em This Firefox → Load Temporary Add-on
+    Selecione o arquivo uti-toolkit-firefox.xpi
+
+Para publicar na Mozilla Add-ons Store:
+
+    Crie uma conta em addons.mozilla.org
+    Faça upload do .xpi em Submit a New Add-on
+
+extensão abre na aba Ventilação, mas não permite clicar nas outras abas. Além disso, nenhuma das ferramentas de Ventilação é exibida, apenas a lista das abas na parte superior, com links não funcionais.
