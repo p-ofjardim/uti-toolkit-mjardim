@@ -9,51 +9,43 @@
         body {
             padding-bottom: 80px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            
             margin: 0 auto;
             padding: 20px;
             background-color: #f8f9fa;
             color: #333;
         }
-        
         h1 {
             color: #2c3e50;
             text-align: center;
             margin-bottom: 10px;
         }
-        
         h2 {
             color: #34495e;
             border-bottom: 2px solid #3498db;
             padding-bottom: 8px;
             margin-top: 25px;
         }
-        
         .container {
             background: white;
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        
         .section {
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
         }
-        
         .form-group {
             margin-bottom: 15px;
         }
-        
         .row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin-bottom: 15px;
         }
-        
         label {
             display: block;
             margin-bottom: 5px;
@@ -61,7 +53,6 @@
             color: #555;
             font-size: 14px;
         }
-        
         input[type="number"], select {
             width: 100%;
             padding: 10px;
@@ -70,12 +61,10 @@
             font-size: 14px;
             box-sizing: border-box;
         }
-        
         input:focus, select:focus {
             outline: none;
             border-color: #3498db;
         }
-        
         button {
             background-color: #3498db;
             color: white;
@@ -89,23 +78,18 @@
             margin-right: 10px;
             margin-bottom: 10px;
         }
-        
         button:hover {
             background-color: #2980b9;
         }
-        
         button.success {
             background-color: #2ecc71;
         }
-        
         button.success:hover {
             background-color: #27ae60;
         }
-        
         button.secondary {
             background-color: #95a5a6;
         }
-        
         .result-container {
             margin-top: 20px;
             padding: 20px;
@@ -113,7 +97,6 @@
             border-radius: 8px;
             border: 1px solid #e0e0e0;
         }
-        
         .result-text {
             width: 100%;
             min-height: 100px;
@@ -127,7 +110,6 @@
             resize: vertical;
             white-space: pre-wrap;
         }
-        
         .medication-card {
             border: 1px solid #e0e0e0;
             border-radius: 8px;
@@ -135,36 +117,30 @@
             margin-bottom: 15px;
             background: #fefefe;
         }
-        
         .medication-name {
             font-weight: bold;
             color: #2c3e50;
             font-size: 16px;
             margin-bottom: 5px;
         }
-        
         .medication-info {
             font-size: 13px;
             color: #7f8c8d;
             margin-top: 5px;
         }
-        
         .dose-range {
             display: flex;
             gap: 10px;
             align-items: center;
             margin-top: 8px;
         }
-        
         .dose-range input {
             width: 60px;
         }
-        
         .dose-range span {
             font-size: 14px;
             color: #555;
         }
-        
         .warning {
             background-color: #fff3cd;
             border: 1px solid #ffc107;
@@ -173,24 +149,20 @@
             margin: 15px 0;
             font-size: 14px;
         }
-        
         .warning::before {
             content: "⚠️ ";
         }
-        
         .notes {
             font-size: 12px;
             color: #7f8c8d;
             font-style: italic;
             margin-top: 10px;
         }
-        
         .tabs {
             display: flex;
             gap: 5px;
             margin-bottom: 20px;
         }
-        
         .tab {
             padding: 10px 20px;
             cursor: pointer;
@@ -199,20 +171,16 @@
             border-radius: 6px 6px 0 0;
             font-weight: 600;
         }
-        
         .tab.active {
             background: #3498db;
             color: white;
         }
-        
         .tab-content {
             display: none;
         }
-        
         .tab-content.active {
             display: block;
         }
-        
         @media (max-width: 768px) {
             .row {
                 grid-template-columns: 1fr;
@@ -234,11 +202,10 @@
         </div>
         
         <div class="tabs">
-            <button class="tab active" data-fn="showTab" data-arg="inducao">💊 Agentes de Indução</button>
-            <button class="tab" data-fn="showTab" data-arg="bloqueadores">🦵 Bloqueadores Neuromusculares</button>
+            <button class="tab active" onclick="showTab('inducao')">💊 Agentes de Indução</button>
+            <button class="tab" onclick="showTab('bloqueadores')">🦵 Bloqueadores Neuromusculares</button>
         </div>
         
-        <!-- AGENTES DE INDUÇÃO -->
         <div id="inducao" class="tab-content active">
             <div class="medication-card">
                 <div class="medication-name">Etomidato</div>
@@ -260,9 +227,9 @@
                     </div>
                 </div>
                 <div class="notes">
-                    ✅ Vantagens: mínimo efeito cardiovascular, ↓ PIC, efeito amnésico<br>
-                    ❌ Desvantagens: insuficiência adrenal*, mioclonia transitória<br>
-                    💡 Considerar em instabilidade hemodinâmica ou hipovolemia
+                    Vantagens: mínimo efeito cardiovascular, PIC, efeito amnésico<br>
+                    Desvantagens: insuficiência adrenal*, mioclonia transitória<br>
+                    Considerar em instabilidade hemodinâmica ou hipovolemia
                 </div>
             </div>
             
@@ -294,10 +261,10 @@
                     </div>
                 </div>
                 <div class="notes">
-                    ✅ Vantagens: efeito amnésico, analgesia, estabilidade hemodinâmica, broncodilatação<br>
-                    ❌ Desvantagens: taquicardia, hipertensão, delírio, alucinações<br>
-                    💡 Considerar em instabilidade hemodinâmica, hipovolemia ou asma<br>
-                    ⚠️ Evitar em hipertensão grave ou secreções orais significativas
+                    Vantagens: efeito amnésico, analgesia, estabilidade hemodinâmica, broncodilatação<br>
+                    Desvantagens: taquicardia, hipertensão, delírio, alucinações<br>
+                    Considerar em instabilidade hemodinâmica, hipovolemia ou asma
+                    Evitar em hipertensão grave ou secreções orais significativas
                 </div>
             </div>
             
@@ -328,11 +295,11 @@
                     </div>
                 </div>
                 <div class="notes">
-                    ✅ Vantagens: efeito amnésico, ⬇️ fluxo simpático, ↓ PIC, broncodilatação<br>
-                    ❌ Desvantagens: depressão cardiovascular (hipotensão, bradicardia)<br>
-                    💡 Considerar em TCE com ↑ PIC, estado epileptico ou broncoespasmo<br>
-                    ⚠️ Evitar em instabilidade hemodinâmica ou FE baixa<br>
-                    ⚠️ Contraindicado em alergia a ovo/soja
+                    Vantagens: efeito amnésico, fluxo simpático, PIC, broncodilatação<br>
+                    Desvantagens: depressão cardiovascular (hipotensão, bradicardia)<br>
+                    Considerar em TCE com PIC, estado epileptico ou broncoespasmo<br>
+                    Evitar em instabilidade hemodinâmica ou FE baixa<br>
+                    Contraindicado em alergia a ovo/soja
                 </div>
             </div>
             
@@ -365,9 +332,9 @@
                     </div>
                 </div>
                 <div class="notes">
-                    ✅ Vantagens: efeito amnésico, anticonvulsivante, ↓ PIC<br>
-                    ❌ Desvantagens: hipotensão, depressão respiratória, longa duração, potencial de abuso<br>
-                    💡 Dose de indução > dose de pré-medicação
+                    Vantagens: efeito amnésico, anticonvulsivante, PIC<br>
+                    Desvantagens: hipotensão, depressão respiratória, longa duração, potencial de abuso<br>
+                    Dose de indução > dose de pré-medicação
                 </div>
             </div>
             
@@ -391,10 +358,10 @@
                     </div>
                 </div>
                 <div class="notes">
-                    ✅ Vantagens: ↓ PIC<br>
-                    ❌ Desvantagens: hipotensão, depressão cardíaca, depressão respiratória<br>
-                    💡 Considerar em estabilidade hemodinâmica ou TCE com ↑ PIC<br>
-                    ⚠️ Não disponível nos EUA
+                    Vantagens: PIC<br>
+                    Desvantagens: hipotensão, depressão cardíaca, depressão respiratória<br>
+                    Considerar em estabilidade hemodinâmica ou TCE com PIC<br>
+                    Não disponível nos EUA
                 </div>
             </div>
             
@@ -426,14 +393,13 @@
                     </div>
                 </div>
                 <div class="notes">
-                    ✅ Vantagens: anticonvulsivante, ↓ PIC, efeito amnésico<br>
-                    ❌ Desvantagens: potencial de abuso, depressão cardíaca, hipotensão, extravasamento<br>
-                    ⚠️ Não disponível nos EUA
+                    Vantagens: anticonvulsivante, PIC, efeito amnésico<br>
+                    Desvantagens: potencial de abuso, depressão cardíaca, hipotensão, extravasamento<br>
+                    Não disponível nos EUA
                 </div>
             </div>
         </div>
         
-        <!-- BLOQUEADORES NEUROMUSCULARES -->
         <div id="bloqueadores" class="tab-content">
             <div class="medication-card">
                 <div class="medication-name">Succinilcolina</div>
@@ -455,8 +421,8 @@
                     </div>
                 </div>
                 <div class="warning">
-                    ❌ <strong>Contraindicado em:</strong> história de hipertermia maligna, miopatias esqueléticas, fase aguda de queimadura/lesão muscular, lesão de neurônio motor superior<br>
-                    ⚠️ Evitar em risco de hipercalemia (imobilização prolongada, DRC, lesão por esmagamento)
+                    Contraindicado em: história de hipertermia maligna, miopatias esqueléticas, fase aguda de queimadura/lesão muscular, lesão de neurônio motor superior<br>
+                    Evitar em risco de hipercalemia (imobilização prolongada, DRC, lesão por esmagamento)
                 </div>
             </div>
             
@@ -488,8 +454,8 @@
                     </div>
                 </div>
                 <div class="notes">
-                    💡 Alternativa preferida se succinilcolina contraindicada<br>
-                    ⚠️ Cuidado em pacientes com incapacidade de ventilação com máscara (duração mais longa)
+                    Alternativa preferida se succinilcolina contraindicada<br>
+                    Cuidado em pacientes com incapacidade de ventilação com máscara (duração mais longa)
                 </div>
             </div>
             
@@ -520,8 +486,8 @@
                     </div>
                 </div>
                 <div class="notes">
-                    💡 Alternativa apenas se succinilcolina e rocurônio indisponíveis<br>
-                    ⚠️ Onset e duração mais longos
+                    Alternativa apenas se succinilcolina e rocurônio indisponíveis<br>
+                    Onset e duração mais longos
                 </div>
             </div>
         </div>
@@ -531,14 +497,12 @@
         </div>
         
         <div class="result-container">
-            <h2>📋 Resultado</h2>
+            <h2> Resultado</h2>
             <textarea id="resultado" class="result-text" readonly></textarea>
-            <button class="success" data-fn="copyResult">📋 Copiar Texto</button>
+            <button class="success" onclick="copyResult()"> Copiar Texto</button>
         </div>
     </div>
     
-    
-  <script src="rsi.js"></script>
-  <script src="rsi.js"></script>
+    <script src="rsi.js"></script>
 </body>
 </html>
