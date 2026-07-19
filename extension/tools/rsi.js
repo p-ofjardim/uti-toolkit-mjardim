@@ -7,13 +7,12 @@ function showTab(tabName) {
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
     
-    // Encontrar o tab que foi clicado
-    const clickedTab = Array.from(document.querySelectorAll('.tab')).find(tab => 
-        tab.textContent.includes(tabName === 'inducao' ? 'Agentes de Indução' : 'Bloqueadores Neuromusculares')
-    );
-    
-    if (clickedTab) {
-        clickedTab.classList.add('active');
+    // Ativa o tab clicado
+    const tabs = document.querySelectorAll('.tab');
+    if (tabName === 'inducao' && tabs[0]) {
+        tabs[0].classList.add('active');
+    } else if (tabName === 'bloqueadores' && tabs[1]) {
+        tabs[1].classList.add('active');
     }
     
     document.getElementById(tabName).classList.add('active');
@@ -110,7 +109,7 @@ function calcularDoses() {
     
     const abaAtiva = document.querySelector('.tab.active').textContent;
     
-    if (abaAtiva.includes('Indução')) {
+    if (abaAtiva.includes('Indução') || abaAtiva.includes('inducao')) {
         textoResultado += '=== AGENTES DE INDUÇÃO ===
 ';
         textoResultado += '• Etomidato: ' + etomidateDose.toFixed(1) + ' mg (' + etomidateVol.toFixed(1) + ' mL de solução a ' + etomidateConc + ' mg/mL)
@@ -142,8 +141,16 @@ function calcularDoses() {
     document.getElementById('resultado').value = textoResultado;
 }
 
-// Inicializar
-window.onload = function() {
+// Inicializar quando DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('peso').value = '70';
+    calcularDoses();
+});
+
+// Also set onload as fallback
+window.onload = function() {
+    if (!document.getElementById('peso').value) {
+        document.getElementById('peso').value = '70';
+    }
     calcularDoses();
 };
