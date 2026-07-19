@@ -52,7 +52,8 @@ function calcularDoses() {
     const ketamineDose = parseFloat(document.getElementById('ketamine-dose').value) || 1;
     const ketamineConc = parseFloat(document.getElementById('ketamine-conc').value) || 10;
     const ketamineTotal = ketamineDose * peso;
-    const ketamineVol = ketamineTotal / ketamineConc;
+    const ketamineVo
+l = ketamineTotal / ketamineConc;
     document.getElementById('ketamine-result').value = ketamineTotal.toFixed(1) + ' mg (' + ketamineVol.toFixed(1) + ' mL)';
     
     // Propofol
@@ -84,7 +85,8 @@ function calcularDoses() {
     
     // Succinilcolina
     const succinylcholineConc = parseFloat(document.getElementById('succinylcholine-conc').value) || 20;
-    const succinylcholineTotal = 1.5 * peso;
+    const succinyl
+cholineTotal = 1.5 * peso;
     const succinylcholineVol = succinylcholineTotal / succinylcholineConc;
     document.getElementById('succinylcholine-result').value = succinylcholineTotal.toFixed(1) + ' mg (' + succinylcholineVol.toFixed(1) + ' mL)';
     
@@ -118,7 +120,8 @@ function calcularDoses() {
 ';
         textoResultado += '• Propofol: ' + propofolTotal.toFixed(1) + ' mg (' + propofolVol.toFixed(1) + ' mL de solução a ' + propofolConc + ' mg/mL)
 ';
-        textoResultado += '• Midazolam: ' + midazolamTotal.toFixed(1) + ' mg (' + midazolamVol.toFixed(1) + ' mL de solução a ' + midazolamConc + ' mg/mL)
+        textoResultado += '• Midazolam: ' + midazolamTota
+l.toFixed(1) + ' mg (' + midazolamVol.toFixed(1) + ' mL de solução a ' + midazolamConc + ' mg/mL)
 ';
         textoResultado += '• Metohexital: ' + methohexitalTotal.toFixed(1) + ' mg (' + methohexitalVol.toFixed(1) + ' mL de solução a ' + methohexitalConc + ' mg/mL)
 ';
@@ -159,4 +162,63 @@ window.onload = function() {
         document.getElementById('peso').value = '70';
     }
     calcularDoses();
+};
+
+// === ADDED EVENT LISTENERS FOR CSP COMPLIANCE ===
+
+// Tab click handlers
+document.addEventListener('DOMContentLoaded', function() {
+    // Tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+            showTab(tabName);
+        });
+    });
+    
+    // Copy button
+    const copyBtn = document.querySelector('[data-action="copy"]');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', copyResult);
+    }
+    
+    // Calculation triggers
+    const triggers = document.querySelectorAll('#peso, .calc-trigger');
+    triggers.forEach(trigger => {
+        trigger.addEventListener('change', calcularDoses);
+        trigger.addEventListener('input', calcularDoses);
+    });
+    
+    // Initialize
+    if (!document.getElementById('peso').value) {
+        document.getElementById('peso').value = '70';
+    }
+    calcularDoses();
+});
+
+// Fallback for window.onload
+window.onload = function() {
+    if (!document.getElementById('peso').value) {
+        document.getElementById('peso').value = '70';
+    }
+    calcularDoses();
+    
+    // Re-add event listeners as fallback
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+            showTab(tabName);
+        });
+    });
+    
+    const copyBtn = document.querySelector('[data-action="copy"]');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', copyResult);
+    }
+    
+    const triggers = document.querySelectorAll('#peso, .calc-trigger');
+    triggers.forEach(trigger => {
+        trigger.addEventListener('change', calcularDoses);
+        trigger.addEventListener('input', calcularDoses);
+    });
 };
