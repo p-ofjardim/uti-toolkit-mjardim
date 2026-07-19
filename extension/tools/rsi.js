@@ -136,18 +136,24 @@ function calcularDoses() {
     }
     
     textoResultado += '
-⚠️  Verifique sempre a concentração do frasco antes da administração!';
+⚠️ Verifique sempre a concentração do frasco antes da administração!';
     
     document.getElementById('resultado').value = textoResultado;
 }
 
-// Inicializar quando DOM estiver pronto
+// Inicializar diretamente (chamado quando script carrega)
+document.getElementById('peso').value = '70';
+calcularDoses();
+
+// Fallback para DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('peso').value = '70';
+    if (!document.getElementById('peso').value) {
+        document.getElementById('peso').value = '70';
+    }
     calcularDoses();
 });
 
-// Also set onload as fallback
+// Fallback para window.onload
 window.onload = function() {
     if (!document.getElementById('peso').value) {
         document.getElementById('peso').value = '70';
