@@ -104,18 +104,25 @@ const indexPath = path.join(__dirname, 'extension', 'index.html');
 let indexHtml = fs.readFileSync(indexPath, 'utf8');
 
 const indexScripts = [];
-indexHtml = indexHtml.replace(/<script(?:\s[^>]*)?>[\s\S]*?<\/script>/gi, function (match, attrs) {
-  if (attrs && /\bsrc\s*=/.test(attrs)) return match;
+indexHtml = indexHtml.replace(/<script(\s[^>]*)?>[\s\S]*?<\/script>/gi, function (match, attrs) {
+  if (attrs && /\bsrc\s*=/.test(attrs)) return match; // keep <script src="...">
   const content = match.replace(/<script(?:\s[^>]*)?>/i, '').replace(/<\/script>/i, '');
   indexScripts.push(content.trim());
   return '';
 });
 
 const indexJsPath = path.join(__dirname, 'extension', 'app.js');
-fs.writeFileSync(indexJsPath, COPYRIGHT_HEADER + indexScripts.join('\n\n'), 'utf8');
-indexHtml = indexHtml.replace(/<\/body>/i, '  <script src="app.js"></script>\n</body>');
+// Only overwrite app.js when script blocks were actually extracted; otherwise
+// preserve the manually-written navigation JS across rebuilds.
+if (indexScripts.length > 0) {
+  fs.writeFileSync(indexJsPath, COPYRIGHT_HEADER + indexScripts.join('\n\n'), 'utf8');
+}
+// Only inject the <script src> tag if it isn't already present.
+if (!/<script[^>]+src=["']app\.js["']/i.test(indexHtml)) {
+  indexHtml = indexHtml.replace(/<\/body>/i, '  <script src="app.js"></script>\n</body>');
+}
 fs.writeFileSync(indexPath, indexHtml, 'utf8');
-console.log(`✓ index.html  →  app.js`);
+console.log(`✓ index.html  →  app.js  (${indexScripts.length} script block(s) extracted)`);
 
 // ── Rebuild .xpi ─────────────────────────────────────────────────────────────
 const { execSync } = require('child_process');
