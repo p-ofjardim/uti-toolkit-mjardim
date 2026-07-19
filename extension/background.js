@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2026 MJardim Serviços Médicos LTDA
+ * Licensed under the MIT License (see LICENSE for details).
+ */
+
 // Abre o UTI Toolkit numa aba dedicada ao clicar no ícone da extensão.
 // Se já existir uma aba com a extensão aberta, foca nela em vez de criar outra.
 

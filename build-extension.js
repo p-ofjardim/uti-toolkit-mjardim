@@ -13,6 +13,13 @@ const path = require('path');
 const TOOLS_DIR = path.join(__dirname, 'extension', 'tools');
 const files = fs.readdirSync(TOOLS_DIR).filter(f => f.endsWith('.html'));
 
+// Copyright header prepended to every generated JS file.
+const COPYRIGHT_HEADER = `/**
+ * Copyright (c) 2026 MJardim Serviços Médicos LTDA
+ * Licensed under the MIT License (see LICENSE for details).
+ */
+`;
+
 // Event delegation snippet injected at the end of every extracted JS file.
 const DELEGATION_SNIPPET = `
 // ── Firefox MV2 event delegation (replaces inline onclick) ─────────────────
@@ -78,9 +85,12 @@ files.forEach(function (file) {
   // ── 2. Replace onclick attributes ───────────────────────────────────────
   html = convertOnclick(html);
 
-  // ── 3. Write external JS file ────────────────────────────────────────────
-  const jsContent = scriptBlocks.join('\n\n') + DELEGATION_SNIPPET;
-  fs.writeFileSync(jsPath, jsContent, 'utf8');
+  // ── 3. Write external JS file (only when blocks were actually extracted) ───
+  // Skipping when 0 blocks preserves manually-edited .js files across rebuilds.
+  if (scriptBlocks.length > 0) {
+    const jsContent = COPYRIGHT_HEADER + scriptBlocks.join('\n\n') + DELEGATION_SNIPPET;
+    fs.writeFileSync(jsPath, jsContent, 'utf8');
+  }
 
   // ── 4. Inject <script src="jsName"> before </body> ──────────────────────
   html = html.replace(/<\/body>/i, `  <script src="${jsName}"></script>\n</body>`);
@@ -102,7 +112,7 @@ indexHtml = indexHtml.replace(/<script(?:\s[^>]*)?>[\s\S]*?<\/script>/gi, functi
 });
 
 const indexJsPath = path.join(__dirname, 'extension', 'app.js');
-fs.writeFileSync(indexJsPath, indexScripts.join('\n\n'), 'utf8');
+fs.writeFileSync(indexJsPath, COPYRIGHT_HEADER + indexScripts.join('\n\n'), 'utf8');
 indexHtml = indexHtml.replace(/<\/body>/i, '  <script src="app.js"></script>\n</body>');
 fs.writeFileSync(indexPath, indexHtml, 'utf8');
 console.log(`✓ index.html  →  app.js`);
