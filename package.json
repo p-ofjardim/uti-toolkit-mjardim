@@ -9,7 +9,8 @@
     "build:extension": "node scripts/build-extension.js",
     "build": "npm run build:pwa && npm run build:extension",
     "start": "npm run build && npm run dev",
-    "test": "node scripts/test-calculations.js"
+    "test": "node --test",
+    "test:watch": "node --watch --test"
   },
   "keywords": ["uti", "medical", "calculator", "pwa", "firefox-extension"],
   "author": "MJardim Serviços Médicos",
