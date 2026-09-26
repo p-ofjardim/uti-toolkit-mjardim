@@ -5,171 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <title>Gerador de Evolução Clínica - UTI</title>
-    <style>
-        body {
-            padding-bottom: 80px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .header-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        
-        .header-controls .form-group {
-            flex: 1;
-            min-width: 150px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
-            font-size: 14px;
-        }
-        
-        input[type="number"], input[type="text"], input[type="date"], select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-        
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        button.secondary {
-            background-color: #95a5a6;
-        }
-        
-        button.secondary:hover {
-            background-color: #7f8c8d;
-        }
-        
-        button.success {
-            background-color: #2ecc71;
-        }
-        
-        button.success:hover {
-            background-color: #27ae60;
-        }
-        
-        .section {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .section-title {
-            color: #2c3e50;
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 16px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        
-        .row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-        
-        .result-container {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .result-text {
-            width: 100%;
-            min-height: 200px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            background: white;
-            resize: vertical;
-        }
-        
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 12px;
-            border-radius: 6px;
-            margin: 15px 0;
-            font-size: 14px;
-        }
-        
-        .warning::before {
-            content: "⚠️ ";
-        }
-        
-        .note {
-            font-size: 12px;
-            color: #7f8c8d;
-            font-style: italic;
-            margin-top: 5px;
-        }
-        
-        @media (max-width: 768px) {
-            .row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -178,7 +15,7 @@
         <div class="header-controls">
             <div class="form-group">
                 <label for="box">Box:</label>
-                <select id="box">
+                <select id="box" data-field="box">
                     <option value="11">11</option>
                     <option value="12">12</option>
                     <option value="13">13</option>
@@ -193,54 +30,54 @@
             </div>
             <div class="form-group">
                 <label for="data">Data:</label>
-                <input type="date" id="data">
+                <input type="date" id="data" data-field="data">
             </div>
             <div class="form-group">
                 <label for="sexo">Sexo:</label>
-                <select id="sexo" onchange="atualizarOpcoesDiurese()">
+                <select id="sexo" data-field="sexo">
                     <option value="M">Masculino</option>
                     <option value="F">Feminino</option>
                 </select>
             </div>
         </div>
         
-        <button class="success" data-fn="preencherEstabilidade">🟢 Preencher Estabilidade Clínica</button>
-        <button class="secondary" data-fn="limparFormulario">🗑️ Limpar</button>
+        <button class="success" data-action="preencherEstabilidade">🏥 Preencher Estabilidade Clínica</button>
+        <button class="secondary" data-action="limparFormulario">🗑️ Limpar</button>
         
         <!-- HEMODINÂMICA -->
         <div class="section">
-            <h2 class="section-title">🫀 HEMODINÂMICA</h2>
+            <h2 class="section-title">🩺 HEMODINÂMICA</h2>
             <div class="row">
                 <div class="form-group">
                     <label for="nora">Noradrenalina:</label>
-                    <input type="number" id="nora" step="0.1" min="0" placeholder="mL/h">
+                    <input type="number" id="nora" step="0.1" min="0" placeholder="mL/h" data-field="nora">
                 </div>
                 <div class="form-group">
                     <label for="vaso">Vasopressina:</label>
-                    <input type="number" id="vaso" step="0.01" min="0" placeholder="U/min">
+                    <input type="number" id="vaso" step="0.01" min="0" placeholder="U/min" data-field="vaso">
                 </div>
                 <div class="form-group">
                     <label for="dobuta">Dobutamina:</label>
-                    <input type="number" id="dobuta" step="0.1" min="0" placeholder="mcg/kg/min">
+                    <input type="number" id="dobuta" step="0.1" min="0" placeholder="mcg/kg/min" data-field="dobuta">
                 </div>
                 <div class="form-group">
                     <label for="tridil">Nitroglicerina:</label>
-                    <input type="number" id="tridil" step="1" min="0" placeholder="mcg/min">
+                    <input type="number" id="tridil" step="1" min="0" placeholder="mcg/min" data-field="tridil">
                 </div>
                 <div class="form-group">
                     <label for="nipride">Nitroprussiato:</label>
-                    <input type="number" id="nipride" step="0.1" min="0" placeholder="mcg/kg/min">
+                    <input type="number" id="nipride" step="0.1" min="0" placeholder="mcg/kg/min" data-field="nipride">
                 </div>
             </div>
         </div>
         
         <!-- VENTILAÇÃO -->
         <div class="section">
-            <h2 class="section-title">🫁 VENTILAÇÃO E SUPORTE</h2>
+            <h2 class="section-title">🩻 VENTILAÇÃO E SUPORTE</h2>
             <div class="row">
                 <div class="form-group">
                     <label for="ventilac">Estado Ventilatório:</label>
-                    <select id="ventilac">
+                    <select id="ventilac" data-field="ventilac">
                         <option value="">-- Selecione --</option>
                         <option value="Estabilidade em ar ambiente">Estabilidade em ar ambiente</option>
                         <option value="Estabilidade em oxigenoterapia">Estabilidade em oxigenoterapia</option>
@@ -253,15 +90,15 @@
                 </div>
                 <div class="form-group">
                     <label for="ventilac-valor">Valor (se Máscara):</label>
-                    <input type="text" id="ventilac-valor" placeholder="ex: 15 L/min ou 40%">
+                    <input type="text" id="ventilac-valor" placeholder="ex: 15 L/min ou 40%" data-field="ventilac-valor">
                 </div>
                 <div class="form-group">
                     <label for="vm">Modo VM:</label>
-                    <input type="text" id="vm" placeholder="PC-ACV, VC-ACV, etc.">
+                    <input type="text" id="vm" placeholder="PC-ACV, VC-ACV, etc." data-field="vm">
                 </div>
                 <div class="form-group">
                     <label for="adapt">Adaptação:</label>
-                    <select id="adapt">
+                    <select id="adapt" data-field="adapt">
                         <option value="">-- Selecione --</option>
                         <option value="Bem adaptado">Bem adaptado</option>
                         <option value="Mal adaptado">Mal adaptado</option>
@@ -276,7 +113,7 @@
             <div class="row">
                 <div class="form-group">
                     <label for="neuro">Estado Neurológico:</label>
-                    <select id="neuro">
+                    <select id="neuro" data-field="neuro">
                         <option value="">-- Selecione --</option>
                         <option value="Estável">Estável</option>
                         <option value="Instável">Instável</option>
@@ -284,16 +121,16 @@
                 </div>
                 <div class="form-group">
                     <label for="sedacao">Sedação:</label>
-                    <select id="sedacao">
+                    <select id="sedacao" data-field="sedacao">
                         <option value="">-- Selecione --</option>
                         <option value="Sem sedação">Sem sedação</option>
                         <option value="Com sedação">Com sedação</option>
                     </select>
                 </div>
-				<div class="form-group">
-					<label for="rass">Escala RASS (opcional):</label>
-					<input type="number" id="rass" min="-5" max="4" step="1" placeholder="-5 a +4">
-				</div>
+                <div class="form-group">
+                    <label for="rass">Escala RASS (opcional):</label>
+                    <input type="number" id="rass" min="-5" max="4" step="1" placeholder="-5 a +4" data-field="rass">
+                </div>
             </div>
         </div>
         
@@ -303,7 +140,7 @@
             <div class="row">
                 <div class="form-group">
                     <label for="atb">Antibioticoterapia:</label>
-                    <select id="atb">
+                    <select id="atb" data-field="atb">
                         <option value="">-- Selecione --</option>
                         <option value="Sem antibiótico">Sem antibiótico</option>
                         <option value="Com antibiótico">Com antibiótico</option>
@@ -311,7 +148,7 @@
                 </div>
                 <div class="form-group">
                     <label for="febre">Febre:</label>
-                    <select id="febre">
+                    <select id="febre" data-field="febre">
                         <option value="">-- Selecione --</option>
                         <option value="Febril">Febril</option>
                         <option value="Subfebril">Subfebril</option>
@@ -321,7 +158,7 @@
                 </div>
                 <div class="form-group">
                     <label for="infecto">Parâmetros Infecciosos:</label>
-                    <select id="infecto">
+                    <select id="infecto" data-field="infecto">
                         <option value="">-- Selecione --</option>
                         <option value="Sem critérios infecciosos">Sem critérios infecciosos</option>
                         <option value="Parâmetros infecciosos em melhora">Parâmetros infecciosos em melhora</option>
@@ -334,11 +171,11 @@
         
         <!-- RENAL -->
         <div class="section">
-            <h2 class="section-title">💧 RENAL E HIDROELETRÓLITOS</h2>
+            <h2 class="section-title">💧 RENAL E HIDROELETROLITOS</h2>
             <div class="row">
                 <div class="form-group">
                     <label for="diurese">Diurese:</label>
-                    <select id="diurese">
+                    <select id="diurese" data-field="diurese">
                         <option value="">-- Selecione --</option>
                         <option value="Diurese satisfatória">Diurese satisfatória</option>
                         <option value="Oligúrico">Oligúrico</option>
@@ -347,7 +184,7 @@
                 </div>
                 <div class="form-group">
                     <label for="diuretico">Diurético:</label>
-                    <select id="diuretico">
+                    <select id="diuretico" data-field="diuretico">
                         <option value="">-- Selecione --</option>
                         <option value="Sem diurético">Sem diurético</option>
                         <option value="Com diurético">Com diurético</option>
@@ -355,7 +192,7 @@
                 </div>
                 <div class="form-group">
                     <label for="bh">Balanço Hídrico:</label>
-                    <select id="bh">
+                    <select id="bh" data-field="bh">
                         <option value="">-- Selecione --</option>
                         <option value="Positivo">Positivo</option>
                         <option value="Negativo">Negativo</option>
@@ -364,7 +201,7 @@
                 </div>
                 <div class="form-group">
                     <label for="esc-renal">Função Renal:</label>
-                    <select id="esc-renal">
+                    <select id="esc-renal" data-field="esc-renal">
                         <option value="">-- Selecione --</option>
                         <option value="Função renal preservada">Função renal preservada</option>
                         <option value="Disfunção renal">Disfunção renal</option>
@@ -375,63 +212,64 @@
                 </div>
             </div>
         </div>
+        
         <!-- HEMATOLÓGICO -->
         <div class="section">
-			<h2 class="section-title">🩸 HEMATOLÓGICO</h2>
-			<div class="row">
-				<div class="form-group">
-					<label for="hemato">Estado Hematológico:</label>
-					<select id="hemato">
-						<option value="">-- Selecione --</option>
-						<option value="Estável">Estável</option>
-						<option value="Instável">Instável</option>
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="hemoterapia">Hemoterapia:</label>
-					<select id="hemoterapia">
-						<option value="">-- Selecione --</option>
-						<option value="Sem hemoterapia">Sem hemoterapia</option>
-						<option value="Em hemoterapia">Em hemoterapia</option>
-					</select>
-				</div>
-			</div>
-		</div>
-		
-		<!-- METABÓLICO -->
-		<div class="section">
-			<h2 class="section-title">⚖️ ESTADO METABÓLICO</h2>
-			<div class="row">
-				<div class="form-group">
-					<label for="glicemias">Glicemias:</label>
-					<select id="glicemias">  <!-- ID deve ser EXATAMENTE "glicemias" -->
-						<option value="">-- Selecione --</option>
-						<option value="Normoglicêmico">Normoglicêmico</option>
-						<option value="Disglicêmico">Disglicêmico</option>
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="dhes">Desequilíbrios Hidroeletrolíticos:</label>
-					<select id="dhes">  <!-- ID deve ser EXATAMENTE "dhes" -->
-						<option value="">-- Selecione --</option>
-						<option value="Sem DHEs">Sem DHEs</option>
-						<option value="DHEs">DHEs</option>
-					</select>
-				</div>
-				<div class="form-group">
-					<label for="bic">Estado Ácido-Base:</label>
-					<select id="bic">  <!-- ID deve ser EXATAMENTE "bic" -->
-						<option value="">-- Selecione --</option>
-						<option value="Sem DABs">Sem DABs</option>
-						<option value="Acidose metabólica">Acidose metabólica</option>
-						<option value="Alcalose metabólica">Alcalose metabólica</option>
-						<option value="Acidose respiratória">Acidose respiratória</option>
-						<option value="Alcalose respiratória">Alcalose respiratória</option>
-						<option value="Acidose mista">Acidose mista</option>
-					</select>
-				</div>
-			</div>
-		</div>
+            <h2 class="section-title">🩸 HEMATOLÓGICO</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="hemato">Estado Hematológico:</label>
+                    <select id="hemato" data-field="hemato">
+                        <option value="">-- Selecione --</option>
+                        <option value="Estável">Estável</option>
+                        <option value="Instável">Instável</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hemoterapia">Hemoterapia:</label>
+                    <select id="hemoterapia" data-field="hemoterapia">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem hemoterapia">Sem hemoterapia</option>
+                        <option value="Em hemoterapia">Em hemoterapia</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- METABÓLICO -->
+        <div class="section">
+            <h2 class="section-title">⚗️ ESTADO METABÓLICO</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="glicemias">Glicemias:</label>
+                    <select id="glicemias" data-field="glicemias">
+                        <option value="">-- Selecione --</option>
+                        <option value="Normoglicêmico">Normoglicêmico</option>
+                        <option value="Disglicêmico">Disglicêmico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dhes">Desequilíbrios Hidroeletrolíticos:</label>
+                    <select id="dhes" data-field="dhes">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem DHEs">Sem DHEs</option>
+                        <option value="DHEs">DHEs</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bic">Estado Ácido-Base:</label>
+                    <select id="bic" data-field="bic">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem DABs">Sem DABs</option>
+                        <option value="Acidose metabólica">Acidose metabólica</option>
+                        <option value="Alcalose metabólica">Alcalose metabólica</option>
+                        <option value="Acidose respiratória">Acidose respiratória</option>
+                        <option value="Alcalose respiratória">Alcalose respiratória</option>
+                        <option value="Acidose mista">Acidose mista</option>
+                    </select>
+                </div>
+            </div>
+        </div>
         
         <!-- NUTRIÇÃO -->
         <div class="section">
@@ -439,46 +277,46 @@
             <div class="row">
                 <div class="form-group">
                     <label for="dieta">Dieta:</label>
-                    <select id="dieta">
+                    <select id="dieta" data-field="dieta">
                         <option value="">-- Selecione --</option>
                         <option value="Via oral">Via oral</option>
                         <option value="Dieta enteral">Dieta enteral</option>
-						<option value="NPT">Nutrição parenteral total</option>
-						<option value="NPP">Nutrição parenteral parcial</option>
+                        <option value="NPT">Nutrição parenteral total</option>
+                        <option value="NPP">Nutrição parenteral parcial</option>
                         <option value="Sem dieta">Sem dieta</option>
                         <option value="Não tolera dieta">Não tolera dieta</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="dieta-valor">Valor (se Dieta Enteral):</label>
-                    <input type="text" id="dieta-valor" placeholder="ex: 50 mL/h">
+                    <input type="text" id="dieta-valor" placeholder="ex: 50 mL/h" data-field="dieta-valor">
+                </div>
+                <div class="form-group">
+                    <label for="disf-tgi">Disfunção do TGI:</label>
+                    <select id="disf-tgi" data-field="disf-tgi">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem disfunção do TGI">Sem disfunção do TGI</option>
+                        <option value="Com disfunção do TGI">Com disfunção do TGI</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="evacuac">Evacuações:</label>
-                    <select id="evacuac">
+                    <select id="evacuac" data-field="evacuac">
                         <option value="">-- Selecione --</option>
                         <option value="Sem evacuações">Sem evacuações</option>
                         <option value="Evacuações presentes">Evacuações presentes</option>
                     </select>
                 </div>
-				<div class="form-group">
-					<label for="disf-tgi">Disfunção do TGI:</label>
-					<select id="disf-tgi">
-						<option value="">-- Selecione --</option>
-						<option value="Sem disfunção do TGI">Sem disfunção do TGI</option>
-						<option value="Com disfunção do TGI">Com disfunção do TGI</option>
-					</select>
-				</div>
             </div>
         </div>
         
         <!-- INVASÕES -->
         <div class="section">
-            <h2 class="section-title">🩺 INVASÕES E PROFILAXIA</h2>
+            <h2 class="section-title">🦴 INVASÕES E PROFILAXIA</h2>
             <div class="row">
                 <div class="form-group">
                     <label for="cvc">CVC:</label>
-                    <select id="cvc">
+                    <select id="cvc" data-field="cvc">
                         <option value="">-- Selecione --</option>
                         <option value="Sem CVC">Sem CVC</option>
                         <option value="Veia Femural Esquerda">Veia Femural Esquerda</option>
@@ -491,7 +329,7 @@
                 </div>
                 <div class="form-group">
                     <label for="cdl">CDL:</label>
-                    <select id="cdl">
+                    <select id="cdl" data-field="cdl">
                         <option value="">-- Selecione --</option>
                         <option value="Sem CDL">Sem CDL</option>
                         <option value="Veia Femural Esquerda">Veia Femural Esquerda</option>
@@ -504,7 +342,7 @@
                 </div>
                 <div class="form-group">
                     <label for="pia">PIA:</label>
-                    <select id="pia">
+                    <select id="pia" data-field="pia">
                         <option value="">-- Selecione --</option>
                         <option value="Sem PIA">Sem PIA</option>
                         <option value="Artéria Radial Esquerda">Artéria Radial Esquerda</option>
@@ -515,7 +353,7 @@
                 </div>
                 <div class="form-group">
                     <label for="svd">SVD:</label>
-                    <select id="svd">
+                    <select id="svd" data-field="svd">
                         <option value="">-- Selecione --</option>
                         <option value="Sem SVD">Sem SVD</option>
                         <option value="Com SVD">Com SVD</option>
@@ -523,7 +361,7 @@
                 </div>
                 <div class="form-group">
                     <label for="les-pele">Lesões de Pele:</label>
-                    <select id="les-pele">
+                    <select id="les-pele" data-field="les-pele">
                         <option value="">-- Selecione --</option>
                         <option value="Sem lesões de pele">Sem lesões de pele</option>
                         <option value="Lesão sacral grau 1">Lesão sacral grau 1</option>
@@ -535,7 +373,7 @@
                 </div>
                 <div class="form-group">
                     <label for="profilax">Profilaxia:</label>
-                    <select id="profilax">
+                    <select id="profilax" data-field="profilax">
                         <option value="">-- Selecione --</option>
                         <option value="Sem profilaxias farmacológicas">Sem profilaxias farmacológicas</option>
                         <option value="Omeprazol profilático">Omeprazol profilático</option>
@@ -550,8 +388,8 @@
             <strong>ATENÇÃO:</strong> Preencha apenas os campos relevantes. Deixe em branco os campos não aplicáveis.
         </div>
         
-        <button data-fn="gerarEvolucao">🔄 Gerar Evolução</button>
-        <button class="secondary" data-fn="copyResult">📋 Copiar Texto</button>
+        <button data-action="gerarEvolucao">🔍 Gerar Evolução</button>
+        <button class="secondary" data-action="copyResult">📋 Copiar Texto</button>
         
         <div class="result-container">
             <h2 class="section-title">✅ TEXTO GERADO:</h2>
@@ -559,8 +397,7 @@
         </div>
     </div>
     
-    
-  <script src="evolucao.js"></script>
-  <script src="evolucao.js"></script>
+    <script type="module" src="ui.js"></script>
+<script src="evolucao.js"></script>
 </body>
 </html>

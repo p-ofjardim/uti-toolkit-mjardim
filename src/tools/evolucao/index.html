@@ -45,7 +45,7 @@
         
         <!-- HEMODINÂMICA -->
         <div class="section">
-            <h2 class="section-title">🫀 HEMODINÂMICA</h2>
+            <h2 class="section-title">🩺 HEMODINÂMICA</h2>
             <div class="row">
                 <div class="form-group">
                     <label for="nora">Noradrenalina:</label>
@@ -72,7 +72,7 @@
         
         <!-- VENTILAÇÃO -->
         <div class="section">
-            <h2 class="section-title">🫁 VENTILAÇÃO E SUPORTE</h2>
+            <h2 class="section-title">🩻 VENTILAÇÃO E SUPORTE</h2>
             <div class="row">
                 <div class="form-group">
                     <label for="ventilac">Estado Ventilatório:</label>
@@ -170,7 +170,7 @@
         
         <!-- RENAL -->
         <div class="section">
-            <h2 class="section-title">💧 RENAL E HIDROELETRÓLITOS</h2>
+            <h2 class="section-title">💧 RENAL E HIDROELETROLITOS</h2>
             <div class="row">
                 <div class="form-group">
                     <label for="diurese">Diurese:</label>
@@ -248,7 +248,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="dhes">Desequilibrios Hidroeletrolíticos:</label>
+                    <label for="dhes">Desequilíbrios Hidroeletrolíticos:</label>
                     <select id="dhes" data-field="dhes">
                         <option value="">-- Selecione --</option>
                         <option value="Sem DHEs">Sem DHEs</option>
@@ -287,24 +287,115 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="evacuacoes">Evacuações:</label>
-                    <select id="evacuacoes" data-field="evacuacoes">
+                    <label for="dieta-valor">Valor (se Dieta Enteral):</label>
+                    <input type="text" id="dieta-valor" placeholder="ex: 50 mL/h" data-field="dieta-valor">
+                </div>
+                <div class="form-group">
+                    <label for="disf-tgi">Disfunção do TGI:</label>
+                    <select id="disf-tgi" data-field="disf-tgi">
                         <option value="">-- Selecione --</option>
-                        <option value="Presente">Presente</option>
-                        <option value="Ausente">Ausente</option>
-                        <option value="Prisão de ventre">Prisão de ventre</option>
-                        <option value="Diarreia">Diarreia</option>
+                        <option value="Sem disfunção do TGI">Sem disfunção do TGI</option>
+                        <option value="Com disfunção do TGI">Com disfunção do TGI</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="evacuac">Evacuações:</label>
+                    <select id="evacuac" data-field="evacuac">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem evacuações">Sem evacuações</option>
+                        <option value="Evacuações presentes">Evacuações presentes</option>
                     </select>
                 </div>
             </div>
         </div>
         
+        <!-- INVASÕES -->
+        <div class="section">
+            <h2 class="section-title">🦴 INVASÕES E PROFILAXIA</h2>
+            <div class="row">
+                <div class="form-group">
+                    <label for="cvc">CVC:</label>
+                    <select id="cvc" data-field="cvc">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem CVC">Sem CVC</option>
+                        <option value="Veia Femural Esquerda">Veia Femural Esquerda</option>
+                        <option value="Veia Femural Direita">Veia Femural Direita</option>
+                        <option value="Veia Subclávia Esquerda">Veia Subclávia Esquerda</option>
+                        <option value="Veia Subclávia Direita">Veia Subclávia Direita</option>
+                        <option value="Veia Jugular Esquerda">Veia Jugular Esquerda</option>
+                        <option value="Veia Jugular Direita">Veia Jugular Direita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cdl">CDL:</label>
+                    <select id="cdl" data-field="cdl">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem CDL">Sem CDL</option>
+                        <option value="Veia Femural Esquerda">Veia Femural Esquerda</option>
+                        <option value="Veia Femural Direita">Veia Femural Direita</option>
+                        <option value="Veia Subclávia Esquerda">Veia Subclávia Esquerda</option>
+                        <option value="Veia Subclávia Direita">Veia Subclávia Direita</option>
+                        <option value="Veia Jugular Esquerda">Veia Jugular Esquerda</option>
+                        <option value="Veia Jugular Direita">Veia Jugular Direita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pia">PIA:</label>
+                    <select id="pia" data-field="pia">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem PIA">Sem PIA</option>
+                        <option value="Artéria Radial Esquerda">Artéria Radial Esquerda</option>
+                        <option value="Artéria Radial Direita">Artéria Radial Direita</option>
+                        <option value="Artéria Femural Esquerda">Artéria Femural Esquerda</option>
+                        <option value="Artéria Femural Direita">Artéria Femural Direita</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="svd">SVD:</label>
+                    <select id="svd" data-field="svd">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem SVD">Sem SVD</option>
+                        <option value="Com SVD">Com SVD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="les-pele">Lesões de Pele:</label>
+                    <select id="les-pele" data-field="les-pele">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem lesões de pele">Sem lesões de pele</option>
+                        <option value="Lesão sacral grau 1">Lesão sacral grau 1</option>
+                        <option value="Lesão sacral grau 2">Lesão sacral grau 2</option>
+                        <option value="Lesão sacral grau 3">Lesão sacral grau 3</option>
+                        <option value="Lesão sacral grau 4">Lesão sacral grau 4</option>
+                        <option value="Lesão sacral inclassificável">Lesão sacral inclassificável</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="profilax">Profilaxia:</label>
+                    <select id="profilax" data-field="profilax">
+                        <option value="">-- Selecione --</option>
+                        <option value="Sem profilaxias farmacológicas">Sem profilaxias farmacológicas</option>
+                        <option value="Omeprazol profilático">Omeprazol profilático</option>
+                        <option value="Enoxaparina profilática">Enoxaparina profilática</option>
+                        <option value="Enoxaparina e Omeprazol profiláticos">Enoxaparina e Omeprazol profiláticos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>ATENÇÃO:</strong> Preencha apenas os campos relevantes. Deixe em branco os campos não aplicáveis.
+        </div>
+        
+        <button data-action="gerarEvolucao">🔍 Gerar Evolução</button>
+        <button class="secondary" data-action="copyResult">📋 Copiar Texto</button>
+        
         <div class="result-container">
-            <h2>📄 Resultado</h2>
+            <h2 class="section-title">✅ TEXTO GERADO:</h2>
             <textarea id="resultado" class="result-text" readonly></textarea>
-            <button class="success" data-action="gerarEvolucao">📋 Gerar Evolução</button>
-            <button class="success" data-action="copyResult">📋 Copiar Texto</button>
         </div>
     </div>
+    
+    <script type="module" src="ui.js"></script>
 </body>
 </html>

@@ -2,414 +2,603 @@
  * Copyright (c) 2026 MJardim Serviços Médicos LTDA
  * Licensed under the MIT License (see LICENSE for details).
  */
-// ── Helpers para evitar innerHTML com valores dinâmicos (Firefox MV2) ────────
-function setError(id, msg) {
-    document.getElementById(id).textContent = msg;
+
+
+// Exporta todas as funções de cálculo para ventilação
+
+// Ventilação
+import { calculateVE, formatVEResult } from './volume-minuto.js';
+import { calculateIE, formatIEResult } from './ie-ratio.js';
+import { calculateCompliance, formatComplianceResult } from './compliance.js';
+import { calculateResistance, formatResistanceResult } from './resistance.js';
+import { calculateDrivingPressure, formatDrivingPressureResult } from './driving-pressure.js';
+import { calculateVolumePesoIdeal, formatVolumePesoIdealResult } from './volume-peso-ideal.js';
+
+// Peso
+import { calculatePesoIdealHomem, formatPesoIdealHomemResult } from './peso-ideal-homem.js';
+import { calculatePesoIdealMulher, formatPesoIdealMulherResult } from './peso-ideal-mulher.js';
+
+// Gasometria
+import { calculatePF, formatPFResult } from './pf-ratio.js';
+import { calculatePaCO2Esperado, formatPaCO2EsperadoResult } from './paco2-esperado.js';
+import { calculateHCO3Esperado, formatHCO3EsperadoResult } from './hco3-esperado.js';
+
+// Ajustes
+import { calculateAjusteFR, formatAjusteFRResult } from './ajuste-fr.js';
+import { calculateAjusteVT, formatAjusteVTResult } from './ajuste-vt.js';
+import { calculateAjusteVE, formatAjusteVEResult } from './ajuste-ve.js';
+
+// Desmame
+import { calculateVTEspontaneo, formatVTEspontaneoResult } from './vt-espontaneo.js';
+import { calculateVEEspontaneo, formatVEEspontaneoResult } from './ve-espontaneo.js';
+import { calculateRSBI, formatRSBIResult } from './rsbi.js';
+import { calculateCROP, formatCROPResult } from './crop-index.js';
+
+// Re-exporta todas as funções
+export {
+  // Ventilação
+  calculateVE, formatVEResult,
+  calculateIE, formatIEResult,
+  calculateCompliance, formatComplianceResult,
+  calculateResistance, formatResistanceResult,
+  calculateDrivingPressure, formatDrivingPressureResult,
+  calculateVolumePesoIdeal, formatVolumePesoIdealResult,
+  
+  // Peso
+  calculatePesoIdealHomem, formatPesoIdealHomemResult,
+  calculatePesoIdealMulher, formatPesoIdealMulherResult,
+  
+  // Gasometria
+  calculatePF, formatPFResult,
+  calculatePaCO2Esperado, formatPaCO2EsperadoResult,
+  calculateHCO3Esperado, formatHCO3EsperadoResult,
+  
+  // Ajustes
+  calculateAjusteFR, formatAjusteFRResult,
+  calculateAjusteVT, formatAjusteVTResult,
+  calculateAjusteVE, formatAjusteVEResult,
+  
+  // Desmame
+  calculateVTEspontaneo, formatVTEspontaneoResult,
+  calculateVEEspontaneo, formatVEEspontaneoResult,
+  calculateRSBI, formatRSBIResult,
+  calculateCROP, formatCROPResult
+};
+
+
+/**
+ * Gerenciador de estado para a calculadora de ventilação mecânica
+ * Mantém inputs e outputs sincronizados e recalcula automaticamente
+ */
+
+import * as calculations from './calculations/index.js';
+
+// Estado inicial
+const state = {
+  inputs: {
+    // Ventilação
+    've-vt': '',
+    've-fr': '',
+    'ie-tinsp': '',
+    'ie-fr': '',
+    'c-vt': '',
+    'c-pplat': '',
+    'c-peep': 5,
+    'r-ppeak': '',
+    'r-pplat': '',
+    'r-fluxo': 1,
+    'dp-pplat': '',
+    'dp-peep': 5,
+    'vtpi-pi': '',
+    
+    // Peso
+    'pih-altura': '',
+    'pim-altura': '',
+    
+    // Gasometria
+    'pf-pao2': '',
+    'pf-fio2': 0.21,
+    'paco2e-hco3': '',
+    'hco3e-delta': '',
+    
+    // Ajustes
+    'afr-fr': '',
+    'afr-paco2': '',
+    'afr-paco2d': 40,
+    'avt-vt': '',
+    'avt-paco2d': 40,
+    'avt-paco2': '',
+    'ave-ve': '',
+    'ave-paco2': '',
+    'ave-paco2d': 40,
+    
+    // Desmame
+    'vtesp-ve': '',
+    'vtesp-fr': '',
+    'veesp-vt': '',
+    'veesp-fr': '',
+    'rsbi-fr': '',
+    'rsbi-vt': '',
+    'crop-cdin': '',
+    'crop-pimax': '',
+    'crop-pao2': '',
+    'crop-paco2': '',
+    'crop-fr': '',
+    
+    // Checklist
+    'check-rsbi': false,
+    'check-pf': false,
+    'check-paco2': false,
+    'check-ph': false,
+    'check-hemodinamica': false,
+    'check-neurologico': false
+  },
+  outputs: {
+    // Ventilação
+    ve: null,
+    ie: null,
+    compliance: null,
+    resistance: null,
+    drivingPressure: null,
+    volumePesoIdeal: null,
+    
+    // Peso
+    pesoIdealHomem: null,
+    pesoIdealMulher: null,
+    
+    // Gasometria
+    pf: null,
+    paco2Esperado: null,
+    hco3Esperado: null,
+    
+    // Ajustes
+    ajusteFR: null,
+    ajusteVT: null,
+    ajusteVE: null,
+    
+    // Desmame
+    vtEspontaneo: null,
+    veEspontaneo: null,
+    rsbi: null,
+    crop: null,
+    
+    // Checklist
+    checklist: null
+  },
+  activeTab: 'ventilacao'
+};
+
+/**
+ * Atualiza um input e recalcula todas as dependências
+ * @param {string} name - Nome do input
+ * @param {number|string|boolean} value - Valor do input
+ */
+export function updateInput(name, value) {
+  state.inputs[name] = value;
+  recalculate();
 }
-function setResult(id, label, value, extra) {
-    var el = document.getElementById(id);
-    el.textContent = '';
-    var lbl = document.createElement('span');
-    lbl.className = 'result-label';
-    lbl.textContent = label;
-    var val = document.createElement('span');
-    val.className = 'result-value';
-    val.textContent = value;
-    el.appendChild(lbl);
-    el.append(' ');
-    el.appendChild(val);
-    if (extra) el.append(extra);
+
+/**
+ * Recalcula todos os outputs com base nos inputs atuais
+ */
+function recalculate() {
+  // Ventilação
+  state.outputs.ve = calculations.calculateVE(
+    parseFloat(state.inputs['ve-vt']) || 0,
+    parseFloat(state.inputs['ve-fr']) || 0
+  );
+  
+  state.outputs.ie = calculations.calculateIE(
+    parseFloat(state.inputs['ie-tinsp']) || 0,
+    parseFloat(state.inputs['ie-fr']) || 0
+  );
+  
+  state.outputs.compliance = calculations.calculateCompliance(
+    parseFloat(state.inputs['c-vt']) || 0,
+    parseFloat(state.inputs['c-pplat']) || 0,
+    parseFloat(state.inputs['c-peep']) || 0
+  );
+  
+  state.outputs.resistance = calculations.calculateResistance(
+    parseFloat(state.inputs['r-ppeak']) || 0,
+    parseFloat(state.inputs['r-pplat']) || 0,
+    parseFloat(state.inputs['r-fluxo']) || 0
+  );
+  
+  state.outputs.drivingPressure = calculations.calculateDrivingPressure(
+    parseFloat(state.inputs['dp-pplat']) || 0,
+    parseFloat(state.inputs['dp-peep']) || 0
+  );
+  
+  state.outputs.volumePesoIdeal = calculations.calculateVolumePesoIdeal(
+    parseFloat(state.inputs['vtpi-pi']) || 0
+  );
+  
+  // Peso
+  state.outputs.pesoIdealHomem = calculations.calculatePesoIdealHomem(
+    parseFloat(state.inputs['pih-altura']) || 0
+  );
+  
+  state.outputs.pesoIdealMulher = calculations.calculatePesoIdealMulher(
+    parseFloat(state.inputs['pim-altura']) || 0
+  );
+  
+  // Gasometria
+  state.outputs.pf = calculations.calculatePF(
+    parseFloat(state.inputs['pf-pao2']) || 0,
+    parseFloat(state.inputs['pf-fio2']) || 0
+  );
+  
+  state.outputs.paco2Esperado = calculations.calculatePaCO2Esperado(
+    parseFloat(state.inputs['paco2e-hco3']) || 0
+  );
+  
+  state.outputs.hco3Esperado = calculations.calculateHCO3Esperado(
+    parseFloat(state.inputs['hco3e-delta']) || 0
+  );
+  
+  // Ajustes
+  state.outputs.ajusteFR = calculations.calculateAjusteFR(
+    parseFloat(state.inputs['afr-fr']) || 0,
+    parseFloat(state.inputs['afr-paco2']) || 0,
+    parseFloat(state.inputs['afr-paco2d']) || 0
+  );
+  
+  state.outputs.ajusteVT = calculations.calculateAjusteVT(
+    parseFloat(state.inputs['avt-vt']) || 0,
+    parseFloat(state.inputs['avt-paco2d']) || 0,
+    parseFloat(state.inputs['avt-paco2']) || 0
+  );
+  
+  state.outputs.ajusteVE = calculations.calculateAjusteVE(
+    parseFloat(state.inputs['ave-ve']) || 0,
+    parseFloat(state.inputs['ave-paco2']) || 0,
+    parseFloat(state.inputs['ave-paco2d']) || 0
+  );
+  
+  // Desmame
+  state.outputs.vtEspontaneo = calculations.calculateVTEspontaneo(
+    parseFloat(state.inputs['vtesp-ve']) || 0,
+    parseFloat(state.inputs['vtesp-fr']) || 0
+  );
+  
+  state.outputs.veEspontaneo = calculations.calculateVEEspontaneo(
+    parseFloat(state.inputs['veesp-vt']) || 0,
+    parseFloat(state.inputs['veesp-fr']) || 0
+  );
+  
+  state.outputs.rsbi = calculations.calculateRSBI(
+    parseFloat(state.inputs['rsbi-fr']) || 0,
+    parseFloat(state.inputs['rsbi-vt']) || 0
+  );
+  
+  state.outputs.crop = calculations.calculateCROP(
+    parseFloat(state.inputs['crop-cdin']) || 0,
+    parseFloat(state.inputs['crop-pimax']) || 0,
+    parseFloat(state.inputs['crop-pao2']) || 0,
+    parseFloat(state.inputs['crop-paco2']) || 0,
+    parseFloat(state.inputs['crop-fr']) || 0
+  );
+  
+  // Checklist
+  const checklistItems = [
+    state.inputs['check-rsbi'],
+    state.inputs['check-pf'],
+    state.inputs['check-paco2'],
+    state.inputs['check-ph'],
+    state.inputs['check-hemodinamica'],
+    state.inputs['check-neurologico']
+  ];
+  const allChecked = checklistItems.every(item => item === true);
+  state.outputs.checklist = allChecked ? 'ok' : 'not-ok';
 }
 
-// Função para trocar abas
-        function openTab(evt, tabName) {
-            const tabs = document.querySelectorAll('.tab');
-            const buttons = document.querySelectorAll('.tab-button');
-            
-            tabs.forEach(tab => tab.style.display = 'none');
-            buttons.forEach(button => button.classList.remove('active'));
-            
-            document.getElementById(tabName).style.display = 'block';
-            evt.currentTarget.classList.add('active');
-        }
+/**
+ * Abre uma aba
+ * @param {string} tabName - Nome da aba
+ */
+export function openTab(tabName) {
+  state.activeTab = tabName;
+  updateInput('activeTab', tabName);
+}
 
-        // Função para copiar resultado
-        function copyResult(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            if (!text || text.includes('Preencha')) {
-                alert('Nenhum resultado para copiar');
-                return;
-            }
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Resultado copiado para a área de transferência!');
-            }).catch(err => {
-                alert('Erro ao copiar: ' + err);
-            });
-        }
+// Inicializa o estado
+recalculate();
 
-        // ===== CÁLCULOS VENTILAÇÃO =====
-        function calcVE() {
-            const vt = parseFloat(document.getElementById('ve-vt').value);
-            const fr = parseFloat(document.getElementById('ve-fr').value);
-            
-            if (isNaN(vt) || isNaN(fr)) {
-                setError('ve-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const ve = (vt * fr) / 1000;
-            setResult('ve-result', 'Volume Minuto:', ve.toFixed(1) + ' L/min');
-        }
+// Exporta o estado e funções
+export { state, updateInput, openTab };
 
-        function calcIE() {
-            const tinsp = parseFloat(document.getElementById('ie-tinsp').value);
-            const fr = parseFloat(document.getElementById('ie-fr').value);
-            
-            if (isNaN(tinsp) || isNaN(fr)) {
-                setError('ie-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const ttotal = 60 / fr;
-            if (ttotal <= tinsp) {
-                setError('ie-result', '❌ Tinsp não pode ser ≥ Ttotal');
-                return;
-            }
-            
-            const ie = (ttotal - tinsp) / tinsp;
-            setResult('ie-result', 'Relação I:E:', '1:' + ie.toFixed(1));
-        }
 
-        function calcComplacencia() {
-            const vt = parseFloat(document.getElementById('c-vt').value);
-            const pplat = parseFloat(document.getElementById('c-pplat').value);
-            const peep = parseFloat(document.getElementById('c-peep').value);
-            
-            if (isNaN(vt) || isNaN(pplat) || isNaN(peep)) {
-                setError('c-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const deltaP = pplat - peep;
-            if (deltaP <= 0) {
-                setError('c-result', '❌ Pplat deve ser > PEEP');
-                return;
-            }
-            
-            const c = vt / deltaP;
-            setResult('c-result', 'Complacência:', c.toFixed(1) + ' mL/cmH₂O');
-        }
+/**
+ * Manipulação de DOM e eventos para a calculadora de ventilação mecânica
+ * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
+ */
 
-        function calcResistencia() {
-            const ppeak = parseFloat(document.getElementById('r-ppeak').value);
-            const pplat = parseFloat(document.getElementById('r-pplat').value);
-            const fluxo = parseFloat(document.getElementById('r-fluxo').value);
-            
-            if (isNaN(ppeak) || isNaN(pplat) || isNaN(fluxo)) {
-                setError('r-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const deltaP = ppeak - pplat;
-            if (deltaP < 0) {
-                setError('r-result', '❌ Ppeak deve ser ≥ Pplat');
-                return;
-            }
-            
-            const r = deltaP / fluxo;
-            setResult('r-result', 'Resistência:', r.toFixed(1) + ' cmH₂O/L/s');
-        }
+import { state, updateInput, openTab } from './state.js';
+import * as calculations from './calculations/index.js';
 
-        function calcDrivingPressure() {
-            const pplat = parseFloat(document.getElementById('dp-pplat').value);
-            const peep = parseFloat(document.getElementById('dp-peep').value);
-            
-            if (isNaN(pplat) || isNaN(peep)) {
-                setError('dp-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const dp = pplat - peep;
-            let interpretation = '';
-            if (dp < 15) interpretation = ' ✅ (Meta: < 15 cmH₂O)';
-            else if (dp < 20) interpretation = ' ⚠️ (Elevado)';
-            else interpretation = ' ❌ (Muito elevado)';
-            
-            setResult('dp-result', 'Driving Pressure:', dp.toFixed(1) + ' cmH₂O', interpretation);
-        }
+// Função para copiar resultado
+function copyResult(elementId) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    const text = element.textContent || element.innerText;
+    navigator.clipboard.writeText(text.replace(/[^0-9.,-]/g, ''));
+  }
+}
 
-        function calcVolumePesoIdeal() {
-            const pi = parseFloat(document.getElementById('vtpi-pi').value);
-            
-            if (isNaN(pi)) {
-                setError('vtpi-result', '❌ Preencha o campo');
-                return;
-            }
-            
-            const min = 6 * pi;
-            const max = 8 * pi;
-            setResult('vtpi-result', 'Volume Corrente:', min.toFixed(0) + '-' + max.toFixed(0) + ' mL');
-        }
+// Função para atualizar o DOM
+function updateDOM() {
+  // Atualiza inputs
+  for (const [id, value] of Object.entries(state.inputs)) {
+    const element = document.getElementById(id);
+    if (element && element.type !== 'checkbox') {
+      element.value = value;
+    } else if (element && element.type === 'checkbox') {
+      element.checked = value;
+    }
+  }
 
-        // ===== CÁLCULOS PESO =====
-        function calcPesoIdealHomem() {
-            const altura = parseFloat(document.getElementById('pih-altura').value);
-            
-            if (isNaN(altura)) {
-                setError('pih-result', '❌ Preencha o campo');
-                return;
-            }
-            
-            const pi = 50 + 0.91 * (altura - 152.4);
-            setResult('pih-result', 'Peso Ideal:', pi.toFixed(1) + ' kg');
-        }
+  // Atualiza tabs
+  document.querySelectorAll('.tab-button').forEach(button => {
+    const tabName = button.getAttribute('data-tab');
+    if (tabName === state.activeTab) {
+      button.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    } else {
+      button.classList.remove('active');
+      document.getElementById(tabName).classList.remove('active');
+    }
+  });
 
-        function calcPesoIdealMulher() {
-            const altura = parseFloat(document.getElementById('pim-altura').value);
-            
-            if (isNaN(altura)) {
-                setError('pim-result', '❌ Preencha o campo');
-                return;
-            }
-            
-            const pi = 45.5 + 0.91 * (altura - 152.4);
-            setResult('pim-result', 'Peso Ideal:', pi.toFixed(1) + ' kg');
-        }
+  // Atualiza outputs
+  updateOutput('ve-result', calculations.formatVEResult(state.outputs.ve));
+  updateOutput('ie-result', calculations.formatIEResult(state.outputs.ie));
+  updateOutput('c-result', calculations.formatComplianceResult(state.outputs.compliance));
+  updateOutput('r-result', calculations.formatResistanceResult(state.outputs.resistance));
+  updateOutput('dp-result', calculations.formatDrivingPressureResult(state.outputs.drivingPressure));
+  updateOutput('vtpi-result', calculations.formatVolumePesoIdealResult(state.outputs.volumePesoIdeal));
+  updateOutput('pih-result', calculations.formatPesoIdealHomemResult(state.outputs.pesoIdealHomem));
+  updateOutput('pim-result', calculations.formatPesoIdealMulherResult(state.outputs.pesoIdealMulher));
+  updateOutput('pf-result', calculations.formatPFResult(state.outputs.pf));
+  updateOutput('paco2e-result', calculations.formatPaCO2EsperadoResult(state.outputs.paco2Esperado));
+  updateOutput('hco3e-result', calculations.formatHCO3EsperadoResult(state.outputs.hco3Esperado));
+  updateOutput('afr-result', calculations.formatAjusteFRResult(state.outputs.ajusteFR));
+  updateOutput('avt-result', calculations.formatAjusteVTResult(state.outputs.ajusteVT));
+  updateOutput('ave-result', calculations.formatAjusteVEResult(state.outputs.ajusteVE));
+  updateOutput('vtesp-result', calculations.formatVTEspontaneoResult(state.outputs.vtEspontaneo));
+  updateOutput('veesp-result', calculations.formatVEEspontaneoResult(state.outputs.veEspontaneo));
+  updateOutput('rsbi-result', calculations.formatRSBIResult(state.outputs.rsbi));
+  updateOutput('crop-result', calculations.formatCROPResult(state.outputs.crop));
 
-        // ===== CÁLCULOS GASOMETRIA =====
-        function calcPF() {
-            const pao2 = parseFloat(document.getElementById('pf-pao2').value);
-            const fio2 = parseFloat(document.getElementById('pf-fio2').value);
-            
-            if (isNaN(pao2) || isNaN(fio2) || fio2 <= 0) {
-                setError('pf-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const pf = pao2 / fio2;
-            let interpretation = '';
-            if (pf > 400) interpretation = ' ✅ (Normal)';
-            else if (pf >= 200) interpretation = ' ⚠️ (SARA leve)';
-            else if (pf >= 100) interpretation = ' ❌ (SARA moderada)';
-            else interpretation = ' ❌ (SARA grave)';
-            
-            setResult('pf-result', 'P/F Ratio:', pf.toFixed(0), interpretation);
-        }
+  // Atualiza checklist
+  const checklistResult = document.getElementById('checklist-result');
+  if (checklistResult) {
+    if (state.outputs.checklist === 'ok') {
+      checklistResult.className = 'checklist-result ok';
+      checklistResult.textContent = '✅ Todos os critérios de desmame estão atendidos!';
+    } else if (state.outputs.checklist === 'not-ok') {
+      checklistResult.className = 'checklist-result not-ok';
+      checklistResult.textContent = '❌ Alguns critérios de desmame não estão atendidos';
+    }
+  }
+}
 
-        function calcPaCO2Esperado() {
-            const hco3 = parseFloat(document.getElementById('paco2e-hco3').value);
-            
-            if (isNaN(hco3)) {
-                setError('paco2e-result', '❌ Preencha o campo');
-                return;
-            }
-            
-            const paco2 = 1.5 * hco3 + 8;
-            setResult('paco2e-result', 'PaCO₂ Esperado:', paco2.toFixed(0) + ' ± 2 mmHg');
-        }
+// Função para atualizar um output específico
+function updateOutput(elementId, content) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.innerHTML = content;
+  }
+}
 
-        function calcHCO3Esperado() {
-            const deltaPaco2 = parseFloat(document.getElementById('hco3e-delta').value);
-            
-            if (isNaN(deltaPaco2)) {
-                setError('hco3e-result', '❌ Preencha o campo');
-                return;
-            }
-            
-            const deltaHCO3 = 0.35 * deltaPaco2;
-            setResult('hco3e-result', 'ΔHCO₃⁻:', '+' + deltaHCO3.toFixed(1) + ' mEq/L');
-        }
+// Funções de cálculo (chamadas por data-action)
+function calcVE() {
+  updateInput('ve-vt', parseFloat(document.getElementById('ve-vt').value) || '');
+  updateInput('ve-fr', parseFloat(document.getElementById('ve-fr').value) || '');
+  updateDOM();
+}
 
-        // ===== CÁLCULOS AJUSTES =====
-        function calcAjusteFR() {
-            const fr = parseFloat(document.getElementById('afr-fr').value);
-            const paco2 = parseFloat(document.getElementById('afr-paco2').value);
-            const paco2d = parseFloat(document.getElementById('afr-paco2d').value);
-            
-            if (isNaN(fr) || isNaN(paco2) || isNaN(paco2d) || paco2d <= 0) {
-                setError('afr-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const frNova = fr * (paco2 / paco2d);
-            setResult('afr-result', 'FR Ajustada:', frNova.toFixed(1) + ' irpm');
-        }
+function calcIE() {
+  updateInput('ie-tinsp', parseFloat(document.getElementById('ie-tinsp').value) || '');
+  updateInput('ie-fr', parseFloat(document.getElementById('ie-fr').value) || '');
+  updateDOM();
+}
 
-        function calcAjusteVT() {
-            const vt = parseFloat(document.getElementById('avt-vt').value);
-            const paco2d = parseFloat(document.getElementById('avt-paco2d').value);
-            const paco2 = parseFloat(document.getElementById('avt-paco2').value);
-            
-            if (isNaN(vt) || isNaN(paco2d) || isNaN(paco2) || paco2 <= 0) {
-                setError('avt-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const vtNovo = vt * (paco2 / paco2d);
-            setResult('avt-result', 'VT Ajustado:', vtNovo.toFixed(0) + ' mL');
-        }
+function calcComplacencia() {
+  updateInput('c-vt', parseFloat(document.getElementById('c-vt').value) || '');
+  updateInput('c-pplat', parseFloat(document.getElementById('c-pplat').value) || '');
+  updateInput('c-peep', parseFloat(document.getElementById('c-peep').value) || 0);
+  updateDOM();
+}
 
-        function calcAjusteVE() {
-            const ve = parseFloat(document.getElementById('ave-ve').value);
-            const paco2 = parseFloat(document.getElementById('ave-paco2').value);
-            const paco2d = parseFloat(document.getElementById('ave-paco2d').value);
-            
-            if (isNaN(ve) || isNaN(paco2) || isNaN(paco2d) || paco2d <= 0) {
-                setError('ave-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const veNovo = ve * (paco2 / paco2d);
-            setResult('ave-result', 'VE Ajustado:', veNovo.toFixed(1) + ' L/min');
-        }
+function calcResistencia() {
+  updateInput('r-ppeak', parseFloat(document.getElementById('r-ppeak').value) || '');
+  updateInput('r-pplat', parseFloat(document.getElementById('r-pplat').value) || '');
+  updateInput('r-fluxo', parseFloat(document.getElementById('r-fluxo').value) || 0);
+  updateDOM();
+}
 
-        // ===== CÁLCULOS DESMAME =====
-        function calcRSBI() {
-            const fr = parseFloat(document.getElementById('rsbi-fr').value);
-            const vt = parseFloat(document.getElementById('rsbi-vt').value);
-            
-            if (isNaN(fr) || isNaN(vt) || vt <= 0) {
-                setError('rsbi-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const rsbi = fr / (vt / 1000);
-            let interpretation = '';
-            if (rsbi < 105) interpretation = ' ✅ (Sucesso provável)';
-            else interpretation = ' ❌ (Falha provável)';
-            
-            setResult('rsbi-result', 'RSBI:', rsbi.toFixed(1) + ' respirações/min/L', interpretation);
-        }
+function calcDrivingPressure() {
+  updateInput('dp-pplat', parseFloat(document.getElementById('dp-pplat').value) || '');
+  updateInput('dp-peep', parseFloat(document.getElementById('dp-peep').value) || 0);
+  updateDOM();
+}
 
-        function calcCROP() {
-            const cdin = parseFloat(document.getElementById('crop-cdin').value);
-            const pimax = parseFloat(document.getElementById('crop-pimax').value);
-            const pao2 = parseFloat(document.getElementById('crop-pao2').value);
-            const paco2 = parseFloat(document.getElementById('crop-paco2').value);
-            const fr = parseFloat(document.getElementById('crop-fr').value);
-            
-            if (isNaN(cdin) || isNaN(pimax) || isNaN(pao2) || isNaN(paco2) || isNaN(fr) || paco2 <= 0 || fr <= 0) {
-                setError('crop-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const crop = (cdin * pimax * (pao2 / paco2)) / fr;
-            let interpretation = '';
-            if (crop > 15) interpretation = ' ✅ (Sucesso provável)';
-            else if (crop > 13) interpretation = ' ⚠️ (Inconclusivo)';
-            else interpretation = ' ❌ (Falha provável)';
-            
-            setResult('crop-result', 'CROP Index:', crop.toFixed(1), interpretation);
-        }
+function calcVolumePesoIdeal() {
+  updateInput('vtpi-pi', parseFloat(document.getElementById('vtpi-pi').value) || '');
+  updateDOM();
+}
 
-        function calcVTEsp() {
-            const ve = parseFloat(document.getElementById('vtesp-ve').value);
-            const fr = parseFloat(document.getElementById('vtesp-fr').value);
-            
-            if (isNaN(ve) || isNaN(fr) || fr <= 0) {
-                setError('vtesp-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const vt = (ve * 1000) / fr;
-            setResult('vtesp-result', 'VT Espontâneo:', vt.toFixed(0) + ' mL');
-        }
+function calcPesoIdealHomem() {
+  updateInput('pih-altura', parseFloat(document.getElementById('pih-altura').value) || '');
+  updateDOM();
+}
 
-        function calcVEEsp() {
-            const vt = parseFloat(document.getElementById('veesp-vt').value);
-            const fr = parseFloat(document.getElementById('veesp-fr').value);
-            
-            if (isNaN(vt) || isNaN(fr)) {
-                setError('veesp-result', '❌ Preencha todos os campos');
-                return;
-            }
-            
-            const ve = (vt * fr) / 1000;
-            setResult('veesp-result', 'VE Espontânea:', ve.toFixed(1) + ' L/min');
-        }
+function calcPesoIdealMulher() {
+  updateInput('pim-altura', parseFloat(document.getElementById('pim-altura').value) || '');
+  updateDOM();
+}
 
-        // ===== CHECKLISTS =====
-        function verificarProntidao() {
-            const checks = [
-                'pront-pf', 'pront-peep', 'pront-fio2', 'pront-ph', 
-                'pront-hemo', 'pront-sed', 'pront-tosse'
-            ];
-            const allChecked = checks.every(id => document.getElementById(id).checked);
-            
-            const resultDiv = document.getElementById('prontidao-result');
-            if (allChecked) {
-                resultDiv.textContent = '✅ Paciente PRONTO para SBT';
-                resultDiv.className = 'checklist-result ok';
-            } else {
-                resultDiv.textContent = '❌ Paciente NÃO está pronto para SBT';
-                resultDiv.className = 'checklist-result not-ok';
-            }
-        }
+function calcPF() {
+  updateInput('pf-pao2', parseFloat(document.getElementById('pf-pao2').value) || '');
+  updateInput('pf-fio2', parseFloat(document.getElementById('pf-fio2').value) || 0);
+  updateDOM();
+}
 
-        function verificarTolerancia() {
-            const checks = [
-                'tol-fr', 'tol-vt', 'tol-sato2', 'tol-fc', 
-                'tol-pas', 'tol-diaforese', 'tol-ansiedade', 'tol-ph'
-            ];
-            const allChecked = checks.every(id => document.getElementById(id).checked);
-            
-            const resultDiv = document.getElementById('tolerancia-result');
-            if (allChecked) {
-                resultDiv.textContent = '✅ Paciente TOLEROU SBT - Extubar';
-                resultDiv.className = 'checklist-result ok';
-            } else {
-                resultDiv.textContent = '❌ Paciente NÃO tolerou SBT';
-                resultDiv.className = 'checklist-result not-ok';
-            }
-        }
+function calcPaCO2Esperado() {
+  updateInput('paco2e-hco3', parseFloat(document.getElementById('paco2e-hco3').value) || '');
+  updateDOM();
+}
 
-        function verificarFatores() {
-            const checks = [
-                'fator-va', 'fator-tosse', 'fator-secrecoes', 
-                'fator-nivel', 'fator-forca'
-            ];
-            const allChecked = checks.every(id => document.getElementById(id).checked);
-            
-            const resultDiv = document.getElementById('fatores-result');
-            if (allChecked) {
-                resultDiv.textContent = '✅ Fatores do paciente FAVORÁVEIS para extubação';
-                resultDiv.className = 'checklist-result ok';
-            } else {
-                resultDiv.textContent = '⚠️ Alguns fatores NÃO favoráveis';
-                resultDiv.className = 'checklist-result not-ok';
-            }
-        }
+function calcHCO3Esperado() {
+  updateInput('hco3e-delta', parseFloat(document.getElementById('hco3e-delta').value) || '');
+  updateDOM();
+}
 
-        function verificarContraindicacoes() {
-            const checks = [
-                'contra-coma', 'contra-hemo', 'contra-hipox', 
-                'contra-acidose', 'contra-sang'
-            ];
-            const anyChecked = checks.some(id => document.getElementById(id).checked);
-            
-            const resultDiv = document.getElementById('contra-result');
-            if (!anyChecked) {
-                resultDiv.textContent = '✅ NENHUMA contraindicação para extubação';
-                resultDiv.className = 'checklist-result ok';
-            } else {
-                resultDiv.textContent = '❌ CONTRAINDICAÇÃO para extubação';
-                resultDiv.className = 'checklist-result not-ok';
-            }
-        }
+function calcAjusteFR() {
+  updateInput('afr-fr', parseFloat(document.getElementById('afr-fr').value) || '');
+  updateInput('afr-paco2', parseFloat(document.getElementById('afr-paco2').value) || '');
+  updateInput('afr-paco2d', parseFloat(document.getElementById('afr-paco2d').value) || 0);
+  updateDOM();
+}
 
-        // Abrir a primeira aba por padrão
-        window.onload = function() {
-            document.querySelector('.tab-button').classList.add('active');
-            document.getElementById('ventilacao').style.display = 'block';
-        };
-// ── Firefox MV2 event delegation (replaces inline onclick) ─────────────────
+function calcAjusteVT() {
+  updateInput('avt-vt', parseFloat(document.getElementById('avt-vt').value) || '');
+  updateInput('avt-paco2d', parseFloat(document.getElementById('avt-paco2d').value) || 0);
+  updateInput('avt-paco2', parseFloat(document.getElementById('avt-paco2').value) || '');
+  updateDOM();
+}
+
+function calcAjusteVE() {
+  updateInput('ave-ve', parseFloat(document.getElementById('ave-ve').value) || '');
+  updateInput('ave-paco2', parseFloat(document.getElementById('ave-paco2').value) || '');
+  updateInput('ave-paco2d', parseFloat(document.getElementById('ave-paco2d').value) || 0);
+  updateDOM();
+}
+
+function calcVTEsp() {
+  updateInput('vtesp-ve', parseFloat(document.getElementById('vtesp-ve').value) || '');
+  updateInput('vtesp-fr', parseFloat(document.getElementById('vtesp-fr').value) || '');
+  updateDOM();
+}
+
+function calcVEEsp() {
+  updateInput('veesp-vt', parseFloat(document.getElementById('veesp-vt').value) || '');
+  updateInput('veesp-fr', parseFloat(document.getElementById('veesp-fr').value) || '');
+  updateDOM();
+}
+
+function calcRSBI() {
+  updateInput('rsbi-fr', parseFloat(document.getElementById('rsbi-fr').value) || '');
+  updateInput('rsbi-vt', parseFloat(document.getElementById('rsbi-vt').value) || '');
+  updateDOM();
+}
+
+function calcCROP() {
+  updateInput('crop-cdin', parseFloat(document.getElementById('crop-cdin').value) || '');
+  updateInput('crop-pimax', parseFloat(document.getElementById('crop-pimax').value) || '');
+  updateInput('crop-pao2', parseFloat(document.getElementById('crop-pao2').value) || '');
+  updateInput('crop-paco2', parseFloat(document.getElementById('crop-paco2').value) || '');
+  updateInput('crop-fr', parseFloat(document.getElementById('crop-fr').value) || '');
+  updateDOM();
+}
+
+function calcChecklist() {
+  updateInput('check-rsbi', document.getElementById('check-rsbi').checked);
+  updateInput('check-pf', document.getElementById('check-pf').checked);
+  updateInput('check-paco2', document.getElementById('check-paco2').checked);
+  updateInput('check-ph', document.getElementById('check-ph').checked);
+  updateInput('check-hemodinamica', document.getElementById('check-hemodinamica').checked);
+  updateInput('check-neurologico', document.getElementById('check-neurologico').checked);
+  updateDOM();
+}
+
+// Mapeamento de ações para event delegation
+export const actions = {
+  openTab,
+  calcVE,
+  calcIE,
+  calcComplacencia,
+  calcResistencia,
+  calcDrivingPressure,
+  calcVolumePesoIdeal,
+  calcPesoIdealHomem,
+  calcPesoIdealMulher,
+  calcPF,
+  calcPaCO2Esperado,
+  calcHCO3Esperado,
+  calcAjusteFR,
+  calcAjusteVT,
+  calcAjusteVE,
+  calcVTEsp,
+  calcVEEsp,
+  calcRSBI,
+  calcCROP,
+  calcChecklist,
+  copyResult
+};
+
+// Inicializa o DOM
+document.addEventListener('DOMContentLoaded', () => {
+  // Configura event delegation para todos os botões com data-action
+  document.querySelectorAll('[data-action]').forEach(el => {
+    const action = el.getAttribute('data-action');
+    if (actions[action]) {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        actions[action](e);
+      });
+    }
+  });
+
+  // Configura event delegation para tabs
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tabName = button.getAttribute('data-tab');
+      openTab(tabName);
+      updateDOM();
+    });
+  });
+
+  // Atualiza inputs ao digitarem
+  document.querySelectorAll('input[type="number"], input[type="text"], select').forEach(input => {
+    input.addEventListener('input', () => {
+      const id = input.id;
+      if (id) {
+        if (input.type === 'checkbox') {
+          updateInput(id, input.checked);
+        } else {
+          updateInput(id, input.value);
+        }
+      }
+    });
+  });
+
+  // Inicializa o DOM
+  updateDOM();
+});
+
+
+
+// Firefox MV2 event delegation (replaces inline onclick)
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-fn]').forEach(function (el) {
-    var fn  = el.getAttribute('data-fn');
+    var fn = el.getAttribute('data-fn');
     var arg = el.getAttribute('data-arg');
     el.addEventListener('click', function (e) {
       if (typeof window[fn] === 'function') {
         arg !== null ? window[fn](e, arg) : window[fn]();
+      }
+    });
+  });
+
+  // Adicional: suporte para data-action (usado em ui.js)
+  document.querySelectorAll('[data-action]').forEach(function (el) {
+    var action = el.getAttribute('data-action');
+    el.addEventListener('click', function (e) {
+      if (typeof window[action] === 'function') {
+        window[action](e);
       }
     });
   });

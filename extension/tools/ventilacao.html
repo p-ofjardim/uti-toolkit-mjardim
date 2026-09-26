@@ -5,248 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <title>Calculadora de Ventilação Mecânica - UTI</title>
-    <style>
-        body {
-            padding-bottom: 80px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .tab-button {
-            padding: 12px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px 6px 0 0;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-        
-        .tab-button:hover {
-            background-color: #2980b9;
-        }
-        
-        .tab-button.active {
-            background-color: #2c3e50;
-        }
-        
-        .tab {
-            display: none;
-            padding: 20px;
-            background: white;
-            border-radius: 0 0 6px 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .calc-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .calc-card h3 {
-            margin-top: 0;
-            color: #2c3e50;
-            font-size: 16px;
-        }
-        
-        .inputs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
-        }
-        
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 5px;
-        }
-        
-        input[type="number"], select {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        input[type="number"]:focus, select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-        
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        button.copy-btn {
-            background-color: #2ecc71;
-        }
-        
-        button.copy-btn:hover {
-            background-color: #27ae60;
-        }
-        
-        .result {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-left: 4px solid #3498db;
-            border-radius: 0 4px 4px 0;
-        }
-        
-        .result-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        
-        .result-label {
-            font-weight: 600;
-            color: #7f8c8d;
-        }
-        
-        .formula {
-            font-family: monospace;
-            font-size: 13px;
-            color: #7f8c8d;
-            margin-top: 10px;
-            background: #ecf0f1;
-            padding: 8px;
-            border-radius: 4px;
-        }
-        
-        .note {
-            font-size: 12px;
-            color: #7f8c8d;
-            font-style: italic;
-            margin-top: 5px;
-        }
-        
-        .checklist {
-            margin: 15px 0;
-        }
-        
-        .checklist-item {
-            margin: 8px 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        .checklist-item input[type="checkbox"] {
-            margin-right: 10px;
-        }
-        
-        .checklist-result {
-            margin-top: 15px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        
-        .checklist-result.ok {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .checklist-result.not-ok {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .two-columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .two-columns {
-                grid-template-columns: 1fr;
-            }
-            .inputs {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 12px;
-            border-radius: 6px;
-            margin: 15px 0;
-            font-size: 14px;
-        }
-        
-        .warning::before {
-            content: "⚠️ ";
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 15px;
-            font-size: 12px;
-            color: #7f8c8d;
-            border-top: 1px solid #eee;
-            background-color: #f8f9fa;
-        }
-    </style>
+    
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h1>🫁 Calculadora de Ventilação Mecânica - UTI</h1>
         
         <div class="tabs">
-            <button class="tab-button active" data-fn="openTab" data-arg="ventilacao">Ventilação</button>
-            <button class="tab-button" data-fn="openTab" data-arg="peso">Peso</button>
-            <button class="tab-button" data-fn="openTab" data-arg="gasometria">Gasometria</button>
-            <button class="tab-button" data-fn="openTab" data-arg="ajustes">Ajustes</button>
-            <button class="tab-button" data-fn="openTab" data-arg="desmame">Desmame</button>
+            <button class="tab-button active" data-action="openTab" data-tab="ventilacao">Ventilação</button>
+            <button class="tab-button" data-action="openTab" data-tab="peso">Peso</button>
+            <button class="tab-button" data-action="openTab" data-tab="gasometria">Gasometria</button>
+            <button class="tab-button" data-action="openTab" data-tab="ajustes">Ajustes</button>
+            <button class="tab-button" data-action="openTab" data-tab="desmame">Desmame</button>
         </div>
 
         <!-- ===== ABA 1: VENTILAÇÃO MECÂNICA ===== -->
-        <div id="ventilacao" class="tab">
+        <div id="ventilacao" class="tab active">
             <div class="calc-card">
                 <h3>📊 Volume Minuto (VE)</h3>
                 <div class="inputs">
@@ -259,8 +34,8 @@
                         <input type="number" id="ve-fr" step="1" min="5" max="40" placeholder="irpm">
                     </div>
                 </div>
-                <button data-fn="calcVE">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="ve-result">📋 Copiar</button>
+                <button data-action="calcVE">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="ve-result">📋 Copiar</button>
                 <div id="ve-result" class="result"></div>
                 <div class="formula">Fórmula: VE = VT × FR / 1000</div>
             </div>
@@ -277,15 +52,15 @@
                         <input type="number" id="ie-fr" step="1" min="5" max="40" placeholder="irpm">
                     </div>
                 </div>
-                <button data-fn="calcIE">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="ie-result">📋 Copiar</button>
+                <button data-action="calcIE">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="ie-result">📋 Copiar</button>
                 <div id="ie-result" class="result"></div>
                 <div class="formula">Fórmula: I:E = 1 : (Ttotal - Tinsp) / Tinsp</div>
                 <div class="note">Onde Ttotal = 60/FR (em segundos)</div>
             </div>
 
             <div class="calc-card">
-                <h3>📉 Complacência Estática</h3>
+                <h3>📈 Complacência Estática</h3>
                 <div class="inputs">
                     <div class="input-group">
                         <label for="c-vt">Volume Corrente (VT):</label>
@@ -300,18 +75,18 @@
                         <input type="number" id="c-peep" step="1" min="0" max="20" placeholder="cmH₂O" value="5">
                     </div>
                 </div>
-                <button data-fn="calcComplacencia">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="c-result">📋 Copiar</button>
+                <button data-action="calcComplacencia">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="c-result">📋 Copiar</button>
                 <div id="c-result" class="result"></div>
-                <div class="formula">Fórmula: C = VT / (Pplat - PEEP)</div>
+                <div class="formula">Fórmula: Complacência = VT / (Pplat - PEEP)</div>
             </div>
 
             <div class="calc-card">
-                <h3>🔄 Resistência das Vias Aéreas</h3>
+                <h3>🔄 Resistência</h3>
                 <div class="inputs">
                     <div class="input-group">
-                        <label for="r-ppeak">Pressão de Pico (Ppeak):</label>
-                        <input type="number" id="r-ppeak" step="1" min="5" max="60" placeholder="cmH₂O">
+                        <label for="r-ppeak">Pico de Pressão (Ppeak):</label>
+                        <input type="number" id="r-ppeak" step="1" min="5" max="50" placeholder="cmH₂O">
                     </div>
                     <div class="input-group">
                         <label for="r-pplat">Pressão de Platô (Pplat):</label>
@@ -319,18 +94,18 @@
                     </div>
                     <div class="input-group">
                         <label for="r-fluxo">Fluxo:</label>
-                        <input type="number" id="r-fluxo" step="0.1" min="0.1" max="10" placeholder="L/s" value="1">
+                        <input type="number" id="r-fluxo" step="1" min="10" max="120" placeholder="L/min" value="60">
                     </div>
                 </div>
-                <button data-fn="calcResistencia">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="r-result">📋 Copiar</button>
+                <button data-action="calcResistencia">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="r-result">📋 Copiar</button>
                 <div id="r-result" class="result"></div>
-                <div class="formula">Fórmula: R = (Ppeak - Pplat) / Fluxo</div>
-                <div class="note">Fluxo deve ser informado em L/s (ex: 60 L/min = 1 L/s)</div>
+                <div class="formula">Fórmula: Resistência = (Ppeak - Pplat) / Fluxo</div>
+                <div class="note">Fluxo deve estar em L/s (não L/min)</div>
             </div>
 
             <div class="calc-card">
-                <h3>💪 Driving Pressure (ΔP)</h3>
+                <h3>⚡ Driving Pressure</h3>
                 <div class="inputs">
                     <div class="input-group">
                         <label for="dp-pplat">Pressão de Platô (Pplat):</label>
@@ -341,11 +116,10 @@
                         <input type="number" id="dp-peep" step="1" min="0" max="20" placeholder="cmH₂O" value="5">
                     </div>
                 </div>
-                <button data-fn="calcDrivingPressure">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="dp-result">📋 Copiar</button>
+                <button data-action="calcDrivingPressure">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="dp-result">📋 Copiar</button>
                 <div id="dp-result" class="result"></div>
                 <div class="formula">Fórmula: ΔP = Pplat - PEEP</div>
-                <div class="note">Meta: manter < 15 cmH₂O</div>
             </div>
 
             <div class="calc-card">
@@ -353,31 +127,30 @@
                 <div class="inputs">
                     <div class="input-group">
                         <label for="vtpi-pi">Peso Ideal (kg):</label>
-                        <input type="number" id="vtpi-pi" step="0.1" min="20" max="150" placeholder="kg">
+                        <input type="number" id="vtpi-pi" step="0.1" min="20" max="200" placeholder="kg">
                     </div>
                 </div>
-                <button data-fn="calcVolumePesoIdeal">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="vtpi-result">📋 Copiar</button>
+                <button data-action="calcVolumePesoIdeal">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="vtpi-result">📋 Copiar</button>
                 <div id="vtpi-result" class="result"></div>
-                <div class="formula">Fórmula: VT = 6-8 mL/kg (Peso Ideal)</div>
+                <div class="formula">Fórmula: VT = 6-8 mL/kg de peso ideal</div>
             </div>
         </div>
 
-        <!-- ===== ABA 2: PESO E ANTROPOMETRIA ===== -->
+        <!-- ===== ABA 2: PESO ===== -->
         <div id="peso" class="tab">
             <div class="calc-card">
                 <h3>👨 Peso Ideal (Homem)</h3>
                 <div class="inputs">
                     <div class="input-group">
                         <label for="pih-altura">Altura (cm):</label>
-                        <input type="number" id="pih-altura" step="1" min="100" max="220" placeholder="cm">
+                        <input type="number" id="pih-altura" step="1" min="100" max="250" placeholder="cm">
                     </div>
                 </div>
-                <button data-fn="calcPesoIdealHomem">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="pih-result">📋 Copiar</button>
+                <button data-action="calcPesoIdealHomem">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="pih-result">📋 Copiar</button>
                 <div id="pih-result" class="result"></div>
-                <div class="formula">Fórmula: PI = 50 + 0.91 × (Altura - 152.4)</div>
-                <div class="note">Fórmula de Devine (1974)</div>
+                <div class="formula">Fórmula: 50 + 0.91 × (Altura - 152.4)</div>
             </div>
 
             <div class="calc-card">
@@ -385,21 +158,20 @@
                 <div class="inputs">
                     <div class="input-group">
                         <label for="pim-altura">Altura (cm):</label>
-                        <input type="number" id="pim-altura" step="1" min="100" max="220" placeholder="cm">
+                        <input type="number" id="pim-altura" step="1" min="100" max="250" placeholder="cm">
                     </div>
                 </div>
-                <button data-fn="calcPesoIdealMulher">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="pim-result">📋 Copiar</button>
+                <button data-action="calcPesoIdealMulher">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="pim-result">📋 Copiar</button>
                 <div id="pim-result" class="result"></div>
-                <div class="formula">Fórmula: PI = 45.5 + 0.91 × (Altura - 152.4)</div>
-                <div class="note">Fórmula de Devine (1974)</div>
+                <div class="formula">Fórmula: 45.5 + 0.91 × (Altura - 152.4)</div>
             </div>
         </div>
 
         <!-- ===== ABA 3: GASOMETRIA ===== -->
         <div id="gasometria" class="tab">
             <div class="calc-card">
-                <h3>📊 P/F Ratio</h3>
+                <h3>🫁 P/F Ratio</h3>
                 <div class="inputs">
                     <div class="input-group">
                         <label for="pf-pao2">PaO₂:</label>
@@ -407,51 +179,48 @@
                     </div>
                     <div class="input-group">
                         <label for="pf-fio2">FiO₂:</label>
-                        <input type="number" id="pf-fio2" step="0.01" min="0.21" max="1" placeholder="0.21-1.0" value="0.21">
+                        <input type="number" id="pf-fio2" step="0.01" min="0.21" max="1" placeholder="0.21-1" value="0.21">
                     </div>
                 </div>
-                <button data-fn="calcPF">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="pf-result">📋 Copiar</button>
+                <button data-action="calcPF">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="pf-result">📋 Copiar</button>
                 <div id="pf-result" class="result"></div>
                 <div class="formula">Fórmula: P/F = PaO₂ / FiO₂</div>
-                <div class="note">Normal: >400 | SARA leve: 200-300 | SARA moderada: 100-200 | SARA grave: <100</div>
             </div>
 
             <div class="calc-card">
-                <h3>💨 PaCO₂ Esperado (Acidose Metabólica Aguda)</h3>
+                <h3>💨 PaCO₂ Esperado</h3>
                 <div class="inputs">
                     <div class="input-group">
-                        <label for="paco2e-hco3">HCO₃⁻:</label>
-                        <input type="number" id="paco2e-hco3" step="1" min="5" max="50" placeholder="mEq/L">
+                        <label for="paco2e-hco3">HCO₃:</label>
+                        <input type="number" id="paco2e-hco3" step="1" min="10" max="40" placeholder="mEq/L">
                     </div>
                 </div>
-                <button data-fn="calcPaCO2Esperado">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="paco2e-result">📋 Copiar</button>
+                <button data-action="calcPaCO2Esperado">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="paco2e-result">📋 Copiar</button>
                 <div id="paco2e-result" class="result"></div>
-                <div class="formula">Fórmula: PaCO₂ = 1.5 × HCO₃⁻ + 8 ± 2</div>
-                <div class="note">Winter's formula - Compensação respiratória esperada</div>
+                <div class="formula">Fórmula: PaCO₂ = 1.5 × HCO₃ + 8 ± 2</div>
             </div>
 
             <div class="calc-card">
-                <h3>🧪 HCO₃⁻ Esperado (Acidose Respiratória Crônica)</h3>
+                <h3>⚗️ ΔHCO₃ Esperado</h3>
                 <div class="inputs">
                     <div class="input-group">
-                        <label for="hco3e-delta">ΔPaCO₂ (variação):</label>
+                        <label for="hco3e-delta">ΔPaCO₂:</label>
                         <input type="number" id="hco3e-delta" step="1" min="1" max="50" placeholder="mmHg">
                     </div>
                 </div>
-                <button data-fn="calcHCO3Esperado">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="hco3e-result">📋 Copiar</button>
+                <button data-action="calcHCO3Esperado">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="hco3e-result">📋 Copiar</button>
                 <div id="hco3e-result" class="result"></div>
-                <div class="formula">Fórmula: ΔHCO₃⁻ = 0.35 × ΔPaCO₂</div>
-                <div class="note">Aumento esperado no bicarbonato para cada mmHg de ↑PaCO₂</div>
+                <div class="formula">Fórmula: ΔHCO₃ = 0.35 × ΔPaCO₂</div>
             </div>
         </div>
 
-        <!-- ===== ABA 4: AJUSTES VENTILATÓRIOS ===== -->
+        <!-- ===== ABA 4: AJUSTES ===== -->
         <div id="ajustes" class="tab">
             <div class="calc-card">
-                <h3>🔄 Ajuste de FR para Corrigir PaCO₂</h3>
+                <h3>🔧 Ajuste de FR</h3>
                 <div class="inputs">
                     <div class="input-group">
                         <label for="afr-fr">FR Atual:</label>
@@ -462,93 +231,128 @@
                         <input type="number" id="afr-paco2" step="1" min="20" max="100" placeholder="mmHg">
                     </div>
                     <div class="input-group">
-                        <label for="afr-paco2d">PaCO₂ Desejado:</label>
-                        <input type="number" id="afr-paco2d" step="1" min="35" max="50" placeholder="mmHg" value="40">
+                        <label for="afr-paco2d">PaCO₂ Desejada:</label>
+                        <input type="number" id="afr-paco2d" step="1" min="20" max="100" placeholder="mmHg" value="40">
                     </div>
                 </div>
-                <button data-fn="calcAjusteFR">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="afr-result">📋 Copiar</button>
+                <button data-action="calcAjusteFR">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="afr-result">📋 Copiar</button>
                 <div id="afr-result" class="result"></div>
-                <div class="formula">Fórmula: FRₙₒᵥₐ = FR × (PaCO₂ / PaCO₂ₙₒᵥₐ)</div>
+                <div class="formula">Fórmula: FR nova = FR × (PaCO₂ atual / PaCO₂ desejada)</div>
             </div>
 
             <div class="calc-card">
-                <h3>🔄 Ajuste de VT para Corrigir PaCO₂</h3>
+                <h3>🔧 Ajuste de VT</h3>
                 <div class="inputs">
                     <div class="input-group">
                         <label for="avt-vt">VT Atual:</label>
                         <input type="number" id="avt-vt" step="1" min="100" max="1000" placeholder="mL">
                     </div>
                     <div class="input-group">
-                        <label for="avt-paco2d">PaCO₂ Desejado:</label>
-                        <input type="number" id="avt-paco2d" step="1" min="35" max="50" placeholder="mmHg" value="40">
+                        <label for="avt-paco2d">PaCO₂ Desejada:</label>
+                        <input type="number" id="avt-paco2d" step="1" min="20" max="100" placeholder="mmHg" value="40">
                     </div>
                     <div class="input-group">
                         <label for="avt-paco2">PaCO₂ Atual:</label>
                         <input type="number" id="avt-paco2" step="1" min="20" max="100" placeholder="mmHg">
                     </div>
                 </div>
-                <button data-fn="calcAjusteVT">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="avt-result">📋 Copiar</button>
+                <button data-action="calcAjusteVT">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="avt-result">📋 Copiar</button>
                 <div id="avt-result" class="result"></div>
-                <div class="formula">Fórmula: VTₙₒᵥₐ = VT × (PaCO₂ / PaCO₂ₙₒᵥₐ)</div>
-                <div class="note">Mantém VE constante</div>
+                <div class="formula">Fórmula: VT novo = VT × (PaCO₂ atual / PaCO₂ desejada)</div>
             </div>
 
             <div class="calc-card">
-                <h3>🔄 Ajuste de VE para Corrigir PaCO₂</h3>
+                <h3>🔧 Ajuste de VE</h3>
                 <div class="inputs">
                     <div class="input-group">
                         <label for="ave-ve">VE Atual:</label>
-                        <input type="number" id="ave-ve" step="0.1" min="2" max="20" placeholder="L/min">
+                        <input type="number" id="ave-ve" step="0.1" min="1" max="50" placeholder="L/min">
                     </div>
                     <div class="input-group">
                         <label for="ave-paco2">PaCO₂ Atual:</label>
                         <input type="number" id="ave-paco2" step="1" min="20" max="100" placeholder="mmHg">
                     </div>
                     <div class="input-group">
-                        <label for="ave-paco2d">PaCO₂ Desejado:</label>
-                        <input type="number" id="ave-paco2d" step="1" min="35" max="50" placeholder="mmHg" value="40">
+                        <label for="ave-paco2d">PaCO₂ Desejada:</label>
+                        <input type="number" id="ave-paco2d" step="1" min="20" max="100" placeholder="mmHg" value="40">
                     </div>
                 </div>
-                <button data-fn="calcAjusteVE">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="ave-result">📋 Copiar</button>
+                <button data-action="calcAjusteVE">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="ave-result">📋 Copiar</button>
                 <div id="ave-result" class="result"></div>
-                <div class="formula">Fórmula: VEₙₒᵥₐ = VE × (PaCO₂ / PaCO₂ₙₒᵥₐ)</div>
+                <div class="formula">Fórmula: VE novo = VE × (PaCO₂ atual / PaCO₂ desejada)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>💡 VT Espontâneo</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="vtesp-ve">VE:</label>
+                        <input type="number" id="vtesp-ve" step="0.1" min="1" max="50" placeholder="L/min">
+                    </div>
+                    <div class="input-group">
+                        <label for="vtesp-fr">FR:</label>
+                        <input type="number" id="vtesp-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button data-action="calcVTEsp">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="vtesp-result">📋 Copiar</button>
+                <div id="vtesp-result" class="result"></div>
+                <div class="formula">Fórmula: VT = (VE × 1000) / FR</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>💡 VE Espontâneo</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="veesp-vt">VT:</label>
+                        <input type="number" id="veesp-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="veesp-fr">FR:</label>
+                        <input type="number" id="veesp-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button data-action="calcVEEsp">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="veesp-result">📋 Copiar</button>
+                <div id="veesp-result" class="result"></div>
+                <div class="formula">Fórmula: VE = VT × FR / 1000</div>
             </div>
         </div>
 
-        <!-- ===== ABA 5: DESMAME/EXTUBAÇÃO ===== -->
+        <!-- ===== ABA 5: DESMAME ===== -->
         <div id="desmame" class="tab">
             <div class="calc-card">
-                <h3>🫁 Rapid Shallow Breathing Index (RSBI)</h3>
+                <h3>🫁 RSBI (Rapid Shallow Breathing Index)</h3>
                 <div class="inputs">
                     <div class="input-group">
-                        <label for="rsbi-fr">Frequência Respiratória:</label>
-                        <input type="number" id="rsbi-fr" step="1" min="5" max="50" placeholder="irpm">
+                        <label for="rsbi-fr">Frequência Respiratória (FR):</label>
+                        <input type="number" id="rsbi-fr" step="1" min="5" max="40" placeholder="irpm">
                     </div>
                     <div class="input-group">
-                        <label for="rsbi-vt">Volume Corrente:</label>
+                        <label for="rsbi-vt">Volume Corrente (VT):</label>
                         <input type="number" id="rsbi-vt" step="1" min="100" max="1000" placeholder="mL">
                     </div>
                 </div>
-                <button data-fn="calcRSBI">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="rsbi-result">📋 Copiar</button>
+                <button data-action="calcRSBI">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="rsbi-result">📋 Copiar</button>
                 <div id="rsbi-result" class="result"></div>
-                <div class="formula">Fórmula: RSBI = FR / VT</div>
-                <div class="note">RSBI < 105: sucesso | RSBI > 105: falha. Sensibilidade: 97%, Especificidade: 64%</div>
+                <div class="formula">Fórmula: RSBI = FR / (VT / 1000)</div>
+                <div class="note">Interpretação: < 105 = Sucesso provável; > 105 = Falha provável</div>
             </div>
 
             <div class="calc-card">
                 <h3>📊 CROP Index</h3>
                 <div class="inputs">
                     <div class="input-group">
-                        <label for="crop-cdin">Complacência Dinâmica (Cdin):</label>
+                        <label for="crop-cdin">Compliance Dinâmica (Cdyn):</label>
                         <input type="number" id="crop-cdin" step="1" min="10" max="100" placeholder="mL/cmH₂O">
                     </div>
                     <div class="input-group">
-                        <label for="crop-pimax">Pimáx:</label>
-                        <input type="number" id="crop-pimax" step="1" min="-100" max="0" placeholder="cmH₂O">
+                        <label for="crop-pimax">PImax:</label>
+                        <input type="number" id="crop-pimax" step="1" min="20" max="150" placeholder="cmH₂O">
                     </div>
                     <div class="input-group">
                         <label for="crop-pao2">PaO₂:</label>
@@ -560,178 +364,53 @@
                     </div>
                     <div class="input-group">
                         <label for="crop-fr">FR:</label>
-                        <input type="number" id="crop-fr" step="1" min="5" max="50" placeholder="irpm">
+                        <input type="number" id="crop-fr" step="1" min="5" max="40" placeholder="irpm">
                     </div>
                 </div>
-                <button data-fn="calcCROP">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="crop-result">📋 Copiar</button>
+                <button data-action="calcCROP">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="crop-result">📋 Copiar</button>
                 <div id="crop-result" class="result"></div>
-                <div class="formula">Fórmula: CROP = (Cdin × Pimáx × PaO₂/PaCO₂) / FR</div>
-                <div class="note">Valor > 13-15 prediz sucesso no desmame</div>
+                <div class="formula">Fórmula: CROP = (Cdyn × PImax × PaO₂ / PaCO₂) / FR</div>
+                <div class="note">Interpretação: > 15 = Sucesso provável; 13-15 = Inconclusivo; < 13 = Falha provável</div>
             </div>
 
             <div class="calc-card">
-                <h3>📉 Volume Corrente Espontâneo</h3>
-                <div class="inputs">
-                    <div class="input-group">
-                        <label for="vtesp-ve">VE:</label>
-                        <input type="number" id="vtesp-ve" step="0.1" min="2" max="20" placeholder="L/min">
-                    </div>
-                    <div class="input-group">
-                        <label for="vtesp-fr">FR:</label>
-                        <input type="number" id="vtesp-fr" step="1" min="5" max="50" placeholder="irpm">
-                    </div>
-                </div>
-                <button data-fn="calcVTEsp">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="vtesp-result">📋 Copiar</button>
-                <div id="vtesp-result" class="result"></div>
-                <div class="formula">Fórmula: VTesp = VE / FR × 1000</div>
-                <div class="note">Ideal: 5-8 mL/kg (Peso Ideal)</div>
-            </div>
-
-            <div class="calc-card">
-                <h3>📊 Ventilação Minuto Espontânea</h3>
-                <div class="inputs">
-                    <div class="input-group">
-                        <label for="veesp-vt">VT:</label>
-                        <input type="number" id="veesp-vt" step="1" min="100" max="1000" placeholder="mL">
-                    </div>
-                    <div class="input-group">
-                        <label for="veesp-fr">FR:</label>
-                        <input type="number" id="veesp-fr" step="1" min="5" max="50" placeholder="irpm">
-                    </div>
-                </div>
-                <button data-fn="calcVEEsp">Calcular</button>
-                <button class="copy-btn" data-fn="copyResult" data-arg="veesp-result">📋 Copiar</button>
-                <div id="veesp-result" class="result"></div>
-                <div class="formula">Fórmula: VE = VT × FR / 1000</div>
-                <div class="note">Normal: 5-10 L/min</div>
-            </div>
-
-            <div class="warning">
-                <strong>CHECKLISTS DE EXTUBAÇÃO</strong>
-            </div>
-
-            <div class="calc-card">
-                <h3>✅ Critérios de Prontidão para SBT</h3>
+                <h3>📋 Checklist de Desmame</h3>
                 <div class="checklist">
                     <div class="checklist-item">
-                        <input type="checkbox" id="pront-pf"> P/F > 120-200
+                        <input type="checkbox" id="check-rsbi">
+                        <label for="check-rsbi">RSBI < 105</label>
                     </div>
                     <div class="checklist-item">
-                        <input type="checkbox" id="pront-peep"> PEEP ≤ 5-8 cmH₂O
+                        <input type="checkbox" id="check-pf">
+                        <label for="check-pf">P/F Ratio > 200</label>
                     </div>
                     <div class="checklist-item">
-                        <input type="checkbox" id="pront-fio2"> FiO₂ ≤ 0.4-0.5
+                        <input type="checkbox" id="check-paco2">
+                        <label for="check-paco2">PaCO₂ < 50 mmHg</label>
                     </div>
                     <div class="checklist-item">
-                        <input type="checkbox" id="pront-ph"> pH > 7.25
+                        <input type="checkbox" id="check-ph">
+                        <label for="check-ph">pH > 7.30</label>
                     </div>
                     <div class="checklist-item">
-                        <input type="checkbox" id="pront-hemo"> Hemodinâmica estável
+                        <input type="checkbox" id="check-hemodinamica">
+                        <label for="check-hemodinamica">Estabilidade hemodinâmica</label>
                     </div>
                     <div class="checklist-item">
-                        <input type="checkbox" id="pront-sed"> Sem sedação contínua
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="pront-tosse"> Tosse efetiva
+                        <input type="checkbox" id="check-neurologico">
+                        <label for="check-neurologico">Glasgow ≥ 13</label>
                     </div>
                 </div>
-                <button data-fn="verificarProntidao">Verificar Prontidão</button>
-                <div id="prontidao-result" class="checklist-result"></div>
-            </div>
-
-            <div class="calc-card">
-                <h3>✅ Critérios de Tolerância ao SBT</h3>
-                <div class="checklist">
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-fr"> FR < 35 irpm por 5 min
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-vt"> VT > 5 mL/kg
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-sato2"> SatO₂ > 90%
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-fc"> FC < 140 bpm
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-pas"> PAS 90-180 mmHg
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-diaforese"> Sem diaforese
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-ansiedade"> Sem ansiedade
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="tol-ph"> pH > 7.30
-                    </div>
-                </div>
-                <button data-fn="verificarTolerancia">Verificar Tolerância</button>
-                <div id="tolerancia-result" class="checklist-result"></div>
-            </div>
-
-            <div class="calc-card">
-                <h3>✅ Fatores do Paciente para Extubação</h3>
-                <div class="checklist">
-                    <div class="checklist-item">
-                        <input type="checkbox" id="fator-va"> Via aérea pérvia
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="fator-tosse"> Tosse forte
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="fator-secrecoes"> Secreções controladas (< 2.5 mL/h)
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="fator-nivel"> Nível de consciência adequado
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="fator-forca"> Força muscular preservada (Pimáx > -20 cmH₂O)
-                    </div>
-                </div>
-                <button data-fn="verificarFatores">Verificar Fatores</button>
-                <div id="fatores-result" class="checklist-result"></div>
-            </div>
-
-            <div class="calc-card">
-                <h3>❌ Contraindicações para Extubação</h3>
-                <div class="checklist">
-                    <div class="checklist-item">
-                        <input type="checkbox" id="contra-coma"> Coma (Glasgow < 8)
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="contra-hemo"> Instabilidade hemodinâmica
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="contra-hipox"> Hipoxemia grave (P/F < 150)
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="contra-acidose"> Acidose respiratória não corrigida
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="contra-sang"> Sangramento ativo das vias aéreas
-                    </div>
-                </div>
-                <button data-fn="verificarContraindicacoes">Verificar Contraindicações</button>
-                <div id="contra-result" class="checklist-result"></div>
-            </div>
-
-            <div class="calc-card">
-                <h3>📋 Monitorização Pós-Extubação</h3>
-                <p>Monitorar FR, SatO₂, FC, PAS, estado mental por 24-48h.</p>
-                <p><strong>Reintubar se:</strong> FR > 35, SatO₂ < 90%, sinais de fadiga respiratória.</p>
+                <button data-action="calcChecklist">Avaliar</button>
+                <div id="checklist-result" class="checklist-result"></div>
             </div>
         </div>
-    </div>
-<div class="footer">
-    Desenvolvido por MJardim Serviços Médicos LTDA
-</div>
 
-    
-  <script src="ventilacao.js"></script>
-  <script src="ventilacao.js"></script>
+        <div class="footer">
+            <p>Calculadora de Ventilação Mecânica - UTI Toolkit | MJardim Serviços Médicos</p>
+        </div>
+    </div>
+<script src="ventilacao.js"></script>
 </body>
 </html>

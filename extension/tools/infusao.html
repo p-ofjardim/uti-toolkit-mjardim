@@ -5,181 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <title>Calculadora de Infusão de Medicamentos UTI</title>
-    <style>
-        body {
-            padding-bottom: 80px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f7fa;
-            color: #333;
-        }
-        
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 24px;
-        }
-        
-        h2 {
-            color: #34495e;
-            font-size: 18px;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        input[type="number"], select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        
-        input[type="number"]:focus, select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-        
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            width: 100%;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        .result {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e8f4fc;
-            border-radius: 6px;
-            border-left: 5px solid #3498db;
-            display: none;
-        }
-        
-        .result h3 {
-            margin-top: 0;
-            color: #2c3e50;
-        }
-        
-        .result-item {
-            margin: 10px 0;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
-            border-left: 3px solid #3498db;
-        }
-        
-        .result-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        
-        .result-label {
-            font-weight: 600;
-            color: #7f8c8d;
-        }
-        
-        .explanation {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            margin-top: 30px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        .formula {
-            font-family: monospace;
-            background: #ecf0f1;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 15px;
-        }
-        
-        .note {
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-top: 5px;
-            font-style: italic;
-        }
-        
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 12px;
-            border-radius: 6px;
-            margin: 15px 0;
-            font-size: 14px;
-        }
-        
-        .warning::before {
-            content: "⚠️ ";
-        }
-        
-        .med-info {
-            background-color: #e3f2fd;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-size: 13px;
-            display: none;
-        }
-        
-        .two-columns {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        @media (max-width: 600px) {
-            .two-columns {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .reference {
-            font-size: 11px;
-            color: #7f8c8d;
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
+    
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -203,15 +30,15 @@
                         <option value="cetamina">Cetamina</option>
                         <option value="dexmedetomidina">Dexmedetomidina</option>
                     </optgroup>
-                    <optgroup label="🦵 BLOQUEADORES NEUROMUSCULARES">
+                    <optgroup label="🦴 BLOQUEADORES NEUROMUSCULARES">
                         <option value="rocuronio">Rocurônio</option>
                         <option value="cisatracurio">Cisatracúrio</option>
                     </optgroup>
-                    <optgroup label="🩸 VASODILATADORES">
+                    <optgroup label="🫁 VASODILATADORES">
                         <option value="nitroprussiato">Nitroprussiato</option>
                         <option value="nitroglicerina">Nitroglicerina</option>
                     </optgroup>
-                        <option value="outros">🔄 OUTROS (Personalizado)</option>
+                    <option value="outros">🔄 OUTROS (Personalizado)</option>
                 </select>
             </div>
             
@@ -263,7 +90,7 @@
                 </div>
             </div>
             
-            <button type="submit">🔄 Calcular Taxa de Infusão</button>
+            <button type="submit" data-action="calculateInfusion">🔄 Calcular Taxa de Infusão</button>
             
             <div id="medInfo" class="med-info"></div>
         </form>
@@ -298,7 +125,7 @@
         </div>
         
         <div class="explanation">
-            <h2>📚 Como Usar</h2>
+            <h2>📊 Como Usar</h2>
             
             <p><strong>1. Selecione o medicamento</strong> - As diluições padrão serão preenchidas automaticamente.</p>
             <p><strong>2. Informe a dose desejada</strong> e a unidade correspondente.</p>
@@ -306,7 +133,7 @@
             <p><strong>4. Verifique/ajuste a concentração</strong> da solução preparada.</p>
             <p><strong>5. Opcional:</strong> Informe o volume total para calcular o tempo de infusão do frasco.</p>
             
-            <h2>🔢 Fórmulas Utilizadas</h2>
+            <h2>📐 Fórmulas Utilizadas</h2>
             
             <p><strong>Taxa de Infusão (mL/h):</strong></p>
             <p class="formula">
@@ -341,9 +168,6 @@
             Fontes: Protocolos de Terapia Intensiva e referências clínicas.
         </div>
     </div>
-    
-    
-  <script src="infusao.js"></script>
-  <script src="infusao.js"></script>
+<script src="infusao.js"></script>
 </body>
 </html>
