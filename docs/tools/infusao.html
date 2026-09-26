@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Calculadora de Infusão de Medicamentos UTI</title>
+    <style>
+        body {
+            padding-bottom: 80px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f4fc;
+            border-radius: 6px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        
+        .result h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .result-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .result-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        
+        .explanation {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 30px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .formula {
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 15px;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+        }
+        
+        .med-info {
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .reference {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💉 Calculadora de Infusão de Medicamentos UTI</h1>
+        
+        <form id="infusionForm">
+            <div class="form-group">
+                <label for="medicamento">Medicamento:</label>
+                <select id="medicamento" required>
+                    <option value="">-- Selecione --</option>
+                    <optgroup label="🫀 AMINAS (Vasopressores/Inotrópicos)">
+                        <option value="noradrenalina">Noradrenalina</option>
+                        <option value="dobutamina">Dobutamina</option>
+                        <option value="vasopressina">Vasopressina</option>
+                        <option value="dopamina">Dopamina</option>
+                    </optgroup>
+                    <optgroup label="💤 SEDAÇÃO/ANALGESIA">
+                        <option value="fentanil">Fentanil</option>
+                        <option value="midazolam">Midazolam</option>
+                        <option value="propofol">Propofol</option>
+                        <option value="cetamina">Cetamina</option>
+                        <option value="dexmedetomidina">Dexmedetomidina</option>
+                    </optgroup>
+                    <optgroup label="🦵 BLOQUEADORES NEUROMUSCULARES">
+                        <option value="rocuronio">Rocurônio</option>
+                        <option value="cisatracurio">Cisatracúrio</option>
+                    </optgroup>
+                    <optgroup label="🩸 VASODILATADORES">
+                        <option value="nitroprussiato">Nitroprussiato</option>
+                        <option value="nitroglicerina">Nitroglicerina</option>
+                    </optgroup>
+                        <option value="outros">🔄 OUTROS (Personalizado)</option>
+                </select>
+            </div>
+            
+            <div class="two-columns">
+                <div class="form-group">
+                    <label for="dose">Dose Desejada:</label>
+                    <input type="number" id="dose" step="0.01" min="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="unidadeDose">Unidade:</label>
+                    <select id="unidadeDose" required>
+                        <option value="mcg/kg/min">mcg/kg/min</option>
+                        <option value="mcg/kg/h">mcg/kg/h</option>
+                        <option value="mg/kg/h">mg/kg/h</option>
+                        <option value="mcg/min">mcg/min</option>
+                        <option value="mcg/h">mcg/h</option>
+                        <option value="U/min">U/min</option>
+                        <option value="mg/min">mg/min</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div class="form-group">
+                    <label for="peso">Peso (kg):</label>
+                    <input type="number" id="peso" step="0.1" min="1" max="200" value="70" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="concentracao">Concentração:</label>
+                    <input type="number" id="concentracao" step="0.001" min="0.001" required>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div class="form-group">
+                    <label for="unidadeConc">Unidade Concentração:</label>
+                    <select id="unidadeConc" required>
+                        <option value="mg/mL">mg/mL</option>
+                        <option value="mcg/mL">mcg/mL</option>
+                        <option value="U/mL">U/mL</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="volumeTotal">Volume Total (mL):</label>
+                    <input type="number" id="volumeTotal" step="1" min="0" placeholder="Opcional">
+                </div>
+            </div>
+            
+            <button type="submit">🔄 Calcular Taxa de Infusão</button>
+            
+            <div id="medInfo" class="med-info"></div>
+        </form>
+        
+        <div id="result" class="result">
+            <h3>✅ Resultados:</h3>
+            
+            <div class="result-item">
+                <span class="result-label">Taxa de Infusão:</span>
+                <div id="taxaInfusao" class="result-value"></div>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Dose Total por Hora:</span>
+                <div id="doseHora"></div>
+            </div>
+            
+            <div class="result-item" id="tempoFrascoItem" style="display: none;">
+                <span class="result-label">Tempo do Frasco:</span>
+                <div id="tempoFrasco"></div>
+            </div>
+            
+            <div class="result-item" id="goteirasItem" style="display: none;">
+                <span class="result-label">Goteiras por Minuto:</span>
+                <div id="goteirasMin"></div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ ATENÇÃO:</strong> Sempre verifique a prescrição médica, a diluição preparada e os sinais vitais do paciente. 
+            Esta calculadora é uma ferramenta de suporte - a responsabilidade clínica é do profissional de saúde.
+        </div>
+        
+        <div class="explanation">
+            <h2>📚 Como Usar</h2>
+            
+            <p><strong>1. Selecione o medicamento</strong> - As diluições padrão serão preenchidas automaticamente.</p>
+            <p><strong>2. Informe a dose desejada</strong> e a unidade correspondente.</p>
+            <p><strong>3. Informe o peso do paciente</strong> (se a dose for por kg).</p>
+            <p><strong>4. Verifique/ajuste a concentração</strong> da solução preparada.</p>
+            <p><strong>5. Opcional:</strong> Informe o volume total para calcular o tempo de infusão do frasco.</p>
+            
+            <h2>🔢 Fórmulas Utilizadas</h2>
+            
+            <p><strong>Taxa de Infusão (mL/h):</strong></p>
+            <p class="formula">
+                Taxa = (Dose × Peso × Fator) / Concentração
+            </p>
+            
+            <p><strong>Fatores de conversão:</strong></p>
+            <ul>
+                <li><strong>mcg/kg/min → mcg/h:</strong> × Peso × 60</li>
+                <li><strong>mcg/kg/h → mcg/h:</strong> × Peso</li>
+                <li><strong>mg/kg/h → mg/h:</strong> × Peso</li>
+                <li><strong>U/min → U/h:</strong> × 60</li>
+            </ul>
+            
+            <p><strong>Exemplo (Noradrenalina):</strong></p>
+            <p>Dose: 0.1 mcg/kg/min, Peso: 70 kg, Concentração: 0.1 mg/mL (100 mcg/mL)</p>
+            <p class="formula">
+                Dose/h = 0.1 × 70 × 60 = 420 mcg/h<br>
+                Taxa = 420 mcg/h ÷ 100 mcg/mL = 4.2 mL/h
+            </p>
+            
+            <h2>💡 Dicas</h2>
+            <ul>
+                <li>Para <strong>Nitroglicerina</strong>, a dose é em mcg/min (não por kg).</li>
+                <li>Para <strong>Vasopressina</strong>, a dose é em U/min (não por kg).</li>
+                <li>Goteiras/min = (Taxa mL/h × 20) / 60 (1 mL = 20 goteiras padrão).</li>
+            </ul>
+        </div>
+        
+        <div class="reference">
+            Baseado nas diluições padrão do CTI e doses usualmente utilizadas em UTI. 
+            Fontes: Protocolos de Terapia Intensiva e referências clínicas.
+        </div>
+    </div>
+    
+    <script>
+        // Dados dos medicamentos (diluições padrão do CTI)
+        const medicamentos = {
+            noradrenalina: {
+                nome: 'Noradrenalina',
+                categoria: 'Aminas',
+                diluicao: '5 ampolas (4mg/8mL) + SGI 5% 180 mL',
+                concentracao: 0.1, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '0.01-3',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: '1ª linha para choque séptico. Progressão: 6-12-18-24 mL/h. Benefício menos claro quando dose > 1 mcg/kg/min'
+            },
+            dobutamina: {
+                nome: 'Dobutamina',
+                categoria: 'Aminas',
+                diluicao: '2 ampolas (250mg/20mL) + SF 0.9% 210 mL',
+                concentracao: 2, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '2-20',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: 'Dobrada. Dose usual: 3-20 mcg/kg/h. Hipotensão em doses altas (reduz SVR)'
+            },
+            vasopressina: {
+                nome: 'Vasopressina',
+                categoria: 'Aminas',
+                diluicao: '1 ampola (20U/1mL) + SF 0.9% 99 mL',
+                concentracao: 0.2, // U/mL
+                unidadeConc: 'U/mL',
+                doseUsual: '0.03-0.04',
+                unidadeDose: 'U/min',
+                observacoes: 'Progressão: 6-12-18-24 mL/h. Adicionar quando noradrenalina ≥ 0.25-0.5 mcg/kg/min'
+            },
+            dopamina: {
+                nome: 'Dopamina',
+                categoria: 'Aminas',
+                diluicao: '5 ampolas (50mg/10mL) + SF 0.9% 200 mL',
+                concentracao: 1, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '2-20',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: 'Dose usual: 5-20 mcg/kg/min. Contraindicado em feocromocitoma'
+            },
+            fentanil: {
+                nome: 'Fentanil',
+                categoria: 'Sedação/Analgesia',
+                diluicao: '4 ampolas (50 mcg/mL, 10 mL) + SF 0.9% 160 mL',
+                concentracao: 10, // mcg/mL
+                unidadeConc: 'mcg/mL',
+                doseUsual: '0.7-10',
+                unidadeDose: 'mcg/kg/h',
+                observacoes: 'Menos hipotensão que morfina. Acumula em IR. Dose intermitente: 0.35-0.5 mcg/kg a cada 30-60 min'
+            },
+            midazolam: {
+                nome: 'Midazolam',
+                categoria: 'Sedação/Analgesia',
+                diluicao: '4 ampolas (5 mg/mL, 10 mL) + SF 0.9% 160 mL',
+                concentracao: 1, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '0.02-0.1',
+                unidadeDose: 'mg/kg/h',
+                observacoes: 'Status epiléptico: solução pura = 1-2 mg/kg/h. Meia-vida prolongada em IC, IR, HF'
+            },
+            propofol: {
+                nome: 'Propofol',
+                categoria: 'Sedação/Analgesia',
+                diluicao: '5 ampolas (10 mg/mL) - PURO',
+                concentracao: 10, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '5-50',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: 'Trocar solução a cada 12h. Máximo: 67 mcg/kg/min (4 mg/kg/h). Síndrome do propofol com infusão prolongada >70 mcg/kg/min'
+            },
+            cetamina: {
+                nome: 'Cetamina',
+                categoria: 'Sedação/Analgesia',
+                diluicao: '2 ampolas (500 mg/10 mL) + SF 0.9% 80 mL',
+                concentracao: 10, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '20-100',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: 'Dose de ataque: 0.1-0.5 mg/kg. Metabólito ativo (norcetamina). Pode causar alucinações'
+            },
+            dexmedetomidina: {
+                nome: 'Dexmedetomidina',
+                categoria: 'Sedação/Analgesia',
+                diluicao: '1 ampola (200 mcg/2 mL) + SF 0.9% 48 mL',
+                concentracao: 4, // mcg/mL
+                unidadeConc: 'mcg/mL',
+                doseUsual: '0.2-1.5',
+                unidadeDose: 'mcg/kg/h',
+                observacoes: 'Reduzir dose em IR ou >65 anos. Risco de bradicardia e hipotensão'
+            },
+            rocuronio: {
+                nome: 'Rocurônio',
+                categoria: 'Bloqueadores Neuromusculares',
+                diluicao: '10 mg/mL (ampola) - PURO',
+                concentracao: 10, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '4-16',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: 'Duração prolongada 50% em IR hepática. Recuperação: 15-155 min'
+            },
+            cisatracurio: {
+                nome: 'Cisatracúrio',
+                categoria: 'Bloqueadores Neuromusculares',
+                diluicao: '4 ampolas (2 mg/mL) + SF 0.9% 80 mL',
+                concentracao: 0.4, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '0.5-10.2',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: 'Meia-vida: 20-29 min. Liberação de histamina mínima'
+            },
+            nitroprussiato: {
+                nome: 'Nitroprussiato',
+                categoria: 'Vasodilatadores',
+                diluicao: '1 ampola (50 mg/2 mL) + SGI 5% 248 mL',
+                concentracao: 0.2, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '0.3-10',
+                unidadeDose: 'mcg/kg/min',
+                observacoes: 'Iniciar 0.3-0.5 mcg/kg/min e titular em incrementos de 0.5 mcg/kg/min até BP alvo ou dose máxima de 10 mcg/kg/min. Monitorar cianeto. ACM'
+            },
+            nitroglicerina: {
+                nome: 'Nitroglicerina',
+                categoria: 'Vasodilatadores',
+                diluicao: '1 ampola (50 mg/10 mL) + SGI 5% 240 mL',
+                concentracao: 0.2, // mg/mL
+                unidadeConc: 'mg/mL',
+                doseUsual: '5-20',
+                unidadeDose: 'mcg/min',
+                observacoes: 'Dose inicial: 5 mcg/min, titular em incrementos de 5 mcg/min a cada 3-5 min, até 20 mcg/min. ACM'
+            }
+        };
+        
+        // Elementos do DOM
+        const form = document.getElementById('infusionForm');
+        const medicamentoSelect = document.getElementById('medicamento');
+        const doseInput = document.getElementById('dose');
+        const unidadeDoseSelect = document.getElementById('unidadeDose');
+        const pesoInput = document.getElementById('peso');
+        const concentracaoInput = document.getElementById('concentracao');
+        const unidadeConcSelect = document.getElementById('unidadeConc');
+        const volumeTotalInput = document.getElementById('volumeTotal');
+        const medInfoDiv = document.getElementById('medInfo');
+        const resultDiv = document.getElementById('result');
+        const taxaInfusaoDiv = document.getElementById('taxaInfusao');
+        const doseHoraDiv = document.getElementById('doseHora');
+        const tempoFrascoDiv = document.getElementById('tempoFrasco');
+        const tempoFrascoItem = document.getElementById('tempoFrascoItem');
+        const goteirasMinDiv = document.getElementById('goteirasMin');
+        const goteirasItem = document.getElementById('goteirasItem');
+        
+        // Preenche campos automaticamente ao selecionar medicamento
+        medicamentoSelect.addEventListener('change', function() {
+            const med = medicamentos[this.value];
+            if (med && this.value !== 'outros') {
+                // Preenche campos automaticamente
+                doseInput.value = med.doseUsual.split('-')[0];
+                unidadeDoseSelect.value = med.unidadeDose;
+                concentracaoInput.value = med.concentracao;
+                unidadeConcSelect.value = med.unidadeConc;
+
+                medInfoDiv.innerHTML = `
+                    <strong>${med.nome}</strong> (${med.categoria})<br>
+                    Diluição padrão: ${med.diluicao}<br>
+                    Concentração: ${med.concentracao} ${med.unidadeConc}<br>
+                    <em>${med.observacoes}</em>
+                `;
+                medInfoDiv.style.display = 'block';
+            } else if (this.value === 'outros') {
+                // Limpa campos para entrada manual
+                doseInput.value = '';
+                concentracaoInput.value = '';
+                medInfoDiv.innerHTML = '<em>Preencha os campos manualmente para medicamentos personalizados</em>';
+                medInfoDiv.style.display = 'block';
+            } else {
+                medInfoDiv.style.display = 'none';
+            }
+        });
+        
+        // Função para calcular
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const medicamento = medicamentoSelect.value;
+            const dose = parseFloat(doseInput.value);
+            const unidadeDose = unidadeDoseSelect.value;
+            const peso = parseFloat(pesoInput.value);
+            const concentracao = parseFloat(concentracaoInput.value);
+            const unidadeConc = unidadeConcSelect.value;
+            const volumeTotal = parseFloat(volumeTotalInput.value) || 0;
+            
+            // Validações
+            if (!medicamento) {
+                alert('Selecione um medicamento');
+                return;
+            }
+            if (isNaN(dose) || isNaN(peso) || isNaN(concentracao)) {
+                alert('Preencha todos os campos obrigatórios');
+                return;
+            }
+            
+            // Converte dose para mcg/h ou mg/h (unidade base)
+            let doseBase; // em mcg/h ou mg/h
+            let doseBaseUnidade = 'mcg/h';
+            
+            switch(unidadeDose) {
+                case 'mcg/kg/min':
+                    doseBase = dose * peso * 60; // mcg/h
+                    break;
+                case 'mcg/kg/h':
+                    doseBase = dose * peso; // mcg/h
+                    break;
+                case 'mg/kg/h':
+                    doseBase = dose * peso * 1000; // mcg/h
+                    break;
+                case 'mcg/min':
+                    doseBase = dose * 60; // mcg/h
+                    break;
+                case 'mcg/h':
+                    doseBase = dose; // mcg/h
+                    break;
+                case 'U/min':
+                    doseBase = dose * 60; // U/h
+                    doseBaseUnidade = 'U/h';
+                    break;
+                case 'mg/min':
+                    doseBase = dose * 60 * 1000; // mcg/h
+                    break;
+                default:
+                    doseBase = dose;
+            }
+            
+            // Converte concentração para mg/mL ou U/mL (unidade base)
+            let concBase;
+            let concBaseUnidade = unidadeConc;
+            
+            switch(unidadeConc) {
+                case 'mg/mL':
+                    concBase = concentracao; // mg/mL
+                    break;
+                case 'mcg/mL':
+                    concBase = concentracao / 1000; // mg/mL
+                    break;
+                case 'U/mL':
+                    concBase = concentracao; // U/mL
+                    concBaseUnidade = 'U/mL';
+                    break;
+                default:
+                    concBase = concentracao;
+            }
+            
+            // Calcula taxa de infusão em mL/h
+            let taxaMLh;
+            if (doseBaseUnidade === 'U/h' && concBaseUnidade === 'U/mL') {
+                // Caso especial: U/h ÷ U/mL = mL/h
+                taxaMLh = doseBase / concBase;
+            } else if (doseBaseUnidade === 'mcg/h') {
+                // Converte doseBase para mg/h
+                const doseMGh = doseBase / 1000;
+                // Taxa = dose (mg/h) / concentração (mg/mL)
+                taxaMLh = doseMGh / concBase;
+            } else {
+                // Para outros casos (mg/h)
+                taxaMLh = doseBase / concBase;
+            }
+            
+            // Arredonda para 2 casas decimais
+            taxaMLh = Math.round(taxaMLh * 100) / 100;
+            
+            // Calcula dose total por hora
+            let doseHoraText;
+            if (doseBaseUnidade === 'mcg/h') {
+                doseHoraText = `${doseBase.toFixed(1)} mcg/h`;
+            } else if (doseBaseUnidade === 'U/h') {
+                doseHoraText = `${doseBase.toFixed(1)} U/h`;
+            } else {
+                doseHoraText = `${doseBase.toFixed(1)} mg/h`;
+            }
+            
+            // Calcula tempo do frasco (se volume total informado)
+            let tempoFrascoText = '';
+            if (volumeTotal > 0 && taxaMLh > 0) {
+                const horas = volumeTotal / taxaMLh;
+                const horasInt = Math.floor(horas);
+                const minutos = Math.round((horas - horasInt) * 60);
+                tempoFrascoText = `${horasInt}h ${minutos}min (${horas.toFixed(1)} horas)`;
+                tempoFrascoItem.style.display = 'block';
+            } else {
+                tempoFrascoItem.style.display = 'none';
+            }
+            
+            // Calcula goteiras por minuto
+            const goteiras = (taxaMLh * 20) / 60; // 1 mL = 20 goteiras
+            const goteirasArredondadas = Math.round(goteiras * 10) / 10;
+            goteirasMinDiv.textContent = `${goteirasArredondadas} gts/min`;
+            goteirasItem.style.display = 'block';
+            
+            // Exibe resultados
+            taxaInfusaoDiv.textContent = `${taxaMLh} mL/h`;
+            doseHoraDiv.textContent = doseHoraText;
+            tempoFrascoDiv.textContent = tempoFrascoText;
+            
+            // Mostra resultado
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Função para limpar resultado
+        function clearResult() {
+            resultDiv.style.display = 'none';
+        }
+        
+        // Adiciona evento para limpar ao clicar nos inputs
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', clearResult);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Calculadora de Doses - Intubação Endotraqueal (RSI)</title>
+    <style>
+        body {
+            padding-bottom: 80px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            margin-top: 25px;
+        }
+        
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.success {
+            background-color: #2ecc71;
+        }
+        
+        button.success:hover {
+            background-color: #27ae60;
+        }
+        
+        button.secondary {
+            background-color: #95a5a6;
+        }
+        
+        .result-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .result-text {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background: white;
+            resize: vertical;
+            white-space: pre-wrap;
+        }
+        
+        .medication-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fefefe;
+        }
+        
+        .medication-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .medication-info {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .dose-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        
+        .dose-range input {
+            width: 60px;
+        }
+        
+        .dose-range span {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+        }
+        
+        .notes {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: #ecf0f1;
+            border-radius: 6px 6px 0 0;
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💉 Calculadora de Doses - Intubação Endotraqueal (RSI)</h1>
+        
+        <div class="section">
+            <div class="row">
+                <div class="form-group">
+                    <label for="peso">Peso do Paciente (kg):</label>
+                    <input type="number" id="peso" step="0.1" min="0" placeholder="Ex: 70">
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('inducao')">💊 Agentes de Indução</button>
+            <button class="tab" onclick="showTab('bloqueadores')">🦵 Bloqueadores Neuromusculares</button>
+        </div>
+        
+        <!-- AGENTES DE INDUÇÃO -->
+        <div id="inducao" class="tab-content active">
+            <div class="medication-card">
+                <div class="medication-name">Etomidato</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.3 mg/kg IV | <strong>Onset:</strong> 15-45 seg | <strong>Duração:</strong> 3-12 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="etomidate-conc" onchange="calcularDoses()">
+                            <option value="2">2 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="etomidate-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: mínimo efeito cardiovascular, ↓ PIC, efeito amnésico<br>
+                    ❌ Desvantagens: insuficiência adrenal*, mioclonia transitória<br>
+                    💡 Considerar em instabilidade hemodinâmica ou hipovolemia
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Cetamina</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1-2 mg/kg IV | <strong>Onset:</strong> 30-60 seg | <strong>Duração:</strong> 5-20 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="ketamine-dose" onchange="calcularDoses()">
+                            <option value="1">1 mg/kg</option>
+                            <option value="2">2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="ketamine-conc" onchange="calcularDoses()">
+                            <option value="10">10 mg/mL</option>
+                            <option value="50">50 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="ketamine-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: efeito amnésico, analgesia, estabilidade hemodinâmica, broncodilatação<br>
+                    ❌ Desvantagens: taquicardia, hipertensão, delírio, alucinações<br>
+                    💡 Considerar em instabilidade hemodinâmica, hipovolemia ou asma<br>
+                    ⚠️ Evitar em hipertensão grave ou secreções orais significativas
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Propofol</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1-2 mg/kg IV | <strong>Onset:</strong> 15-45 seg | <strong>Duração:</strong> 3-10 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="propofol-dose" onchange="calcularDoses()">
+                            <option value="1">1 mg/kg</option>
+                            <option value="2">2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="propofol-conc" onchange="calcularDoses()">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="propofol-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: efeito amnésico, ⬇️ fluxo simpático, ↓ PIC, broncodilatação<br>
+                    ❌ Desvantagens: depressão cardiovascular (hipotensão, bradicardia)<br>
+                    💡 Considerar em TCE com ↑ PIC, estado epileptico ou broncoespasmo<br>
+                    ⚠️ Evitar em instabilidade hemodinâmica ou FE baixa<br>
+                    ⚠️ Contraindicado em alergia a ovo/soja
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Midazolam</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.1-0.3 mg/kg IV | <strong>Onset:</strong> 30-90 seg | <strong>Duração:</strong> 15-90 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="midazolam-dose" onchange="calcularDoses()">
+                            <option value="0.1">0.1 mg/kg</option>
+                            <option value="0.2">0.2 mg/kg</option>
+                            <option value="0.3">0.3 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="midazolam-conc" onchange="calcularDoses()">
+                            <option value="1">1 mg/mL</option>
+                            <option value="5">5 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="midazolam-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: efeito amnésico, anticonvulsivante, ↓ PIC<br>
+                    ❌ Desvantagens: hipotensão, depressão respiratória, longa duração, potencial de abuso<br>
+                    💡 Dose de indução > dose de pré-medicação
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Metohexital</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1.5 mg/kg IV | <strong>Onset:</strong> < 30 seg | <strong>Duração:</strong> 4-8 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="methohexital-conc" onchange="calcularDoses()">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="methohexital-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: ↓ PIC<br>
+                    ❌ Desvantagens: hipotensão, depressão cardíaca, depressão respiratória<br>
+                    💡 Considerar em estabilidade hemodinâmica ou TCE com ↑ PIC<br>
+                    ⚠️ Não disponível nos EUA
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Tiopental</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 3-5 mg/kg IV | <strong>Onset:</strong> 30-60 seg | <strong>Duração:</strong> 5-30 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="thiopental-dose" onchange="calcularDoses()">
+                            <option value="3">3 mg/kg</option>
+                            <option value="5">5 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="thiopental-conc" onchange="calcularDoses()">
+                            <option value="25">25 mg/mL</option>
+                            <option value="50">50 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="thiopental-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: anticonvulsivante, ↓ PIC, efeito amnésico<br>
+                    ❌ Desvantagens: potencial de abuso, depressão cardíaca, hipotensão, extravasamento<br>
+                    ⚠️ Não disponível nos EUA
+                </div>
+            </div>
+        </div>
+        
+        <!-- BLOQUEADORES NEUROMUSCULARES -->
+        <div id="bloqueadores" class="tab-content">
+            <div class="medication-card">
+                <div class="medication-name">Succinilcolina</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1.5 mg/kg IV | <strong>Onset:</strong> 30-60 seg | <strong>Duração:</strong> 5-10 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="succinylcholine-conc" onchange="calcularDoses()">
+                            <option value="20">20 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="succinylcholine-result" readonly>
+                    </div>
+                </div>
+                <div class="warning">
+                    ❌ <strong>Contraindicado em:</strong> história de hipertermia maligna, miopatias esqueléticas, fase aguda de queimadura/lesão muscular, lesão de neurônio motor superior<br>
+                    ⚠️ Evitar em risco de hipercalemia (imobilização prolongada, DRC, lesão por esmagamento)
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Rocurônio</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.6-1.2 mg/kg IV | <strong>Onset:</strong> 1-2 min | <strong>Duração:</strong> 22-94 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="rocuronium-dose" onchange="calcularDoses()">
+                            <option value="0.6">0.6 mg/kg</option>
+                            <option value="1.0">1.0 mg/kg</option>
+                            <option value="1.2">1.2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="rocuronium-conc" onchange="calcularDoses()">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="rocuronium-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    💡 Alternativa preferida se succinilcolina contraindicada<br>
+                    ⚠️ Cuidado em pacientes com incapacidade de ventilação com máscara (duração mais longa)
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Vecurônio</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.1-0.2 mg/kg IV | <strong>Onset:</strong> 2-4 min | <strong>Duração:</strong> 30-40 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="vecuronium-dose" onchange="calcularDoses()">
+                            <option value="0.1">0.1 mg/kg</option>
+                            <option value="0.2">0.2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="vecuronium-conc" onchange="calcularDoses()">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="vecuronium-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    💡 Alternativa apenas se succinilcolina e rocurônio indisponíveis<br>
+                    ⚠️ Onset e duração mais longos
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>ATENÇÃO:</strong> Estas doses são orientações gerais. Ajuste conforme condição clínica do paciente, experiência do profissional e protocolos locais.
+        </div>
+        
+        <div class="result-container">
+            <h2>📋 Resultado</h2>
+            <textarea id="resultado" class="result-text" readonly></textarea>
+            <button class="success" onclick="copyResult()">📋 Copiar Texto</button>
+        </div>
+    </div>
+    
+    <script>
+        // Mostrar aba selecionada
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            calcularDoses();
+        }
+        
+        // Copiar resultado
+        function copyResult() {
+            const text = document.getElementById('resultado').value;
+            if (!text || text.trim() === '') {
+                alert('Nenhum texto para copiar');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Texto copiado para a área de transferência!');
+            }).catch(err => {
+                alert('Erro ao copiar: ' + err);
+            });
+        }
+        
+        // Função para calcular todas as doses
+        function calcularDoses() {
+            const peso = parseFloat(document.getElementById('peso').value) || 0;
+            
+            if (peso <= 0) {
+                document.getElementById('resultado').value = 'Informe o peso do paciente.';
+                return;
+            }
+            
+            // Agentes de Indução
+            const resultados = [];
+            
+            // Etomidato
+            const etomidateConc = parseFloat(document.getElementById('etomidate-conc').value) || 2;
+            const etomidateDose = 0.3 * peso;
+            const etomidateVol = etomidateDose / etomidateConc;
+            document.getElementById('etomidate-result').value = `${etomidateDose.toFixed(1)} mg (${etomidateVol.toFixed(1)} mL)`;
+            
+            // Cetamina
+            const ketamineDose = parseFloat(document.getElementById('ketamine-dose').value) || 1;
+            const ketamineConc = parseFloat(document.getElementById('ketamine-conc').value) || 10;
+            const ketamineTotal = ketamineDose * peso;
+            const ketamineVol = ketamineTotal / ketamineConc;
+            document.getElementById('ketamine-result').value = `${ketamineTotal.toFixed(1)} mg (${ketamineVol.toFixed(1)} mL)`;
+            
+            // Propofol
+            const propofolDose = parseFloat(document.getElementById('propofol-dose').value) || 1;
+            const propofolConc = parseFloat(document.getElementById('propofol-conc').value) || 10;
+            const propofolTotal = propofolDose * peso;
+            const propofolVol = propofolTotal / propofolConc;
+            document.getElementById('propofol-result').value = `${propofolTotal.toFixed(1)} mg (${propofolVol.toFixed(1)} mL)`;
+            
+            // Midazolam
+            const midazolamDose = parseFloat(document.getElementById('midazolam-dose').value) || 0.1;
+            const midazolamConc = parseFloat(document.getElementById('midazolam-conc').value) || 1;
+            const midazolamTotal = midazolamDose * peso;
+            const midazolamVol = midazolamTotal / midazolamConc;
+            document.getElementById('midazolam-result').value = `${midazolamTotal.toFixed(1)} mg (${midazolamVol.toFixed(1)} mL)`;
+            
+            // Metohexital
+            const methohexitalConc = parseFloat(document.getElementById('methohexital-conc').value) || 10;
+            const methohexitalTotal = 1.5 * peso;
+            const methohexitalVol = methohexitalTotal / methohexitalConc;
+            document.getElementById('methohexital-result').value = `${methohexitalTotal.toFixed(1)} mg (${methohexitalVol.toFixed(1)} mL)`;
+            
+            // Tiopental
+            const thiopentalDose = parseFloat(document.getElementById('thiopental-dose').value) || 3;
+            const thiopentalConc = parseFloat(document.getElementById('thiopental-conc').value) || 25;
+            const thiopentalTotal = thiopentalDose * peso;
+            const thiopentalVol = thiopentalTotal / thiopentalConc;
+            document.getElementById('thiopental-result').value = `${thiopentalTotal.toFixed(1)} mg (${thiopentalVol.toFixed(1)} mL)`;
+            
+            // Bloqueadores Neuromusculares
+            
+            // Succinilcolina
+            const succinylcholineConc = parseFloat(document.getElementById('succinylcholine-conc').value) || 20;
+            const succinylcholineTotal = 1.5 * peso;
+            const succinylcholineVol = succinylcholineTotal / succinylcholineConc;
+            document.getElementById('succinylcholine-result').value = `${succinylcholineTotal.toFixed(1)} mg (${succinylcholineVol.toFixed(1)} mL)`;
+            
+            // Rocurônio
+            const rocuroniumDose = parseFloat(document.getElementById('rocuronium-dose').value) || 0.6;
+            const rocuroniumConc = parseFloat(document.getElementById('rocuronium-conc').value) || 10;
+            const rocuroniumTotal = rocuroniumDose * peso;
+            const rocuroniumVol = rocuroniumTotal / rocuroniumConc;
+            document.getElementById('rocuronium-result').value = `${rocuroniumTotal.toFixed(1)} mg (${rocuroniumVol.toFixed(1)} mL)`;
+            
+            // Vecurônio
+            const vecuroniumDose = parseFloat(document.getElementById('vecuronium-dose').value) || 0.1;
+            const vecuroniumConc = parseFloat(document.getElementById('vecuronium-conc').value) || 10;
+            const vecuroniumTotal = vecuroniumDose * peso;
+            const vecuroniumVol = vecuroniumTotal / vecuroniumConc;
+            document.getElementById('vecuronium-result').value = `${vecuroniumTotal.toFixed(1)} mg (${vecuroniumVol.toFixed(1)} mL)`;
+            
+            // Gerar texto de resultado
+            let textoResultado = `Cálculo para paciente de ${peso} kg:\n\n`;
+            
+            const abaAtiva = document.querySelector('.tab.active').textContent;
+            
+            if (abaAtiva.includes('Indução')) {
+                textoResultado += "=== AGENTES DE INDUÇÃO ===\n";
+                textoResultado += `• Etomidato: ${etomidateDose.toFixed(1)} mg (${etomidateVol.toFixed(1)} mL de solução a ${etomidateConc} mg/mL)\n`;
+                textoResultado += `• Cetamina: ${ketamineTotal.toFixed(1)} mg (${ketamineVol.toFixed(1)} mL de solução a ${ketamineConc} mg/mL)\n`;
+                textoResultado += `• Propofol: ${propofolTotal.toFixed(1)} mg (${propofolVol.toFixed(1)} mL de solução a ${propofolConc} mg/mL)\n`;
+                textoResultado += `• Midazolam: ${midazolamTotal.toFixed(1)} mg (${midazolamVol.toFixed(1)} mL de solução a ${midazolamConc} mg/mL)\n`;
+                textoResultado += `• Metohexital: ${methohexitalTotal.toFixed(1)} mg (${methohexitalVol.toFixed(1)} mL de solução a ${methohexitalConc} mg/mL)\n`;
+                textoResultado += `• Tiopental: ${thiopentalTotal.toFixed(1)} mg (${thiopentalVol.toFixed(1)} mL de solução a ${thiopentalConc} mg/mL)\n`;
+            } else {
+                textoResultado += "=== BLOQUEADORES NEUROMUSCULARES ===\n";
+                textoResultado += `• Succinilcolina: ${succinylcholineTotal.toFixed(1)} mg (${succinylcholineVol.toFixed(1)} mL de solução a ${succinylcholineConc} mg/mL)\n`;
+                textoResultado += `• Rocurônio: ${rocuroniumTotal.toFixed(1)} mg (${rocuroniumVol.toFixed(1)} mL de solução a ${rocuroniumConc} mg/mL)\n`;
+                textoResultado += `• Vecurônio: ${vecuroniumTotal.toFixed(1)} mg (${vecuroniumVol.toFixed(1)} mL de solução a ${vecuroniumConc} mg/mL)\n`;
+            }
+            
+            textoResultado += "\n⚠️  Verifique sempre a concentração do frasco antes da administração!";
+            
+            document.getElementById('resultado').value = textoResultado;
+        }
+        
+        // Inicializar
+        window.onload = function() {
+            document.getElementById('peso').value = '70';
+            calcularDoses();
+        };
+    </script>
+</body>
+</html>
