@@ -3,75 +3,534 @@
  * Licensed under the MIT License (see LICENSE for details).
  */
 
+var __mod_volume_minuto_0 = (function () {
+/**
+ * Calcula Volume Minuto (VE = VT * FR / 1000)
+ * @param {number} vt - Volume corrente (mL)
+ * @param {number} fr - Frequência respiratória (irpm)
+ * @returns {number} Volume minuto (L/min)
+ */
+function calculateVE(vt, fr) {
+  if (isNaN(vt) || isNaN(fr)) return null;
+  return (vt * fr) / 1000;
+}
 
+/**
+ * Formata o resultado do Volume Minuto
+ * @param {number} ve - Volume minuto (L/min)
+ * @returns {string} Resultado formatado
+ */
+function formatVEResult(ve) {
+  if (ve === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">Volume Minuto:</span> <span class="result-value">${ve.toFixed(1)} L/min</span>`;
+}
+return { calculateVE: calculateVE, formatVEResult: formatVEResult };
+})();
+
+var __mod_ie_ratio_1 = (function () {
+/**
+ * Calcula Relação I:E (I:E = 1 : (Ttotal - Tinsp) / Tinsp)
+ * @param {number} tinsp - Tempo inspiratório (segundos)
+ * @param {number} fr - Frequência respiratória (irpm)
+ * @returns {number|null} Relação I:E ou null se inválido
+ */
+function calculateIE(tinsp, fr) {
+  if (isNaN(tinsp) || isNaN(fr)) return null;
+  
+  const ttotal = 60 / fr; // Ttotal em segundos
+  if (ttotal <= tinsp) return null; // Tinsp não pode ser >= Ttotal
+  
+  // Fórmula: I:E = 1 : Texp/Tinsp
+  return (ttotal - tinsp) / tinsp;
+}
+
+/**
+ * Formata o resultado da Relação I:E
+ * @param {number|null} ie - Relação I:E
+ * @returns {string} Resultado formatado
+ */
+function formatIEResult(ie) {
+  if (ie === null) return '❌ Tinsp não pode ser ≥ Ttotal';
+  if (ie === undefined) return '❌ Preencha todos os campos';
+  return `<span class="result-label">Relação I:E:</span> <span class="result-value">1:${ie.toFixed(1)}</span>`;
+}
+return { calculateIE: calculateIE, formatIEResult: formatIEResult };
+})();
+
+var __mod_compliance_2 = (function () {
+/**
+ * Calcula Complacência Estática (C = VT / (Pplat - PEEP))
+ * @param {number} vt - Volume corrente (mL)
+ * @param {number} pplat - Pressão de platô (cmH₂O)
+ * @param {number} peep - PEEP (cmH₂O)
+ * @returns {number|null} Complacência (mL/cmH₂O) ou null se inválido
+ */
+function calculateCompliance(vt, pplat, peep) {
+  if (isNaN(vt) || isNaN(pplat) || isNaN(peep)) return null;
+  
+  const deltaP = pplat - peep;
+  if (deltaP <= 0) return null; // Pplat deve ser > PEEP
+  
+  return vt / deltaP;
+}
+
+/**
+ * Formata o resultado da Complacência
+ * @param {number|null} compliance - Complacência (mL/cmH₂O)
+ * @returns {string} Resultado formatado
+ */
+function formatComplianceResult(compliance) {
+  if (compliance === null) return '❌ Pplat deve ser > PEEP';
+  if (compliance === undefined) return '❌ Preencha todos os campos';
+  return `<span class="result-label">Complacência:</span> <span class="result-value">${compliance.toFixed(1)} mL/cmH₂O</span>`;
+}
+return { calculateCompliance: calculateCompliance, formatComplianceResult: formatComplianceResult };
+})();
+
+var __mod_resistance_3 = (function () {
+/**
+ * Calcula Resistência das Vias Aéreas (R = (Ppeak - Pplat) / Fluxo)
+ * @param {number} ppeak - Pico de pressão (cmH₂O)
+ * @param {number} pplat - Pressão de platô (cmH₂O)
+ * @param {number} fluxo - Fluxo (L/s)
+ * @returns {number|null} Resistência (cmH₂O/L/s) ou null se inválido
+ */
+function calculateResistance(ppeak, pplat, fluxo) {
+  if (isNaN(ppeak) || isNaN(pplat) || isNaN(fluxo)) return null;
+  
+  const deltaP = ppeak - pplat;
+  if (deltaP < 0) return null; // Ppeak deve ser >= Pplat
+  if (fluxo <= 0) return null; // Fluxo deve ser positivo
+  
+  return deltaP / fluxo;
+}
+
+/**
+ * Formata o resultado da Resistência
+ * @param {number|null} resistance - Resistência (cmH₂O/L/s)
+ * @returns {string} Resultado formatado
+ */
+function formatResistanceResult(resistance) {
+  if (resistance === null) return '❌ Ppeak deve ser ≥ Pplat e Fluxo > 0';
+  if (resistance === undefined) return '❌ Preencha todos os campos';
+  return `<span class="result-label">Resistência:</span> <span class="result-value">${resistance.toFixed(1)} cmH₂O/L/s</span>`;
+}
+return { calculateResistance: calculateResistance, formatResistanceResult: formatResistanceResult };
+})();
+
+var __mod_driving_pressure_4 = (function () {
+/**
+ * Calcula Driving Pressure (ΔP = Pplat - PEEP)
+ * @param {number} pplat - Pressão de platô (cmH₂O)
+ * @param {number} peep - PEEP (cmH₂O)
+ * @returns {Object} Objeto com drivingPressure e interpretation
+ */
+function calculateDrivingPressure(pplat, peep) {
+  if (isNaN(pplat) || isNaN(peep)) return { drivingPressure: null, interpretation: '' };
+  
+  const dp = pplat - peep;
+  let interpretation = '';
+  if (dp < 15) interpretation = ' ✅ (Meta: < 15 cmH₂O)';
+  else if (dp < 20) interpretation = ' ⚠️ (Elevado)';
+  else interpretation = ' ❌ (Muito elevado)';
+  
+  return { drivingPressure: dp, interpretation };
+}
+
+/**
+ * Formata o resultado do Driving Pressure
+ * @param {Object} result - Objeto com drivingPressure e interpretation
+ * @returns {string} Resultado formatado
+ */
+function formatDrivingPressureResult(result) {
+  if (result.drivingPressure === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">Driving Pressure:</span> <span class="result-value">${result.drivingPressure.toFixed(1)} cmH₂O</span>${result.interpretation}`;
+}
+return { calculateDrivingPressure: calculateDrivingPressure, formatDrivingPressureResult: formatDrivingPressureResult };
+})();
+
+var __mod_volume_peso_ideal_5 = (function () {
+/**
+ * Calcula Volume Corrente por Peso Ideal (VT = 6-8 mL/kg)
+ * @param {number} pesoIdeal - Peso ideal (kg)
+ * @returns {Object} Objeto com min e max VT
+ */
+function calculateVolumePesoIdeal(pesoIdeal) {
+  if (isNaN(pesoIdeal)) return { min: null, max: null };
+  
+  const min = 6 * pesoIdeal;
+  const max = 8 * pesoIdeal;
+  
+  return { min, max };
+}
+
+/**
+ * Formata o resultado do Volume por Peso Ideal
+ * @param {Object} result - Objeto com min e max VT
+ * @returns {string} Resultado formatado
+ */
+function formatVolumePesoIdealResult(result) {
+  if (result.min === null) return '❌ Preencha o campo';
+  return `<span class="result-label">Volume Corrente:</span> <span class="result-value">${result.min.toFixed(0)}-${result.max.toFixed(0)} mL</span>`;
+}
+return { calculateVolumePesoIdeal: calculateVolumePesoIdeal, formatVolumePesoIdealResult: formatVolumePesoIdealResult };
+})();
+
+var __mod_peso_ideal_homem_6 = (function () {
+/**
+ * Calcula Peso Ideal para Homem
+ * @param {number} altura - Altura (cm)
+ * @returns {number|null} Peso ideal (kg) ou null se inválido
+ */
+function calculatePesoIdealHomem(altura) {
+  if (isNaN(altura)) return null;
+  return 50 + 0.91 * (altura - 152.4);
+}
+
+/**
+ * Formata o resultado do Peso Ideal (Homem)
+ * @param {number|null} pesoIdeal - Peso ideal (kg)
+ * @returns {string} Resultado formatado
+ */
+function formatPesoIdealHomemResult(pesoIdeal) {
+  if (pesoIdeal === null) return '❌ Preencha o campo';
+  return `<span class="result-label">Peso Ideal:</span> <span class="result-value">${pesoIdeal.toFixed(1)} kg</span>`;
+}
+return { calculatePesoIdealHomem: calculatePesoIdealHomem, formatPesoIdealHomemResult: formatPesoIdealHomemResult };
+})();
+
+var __mod_peso_ideal_mulher_7 = (function () {
+/**
+ * Calcula Peso Ideal para Mulher
+ * @param {number} altura - Altura (cm)
+ * @returns {number|null} Peso ideal (kg) ou null se inválido
+ */
+function calculatePesoIdealMulher(altura) {
+  if (isNaN(altura)) return null;
+  return 45.5 + 0.91 * (altura - 152.4);
+}
+
+/**
+ * Formata o resultado do Peso Ideal (Mulher)
+ * @param {number|null} pesoIdeal - Peso ideal (kg)
+ * @returns {string} Resultado formatado
+ */
+function formatPesoIdealMulherResult(pesoIdeal) {
+  if (pesoIdeal === null) return '❌ Preencha o campo';
+  return `<span class="result-label">Peso Ideal:</span> <span class="result-value">${pesoIdeal.toFixed(1)} kg</span>`;
+}
+return { calculatePesoIdealMulher: calculatePesoIdealMulher, formatPesoIdealMulherResult: formatPesoIdealMulherResult };
+})();
+
+var __mod_pf_ratio_8 = (function () {
+/**
+ * Calcula P/F Ratio (PaO₂ / FiO₂)
+ * @param {number} pao2 - PaO₂ (mmHg)
+ * @param {number} fio2 - FiO₂ (0-1)
+ * @returns {Object} Objeto com pfRatio e interpretation
+ */
+function calculatePF(pao2, fio2) {
+  if (isNaN(pao2) || isNaN(fio2) || fio2 <= 0) return { pfRatio: null, interpretation: '' };
+  
+  const pf = pao2 / fio2;
+  let interpretation = '';
+  if (pf > 400) interpretation = ' ✅ (Normal)';
+  else if (pf >= 200) interpretation = ' ⚠️ (SARA leve)';
+  else if (pf >= 100) interpretation = ' ❌ (SARA moderada)';
+  else interpretation = ' ❌ (SARA grave)';
+  
+  return { pfRatio: pf, interpretation };
+}
+
+/**
+ * Formata o resultado do P/F Ratio
+ * @param {Object} result - Objeto com pfRatio e interpretation
+ * @returns {string} Resultado formatado
+ */
+function formatPFResult(result) {
+  if (result.pfRatio === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">P/F Ratio:</span> <span class="result-value">${result.pfRatio.toFixed(0)}</span>${result.interpretation}`;
+}
+return { calculatePF: calculatePF, formatPFResult: formatPFResult };
+})();
+
+var __mod_paco2_esperado_9 = (function () {
+/**
+ * Calcula PaCO₂ Esperado (PaCO₂ = 1.5 * HCO₃ + 8)
+ * @param {number} hco3 - HCO₃ (mEq/L)
+ * @returns {number|null} PaCO₂ esperado (mmHg) ou null se inválido
+ */
+function calculatePaCO2Esperado(hco3) {
+  if (isNaN(hco3)) return null;
+  return 1.5 * hco3 + 8;
+}
+
+/**
+ * Formata o resultado do PaCO₂ Esperado
+ * @param {number|null} paco2 - PaCO₂ esperado (mmHg)
+ * @returns {string} Resultado formatado
+ */
+function formatPaCO2EsperadoResult(paco2) {
+  if (paco2 === null) return '❌ Preencha o campo';
+  return `<span class="result-label">PaCO₂ Esperado:</span> <span class="result-value">${paco2.toFixed(0)} ± 2 mmHg</span>`;
+}
+return { calculatePaCO2Esperado: calculatePaCO2Esperado, formatPaCO2EsperadoResult: formatPaCO2EsperadoResult };
+})();
+
+var __mod_hco3_esperado_10 = (function () {
+/**
+ * Calcula ΔHCO₃ Esperado (ΔHCO₃ = 0.35 * ΔPaCO₂)
+ * @param {number} deltaPaco2 - ΔPaCO₂ (mmHg)
+ * @returns {number|null} ΔHCO₃ (mEq/L) ou null se inválido
+ */
+function calculateHCO3Esperado(deltaPaco2) {
+  if (isNaN(deltaPaco2)) return null;
+  return 0.35 * deltaPaco2;
+}
+
+/**
+ * Formata o resultado do ΔHCO₃ Esperado
+ * @param {number|null} hco3 - ΔHCO₃ (mEq/L)
+ * @returns {string} Resultado formatado
+ */
+function formatHCO3EsperadoResult(hco3) {
+  if (hco3 === null) return '❌ Preencha o campo';
+  return `<span class="result-label">ΔHCO₃:</span> <span class="result-value">+${hco3.toFixed(1)} mEq/L</span>`;
+}
+return { calculateHCO3Esperado: calculateHCO3Esperado, formatHCO3EsperadoResult: formatHCO3EsperadoResult };
+})();
+
+var __mod_ajuste_fr_11 = (function () {
+/**
+ * Calcula Ajuste de FR (FR nova = FR × (PaCO₂ atual / PaCO₂ desejada))
+ * @param {number} fr - FR atual (irpm)
+ * @param {number} paco2 - PaCO₂ atual (mmHg)
+ * @param {number} paco2d - PaCO₂ desejada (mmHg)
+ * @returns {number|null} FR ajustada (irpm) ou null se inválido
+ */
+function calculateAjusteFR(fr, paco2, paco2d) {
+  if (isNaN(fr) || isNaN(paco2) || isNaN(paco2d) || paco2d <= 0) return null;
+  return fr * (paco2 / paco2d);
+}
+
+/**
+ * Formata o resultado do Ajuste de FR
+ * @param {number|null} frNova - FR ajustada (irpm)
+ * @returns {string} Resultado formatado
+ */
+function formatAjusteFRResult(frNova) {
+  if (frNova === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">FR Ajustada:</span> <span class="result-value">${frNova.toFixed(1)} irpm</span>`;
+}
+return { calculateAjusteFR: calculateAjusteFR, formatAjusteFRResult: formatAjusteFRResult };
+})();
+
+var __mod_ajuste_vt_12 = (function () {
+/**
+ * Calcula Ajuste de VT (VT novo = VT × (PaCO₂ atual / PaCO₂ desejada))
+ * @param {number} vt - VT atual (mL)
+ * @param {number} paco2d - PaCO₂ desejada (mmHg)
+ * @param {number} paco2 - PaCO₂ atual (mmHg)
+ * @returns {number|null} VT ajustado (mL) ou null se inválido
+ */
+function calculateAjusteVT(vt, paco2d, paco2) {
+  if (isNaN(vt) || isNaN(paco2d) || isNaN(paco2) || paco2 <= 0) return null;
+  return vt * (paco2 / paco2d);
+}
+
+/**
+ * Formata o resultado do Ajuste de VT
+ * @param {number|null} vtNovo - VT ajustado (mL)
+ * @returns {string} Resultado formatado
+ */
+function formatAjusteVTResult(vtNovo) {
+  if (vtNovo === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">VT Ajustado:</span> <span class="result-value">${vtNovo.toFixed(0)} mL</span>`;
+}
+return { calculateAjusteVT: calculateAjusteVT, formatAjusteVTResult: formatAjusteVTResult };
+})();
+
+var __mod_ajuste_ve_13 = (function () {
+/**
+ * Calcula Ajuste de VE (VE novo = VE × (PaCO₂ atual / PaCO₂ desejada))
+ * @param {number} ve - VE atual (L/min)
+ * @param {number} paco2 - PaCO₂ atual (mmHg)
+ * @param {number} paco2d - PaCO₂ desejada (mmHg)
+ * @returns {number|null} VE ajustado (L/min) ou null se inválido
+ */
+function calculateAjusteVE(ve, paco2, paco2d) {
+  if (isNaN(ve) || isNaN(paco2) || isNaN(paco2d) || paco2d <= 0) return null;
+  return ve * (paco2 / paco2d);
+}
+
+/**
+ * Formata o resultado do Ajuste de VE
+ * @param {number|null} veNovo - VE ajustado (L/min)
+ * @returns {string} Resultado formatado
+ */
+function formatAjusteVEResult(veNovo) {
+  if (veNovo === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">VE Ajustado:</span> <span class="result-value">${veNovo.toFixed(1)} L/min</span>`;
+}
+return { calculateAjusteVE: calculateAjusteVE, formatAjusteVEResult: formatAjusteVEResult };
+})();
+
+var __mod_vt_espontaneo_14 = (function () {
+/**
+ * Calcula VT Espontâneo (VT = (VE × 1000) / FR)
+ * @param {number} ve - Volume minuto (L/min)
+ * @param {number} fr - Frequência respiratória (irpm)
+ * @returns {number|null} VT espontâneo (mL) ou null se inválido
+ */
+function calculateVTEspontaneo(ve, fr) {
+  if (isNaN(ve) || isNaN(fr) || fr <= 0) return null;
+  return (ve * 1000) / fr;
+}
+
+/**
+ * Formata o resultado do VT Espontâneo
+ * @param {number|null} vt - VT espontâneo (mL)
+ * @returns {string} Resultado formatado
+ */
+function formatVTEspontaneoResult(vt) {
+  if (vt === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">VT Espontâneo:</span> <span class="result-value">${vt.toFixed(0)} mL</span>`;
+}
+return { calculateVTEspontaneo: calculateVTEspontaneo, formatVTEspontaneoResult: formatVTEspontaneoResult };
+})();
+
+var __mod_ve_espontaneo_15 = (function () {
+/**
+ * Calcula VE Espontâneo (VE = VT × FR / 1000)
+ * @param {number} vt - Volume corrente (mL)
+ * @param {number} fr - Frequência respiratória (irpm)
+ * @returns {number|null} VE espontâneo (L/min) ou null se inválido
+ */
+function calculateVEEspontaneo(vt, fr) {
+  if (isNaN(vt) || isNaN(fr)) return null;
+  return (vt * fr) / 1000;
+}
+
+/**
+ * Formata o resultado do VE Espontâneo
+ * @param {number|null} ve - VE espontâneo (L/min)
+ * @returns {string} Resultado formatado
+ */
+function formatVEEspontaneoResult(ve) {
+  if (ve === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">VE Espontâneo:</span> <span class="result-value">${ve.toFixed(1)} L/min</span>`;
+}
+return { calculateVEEspontaneo: calculateVEEspontaneo, formatVEEspontaneoResult: formatVEEspontaneoResult };
+})();
+
+var __mod_rsbi_16 = (function () {
+/**
+ * Calcula RSBI (Rapid Shallow Breathing Index)
+ * @param {number} fr - Frequência respiratória (irpm)
+ * @param {number} vt - Volume corrente (mL)
+ * @returns {Object} Objeto com rsbi e interpretation
+ */
+function calculateRSBI(fr, vt) {
+  if (isNaN(fr) || isNaN(vt) || vt <= 0) return { rsbi: null, interpretation: '' };
+  
+  const rsbi = fr / (vt / 1000);
+  let interpretation = '';
+  if (rsbi < 105) interpretation = ' ✅ (Sucesso provável)';
+  else interpretation = ' ❌ (Falha provável)';
+  
+  return { rsbi, interpretation };
+}
+
+/**
+ * Formata o resultado do RSBI
+ * @param {Object} result - Objeto com rsbi e interpretation
+ * @returns {string} Resultado formatado
+ */
+function formatRSBIResult(result) {
+  if (result.rsbi === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">RSBI:</span> <span class="result-value">${result.rsbi.toFixed(1)} respirações/min/L</span>${result.interpretation}`;
+}
+return { calculateRSBI: calculateRSBI, formatRSBIResult: formatRSBIResult };
+})();
+
+var __mod_crop_index_17 = (function () {
+/**
+ * Calcula CROP Index
+ * @param {number} cdin - Compliance dinâmica (mL/cmH₂O)
+ * @param {number} pimax - PImax (cmH₂O)
+ * @param {number} pao2 - PaO₂ (mmHg)
+ * @param {number} paco2 - PaCO₂ (mmHg)
+ * @param {number} fr - Frequência respiratória (irpm)
+ * @returns {Object} Objeto com cropIndex e interpretation
+ */
+function calculateCROP(cdin, pimax, pao2, paco2, fr) {
+  if (isNaN(cdin) || isNaN(pimax) || isNaN(pao2) || isNaN(paco2) || isNaN(fr) || paco2 <= 0 || fr <= 0) {
+    return { cropIndex: null, interpretation: '' };
+  }
+  
+  const crop = (cdin * pimax * (pao2 / paco2)) / fr;
+  let interpretation = '';
+  if (crop > 15) interpretation = ' ✅ (Sucesso provável)';
+  else if (crop > 13) interpretation = ' ⚠️ (Inconclusivo)';
+  else interpretation = ' ❌ (Falha provável)';
+  
+  return { cropIndex: crop, interpretation };
+}
+
+/**
+ * Formata o resultado do CROP Index
+ * @param {Object} result - Objeto com cropIndex e interpretation
+ * @returns {string} Resultado formatado
+ */
+function formatCROPResult(result) {
+  if (result.cropIndex === null) return '❌ Preencha todos os campos';
+  return `<span class="result-label">CROP Index:</span> <span class="result-value">${result.cropIndex.toFixed(1)}</span>${result.interpretation}`;
+}
+return { calculateCROP: calculateCROP, formatCROPResult: formatCROPResult };
+})();
+
+var __mod_index_18 = (function (calculateVE, formatVEResult, calculateIE, formatIEResult, calculateCompliance, formatComplianceResult, calculateResistance, formatResistanceResult, calculateDrivingPressure, formatDrivingPressureResult, calculateVolumePesoIdeal, formatVolumePesoIdealResult, calculatePesoIdealHomem, formatPesoIdealHomemResult, calculatePesoIdealMulher, formatPesoIdealMulherResult, calculatePF, formatPFResult, calculatePaCO2Esperado, formatPaCO2EsperadoResult, calculateHCO3Esperado, formatHCO3EsperadoResult, calculateAjusteFR, formatAjusteFRResult, calculateAjusteVT, formatAjusteVTResult, calculateAjusteVE, formatAjusteVEResult, calculateVTEspontaneo, formatVTEspontaneoResult, calculateVEEspontaneo, formatVEEspontaneoResult, calculateRSBI, formatRSBIResult, calculateCROP, formatCROPResult) {
 // Exporta todas as funções de cálculo para ventilação
 
 // Ventilação
-import { calculateVE, formatVEResult } from './volume-minuto.js';
-import { calculateIE, formatIEResult } from './ie-ratio.js';
-import { calculateCompliance, formatComplianceResult } from './compliance.js';
-import { calculateResistance, formatResistanceResult } from './resistance.js';
-import { calculateDrivingPressure, formatDrivingPressureResult } from './driving-pressure.js';
-import { calculateVolumePesoIdeal, formatVolumePesoIdealResult } from './volume-peso-ideal.js';
+
+
+
+
+
+
 
 // Peso
-import { calculatePesoIdealHomem, formatPesoIdealHomemResult } from './peso-ideal-homem.js';
-import { calculatePesoIdealMulher, formatPesoIdealMulherResult } from './peso-ideal-mulher.js';
+
+
 
 // Gasometria
-import { calculatePF, formatPFResult } from './pf-ratio.js';
-import { calculatePaCO2Esperado, formatPaCO2EsperadoResult } from './paco2-esperado.js';
-import { calculateHCO3Esperado, formatHCO3EsperadoResult } from './hco3-esperado.js';
+
+
+
 
 // Ajustes
-import { calculateAjusteFR, formatAjusteFRResult } from './ajuste-fr.js';
-import { calculateAjusteVT, formatAjusteVTResult } from './ajuste-vt.js';
-import { calculateAjusteVE, formatAjusteVEResult } from './ajuste-ve.js';
+
+
+
 
 // Desmame
-import { calculateVTEspontaneo, formatVTEspontaneoResult } from './vt-espontaneo.js';
-import { calculateVEEspontaneo, formatVEEspontaneoResult } from './ve-espontaneo.js';
-import { calculateRSBI, formatRSBIResult } from './rsbi.js';
-import { calculateCROP, formatCROPResult } from './crop-index.js';
+
+
+
+
 
 // Re-exporta todas as funções
-export {
-  // Ventilação
-  calculateVE, formatVEResult,
-  calculateIE, formatIEResult,
-  calculateCompliance, formatComplianceResult,
-  calculateResistance, formatResistanceResult,
-  calculateDrivingPressure, formatDrivingPressureResult,
-  calculateVolumePesoIdeal, formatVolumePesoIdealResult,
-  
-  // Peso
-  calculatePesoIdealHomem, formatPesoIdealHomemResult,
-  calculatePesoIdealMulher, formatPesoIdealMulherResult,
-  
-  // Gasometria
-  calculatePF, formatPFResult,
-  calculatePaCO2Esperado, formatPaCO2EsperadoResult,
-  calculateHCO3Esperado, formatHCO3EsperadoResult,
-  
-  // Ajustes
-  calculateAjusteFR, formatAjusteFRResult,
-  calculateAjusteVT, formatAjusteVTResult,
-  calculateAjusteVE, formatAjusteVEResult,
-  
-  // Desmame
-  calculateVTEspontaneo, formatVTEspontaneoResult,
-  calculateVEEspontaneo, formatVEEspontaneoResult,
-  calculateRSBI, formatRSBIResult,
-  calculateCROP, formatCROPResult
-};
+return { calculateVE: calculateVE, formatVEResult: formatVEResult, calculateIE: calculateIE, formatIEResult: formatIEResult, calculateCompliance: calculateCompliance, formatComplianceResult: formatComplianceResult, calculateResistance: calculateResistance, formatResistanceResult: formatResistanceResult, calculateDrivingPressure: calculateDrivingPressure, formatDrivingPressureResult: formatDrivingPressureResult, calculateVolumePesoIdeal: calculateVolumePesoIdeal, formatVolumePesoIdealResult: formatVolumePesoIdealResult, calculatePesoIdealHomem: calculatePesoIdealHomem, formatPesoIdealHomemResult: formatPesoIdealHomemResult, calculatePesoIdealMulher: calculatePesoIdealMulher, formatPesoIdealMulherResult: formatPesoIdealMulherResult, calculatePF: calculatePF, formatPFResult: formatPFResult, calculatePaCO2Esperado: calculatePaCO2Esperado, formatPaCO2EsperadoResult: formatPaCO2EsperadoResult, calculateHCO3Esperado: calculateHCO3Esperado, formatHCO3EsperadoResult: formatHCO3EsperadoResult, calculateAjusteFR: calculateAjusteFR, formatAjusteFRResult: formatAjusteFRResult, calculateAjusteVT: calculateAjusteVT, formatAjusteVTResult: formatAjusteVTResult, calculateAjusteVE: calculateAjusteVE, formatAjusteVEResult: formatAjusteVEResult, calculateVTEspontaneo: calculateVTEspontaneo, formatVTEspontaneoResult: formatVTEspontaneoResult, calculateVEEspontaneo: calculateVEEspontaneo, formatVEEspontaneoResult: formatVEEspontaneoResult, calculateRSBI: calculateRSBI, formatRSBIResult: formatRSBIResult, calculateCROP: calculateCROP, formatCROPResult: formatCROPResult };
+})(__mod_volume_minuto_0.calculateVE, __mod_volume_minuto_0.formatVEResult, __mod_ie_ratio_1.calculateIE, __mod_ie_ratio_1.formatIEResult, __mod_compliance_2.calculateCompliance, __mod_compliance_2.formatComplianceResult, __mod_resistance_3.calculateResistance, __mod_resistance_3.formatResistanceResult, __mod_driving_pressure_4.calculateDrivingPressure, __mod_driving_pressure_4.formatDrivingPressureResult, __mod_volume_peso_ideal_5.calculateVolumePesoIdeal, __mod_volume_peso_ideal_5.formatVolumePesoIdealResult, __mod_peso_ideal_homem_6.calculatePesoIdealHomem, __mod_peso_ideal_homem_6.formatPesoIdealHomemResult, __mod_peso_ideal_mulher_7.calculatePesoIdealMulher, __mod_peso_ideal_mulher_7.formatPesoIdealMulherResult, __mod_pf_ratio_8.calculatePF, __mod_pf_ratio_8.formatPFResult, __mod_paco2_esperado_9.calculatePaCO2Esperado, __mod_paco2_esperado_9.formatPaCO2EsperadoResult, __mod_hco3_esperado_10.calculateHCO3Esperado, __mod_hco3_esperado_10.formatHCO3EsperadoResult, __mod_ajuste_fr_11.calculateAjusteFR, __mod_ajuste_fr_11.formatAjusteFRResult, __mod_ajuste_vt_12.calculateAjusteVT, __mod_ajuste_vt_12.formatAjusteVTResult, __mod_ajuste_ve_13.calculateAjusteVE, __mod_ajuste_ve_13.formatAjusteVEResult, __mod_vt_espontaneo_14.calculateVTEspontaneo, __mod_vt_espontaneo_14.formatVTEspontaneoResult, __mod_ve_espontaneo_15.calculateVEEspontaneo, __mod_ve_espontaneo_15.formatVEEspontaneoResult, __mod_rsbi_16.calculateRSBI, __mod_rsbi_16.formatRSBIResult, __mod_crop_index_17.calculateCROP, __mod_crop_index_17.formatCROPResult);
 
-
+var __mod_state_19 = (function (calculations) {
 /**
  * Gerenciador de estado para a calculadora de ventilação mecânica
  * Mantém inputs e outputs sincronizados e recalcula automaticamente
  */
 
-import * as calculations from './calculations/index.js';
+
 
 // Estado inicial
 const state = {
@@ -173,7 +632,7 @@ const state = {
  * @param {string} name - Nome do input
  * @param {number|string|boolean} value - Valor do input
  */
-export function updateInput(name, value) {
+function updateInput(name, value) {
   state.inputs[name] = value;
   recalculate();
 }
@@ -297,7 +756,7 @@ function recalculate() {
  * Abre uma aba
  * @param {string} tabName - Nome da aba
  */
-export function openTab(tabName) {
+function openTab(tabName) {
   state.activeTab = tabName;
   updateInput('activeTab', tabName);
 }
@@ -306,16 +765,17 @@ export function openTab(tabName) {
 recalculate();
 
 // Exporta o estado e funções
-export { state, updateInput, openTab };
+return { updateInput: updateInput, openTab: openTab, state: state };
+})(__mod_index_18);
 
-
+var __mod_ui_20 = (function (state, updateInput, openTab, calculations) {
 /**
  * Manipulação de DOM e eventos para a calculadora de ventilação mecânica
  * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
  */
 
-import { state, updateInput, openTab } from './state.js';
-import * as calculations from './calculations/index.js';
+
+
 
 // Função para copiar resultado
 function copyResult(elementId) {
@@ -514,7 +974,7 @@ function calcChecklist() {
 }
 
 // Mapeamento de ações para event delegation
-export const actions = {
+const actions = {
   openTab,
   calcVE,
   calcIE,
@@ -578,28 +1038,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializa o DOM
   updateDOM();
 });
-
-
-
-// Firefox MV2 event delegation (replaces inline onclick)
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-fn]').forEach(function (el) {
-    var fn = el.getAttribute('data-fn');
-    var arg = el.getAttribute('data-arg');
-    el.addEventListener('click', function (e) {
-      if (typeof window[fn] === 'function') {
-        arg !== null ? window[fn](e, arg) : window[fn]();
-      }
-    });
-  });
-
-  // Adicional: suporte para data-action (usado em ui.js)
-  document.querySelectorAll('[data-action]').forEach(function (el) {
-    var action = el.getAttribute('data-action');
-    el.addEventListener('click', function (e) {
-      if (typeof window[action] === 'function') {
-        window[action](e);
-      }
-    });
-  });
-});
+return { actions: actions };
+})(__mod_state_19.state, __mod_state_19.updateInput, __mod_state_19.openTab, __mod_index_18);

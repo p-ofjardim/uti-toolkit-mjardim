@@ -3,19 +3,76 @@
  * Licensed under the MIT License (see LICENSE for details).
  */
 
+var __mod_tbw_percentage_0 = (function () {
+/**
+ * Calcula a porcentagem de TBW (Total Body Water) com base em idade e sexo
+ * @param {number} age - Idade em anos
+ * @param {string} gender - Sexo ('male' ou 'female')
+ * @returns {number} Porcentagem de TBW (0.45 a 0.6)
+ */
+function calculateTBWPercentage(age, gender) {
+  if (age >= 65) {
+    // Idoso
+    return gender === 'male' ? 0.5 : 0.45;
+  } else {
+    // Adulto
+    return gender === 'male' ? 0.6 : 0.5;
+  }
+}
+return { calculateTBWPercentage: calculateTBWPercentage };
+})();
 
+var __mod_water_deficit_1 = (function () {
+/**
+ * Calcula o déficit de água livre usando a fórmula de Adrogue-Madias (NEJM 2000)
+ * @param {number} sodium - Sódio sérico atual (mEq/L)
+ * @param {number} desiredSodium - Sódio desejado (mEq/L)
+ * @param {number} weight - Peso do paciente (kg)
+ * @param {number} tbwPercentage - Porcentagem de TBW (Total Body Water)
+ * @returns {number} Déficit de água livre em litros
+ */
+function calculateWaterDeficit(sodium, desiredSodium, weight, tbwPercentage) {
+  // Fórmula: Déficit (L) = %TBW × Peso × (Na_atual / Na_desejado - 1)
+  return tbwPercentage * weight * (sodium / desiredSodium - 1);
+}
+return { calculateWaterDeficit: calculateWaterDeficit };
+})();
+
+var __mod_correction_rate_2 = (function () {
+/**
+ * Calcula a taxa de correção máxima recomendada (8-10 mEq/L em 24h)
+ * @param {number} currentDifference - Diferença atual entre sódio e alvo (mEq/L)
+ * @returns {number} Taxa de correção máxima (mEq/L)
+ */
+function calculateMaxCorrectionRate(currentDifference) {
+  const MAX_CORRECTION = 10; // 10 mEq/L em 24h
+  return Math.min(MAX_CORRECTION, Math.abs(currentDifference));
+}
+
+/**
+ * Calcula a porcentagem de correção recomendada
+ * @param {number} currentDifference - Diferença atual entre sódio e alvo (mEq/L)
+ * @returns {number} Porcentagem de correção (0-100)
+ */
+function calculateCorrectionPercentage(currentDifference) {
+  const maxCorrection = calculateMaxCorrectionRate(currentDifference);
+  return Math.min((maxCorrection / Math.abs(currentDifference)) * 100, 100);
+}
+return { calculateMaxCorrectionRate: calculateMaxCorrectionRate, calculateCorrectionPercentage: calculateCorrectionPercentage };
+})();
+
+var __mod_index_3 = (function (__reexport_calculateTBWPercentage, __reexport_calculateWaterDeficit, __reexport_calculateMaxCorrectionRate, __reexport_calculateCorrectionPercentage) {
 // Exporta todas as funções de cálculo para águia livre
-export { calculateTBWPercentage } from './tbw-percentage.js';
-export { calculateWaterDeficit } from './water-deficit.js';
-export { calculateMaxCorrectionRate, calculateCorrectionPercentage } from './correction-rate.js';
+return { calculateTBWPercentage: __reexport_calculateTBWPercentage, calculateWaterDeficit: __reexport_calculateWaterDeficit, calculateMaxCorrectionRate: __reexport_calculateMaxCorrectionRate, calculateCorrectionPercentage: __reexport_calculateCorrectionPercentage };
+})(__mod_tbw_percentage_0.calculateTBWPercentage, __mod_water_deficit_1.calculateWaterDeficit, __mod_correction_rate_2.calculateMaxCorrectionRate, __mod_correction_rate_2.calculateCorrectionPercentage);
 
-
+var __mod_state_4 = (function (calculations) {
 /**
  * Gerenciador de estado para a calculadora de água livre
  * Mantém inputs e outputs sincronizados e recalcula automaticamente
  */
 
-import * as calculations from './calculations/index.js';
+
 
 // Estado inicial
 const state = {
@@ -48,7 +105,7 @@ const state = {
  * @param {string} name - Nome do input
  * @param {number|string} value - Valor do input
  */
-export function updateInput(name, value) {
+function updateInput(name, value) {
   // Atualiza o input
   state.inputs[name] = value;
   
@@ -87,15 +144,16 @@ function recalculate() {
 recalculate();
 
 // Exporta o estado e funções
-export { state, updateInput };
+return { updateInput: updateInput, state: state };
+})(__mod_index_3);
 
-
+var __mod_ui_5 = (function (state, updateInput) {
 /**
  * Manipulação de DOM e eventos para a calculadora de água livre
  * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
  */
 
-import { state, updateInput } from './state.js';
+
 
 // Elementos do DOM
 const form = document.getElementById('waterDeficitForm');
@@ -186,27 +244,4 @@ inputs.forEach(input => {
 // Inicializa o DOM
 updateDOM();
 
-
-
-// Firefox MV2 event delegation (replaces inline onclick)
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-fn]').forEach(function (el) {
-    var fn = el.getAttribute('data-fn');
-    var arg = el.getAttribute('data-arg');
-    el.addEventListener('click', function (e) {
-      if (typeof window[fn] === 'function') {
-        arg !== null ? window[fn](e, arg) : window[fn]();
-      }
-    });
-  });
-
-  // Adicional: suporte para data-action (usado em ui.js)
-  document.querySelectorAll('[data-action]').forEach(function (el) {
-    var action = el.getAttribute('data-action');
-    el.addEventListener('click', function (e) {
-      if (typeof window[action] === 'function') {
-        window[action](e);
-      }
-    });
-  });
-});
+})(__mod_state_4.state, __mod_state_4.updateInput);

@@ -3,26 +3,159 @@
  * Licensed under the MIT License (see LICENSE for details).
  */
 
+var __mod_etomidate_0 = (function () {
+/**
+ * Calcula dose de Etomidato
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateEtomidate(peso, concentracao = 2) {
+  const dose = 0.3 * peso; // 0.3 mg/kg
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateEtomidate: calculateEtomidate };
+})();
 
+var __mod_ketamine_1 = (function () {
+/**
+ * Calcula dose de Cetamina
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} doseMgKg - Dose (mg/kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateKetamine(peso, doseMgKg = 1, concentracao = 10) {
+  const dose = doseMgKg * peso;
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateKetamine: calculateKetamine };
+})();
+
+var __mod_propofol_2 = (function () {
+/**
+ * Calcula dose de Propofol
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} doseMgKg - Dose (mg/kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculatePropofol(peso, doseMgKg = 1, concentracao = 10) {
+  const dose = doseMgKg * peso;
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculatePropofol: calculatePropofol };
+})();
+
+var __mod_midazolam_3 = (function () {
+/**
+ * Calcula dose de Midazolam
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} doseMgKg - Dose (mg/kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateMidazolam(peso, doseMgKg = 0.1, concentracao = 1) {
+  const dose = doseMgKg * peso;
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateMidazolam: calculateMidazolam };
+})();
+
+var __mod_methohexital_4 = (function () {
+/**
+ * Calcula dose de Metohexital
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateMethohexital(peso, concentracao = 10) {
+  const dose = 1.5 * peso; // 1.5 mg/kg
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateMethohexital: calculateMethohexital };
+})();
+
+var __mod_thiopental_5 = (function () {
+/**
+ * Calcula dose de Tiopental
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} doseMgKg - Dose (mg/kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateThiopental(peso, doseMgKg = 3, concentracao = 25) {
+  const dose = doseMgKg * peso;
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateThiopental: calculateThiopental };
+})();
+
+var __mod_succinylcholine_6 = (function () {
+/**
+ * Calcula dose de Succinilcolina
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateSuccinylcholine(peso, concentracao = 20) {
+  const dose = 1.5 * peso; // 1.5 mg/kg
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateSuccinylcholine: calculateSuccinylcholine };
+})();
+
+var __mod_rocuronium_7 = (function () {
+/**
+ * Calcula dose de Rocurônio
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} doseMgKg - Dose (mg/kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateRocuronium(peso, doseMgKg = 0.6, concentracao = 10) {
+  const dose = doseMgKg * peso;
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateRocuronium: calculateRocuronium };
+})();
+
+var __mod_vecuronium_8 = (function () {
+/**
+ * Calcula dose de Vecurônio
+ * @param {number} peso - Peso do paciente (kg)
+ * @param {number} doseMgKg - Dose (mg/kg)
+ * @param {number} concentracao - Concentração (mg/mL)
+ * @returns {Object} Objeto com doseTotal e volume
+ */
+function calculateVecuronium(peso, doseMgKg = 0.1, concentracao = 10) {
+  const dose = doseMgKg * peso;
+  const volume = dose / concentracao;
+  return { doseTotal: dose, volume };
+}
+return { calculateVecuronium: calculateVecuronium };
+})();
+
+var __mod_index_9 = (function (__reexport_calculateEtomidate, __reexport_calculateKetamine, __reexport_calculatePropofol, __reexport_calculateMidazolam, __reexport_calculateMethohexital, __reexport_calculateThiopental, __reexport_calculateSuccinylcholine, __reexport_calculateRocuronium, __reexport_calculateVecuronium) {
 // Exporta todas as funções de cálculo para RSI
+return { calculateEtomidate: __reexport_calculateEtomidate, calculateKetamine: __reexport_calculateKetamine, calculatePropofol: __reexport_calculatePropofol, calculateMidazolam: __reexport_calculateMidazolam, calculateMethohexital: __reexport_calculateMethohexital, calculateThiopental: __reexport_calculateThiopental, calculateSuccinylcholine: __reexport_calculateSuccinylcholine, calculateRocuronium: __reexport_calculateRocuronium, calculateVecuronium: __reexport_calculateVecuronium };
+})(__mod_etomidate_0.calculateEtomidate, __mod_ketamine_1.calculateKetamine, __mod_propofol_2.calculatePropofol, __mod_midazolam_3.calculateMidazolam, __mod_methohexital_4.calculateMethohexital, __mod_thiopental_5.calculateThiopental, __mod_succinylcholine_6.calculateSuccinylcholine, __mod_rocuronium_7.calculateRocuronium, __mod_vecuronium_8.calculateVecuronium);
 
-export { calculateEtomidate } from './etomidate.js';
-export { calculateKetamine } from './ketamine.js';
-export { calculatePropofol } from './propofol.js';
-export { calculateMidazolam } from './midazolam.js';
-export { calculateMethohexital } from './methohexital.js';
-export { calculateThiopental } from './thiopental.js';
-export { calculateSuccinylcholine } from './succinylcholine.js';
-export { calculateRocuronium } from './rocuronium.js';
-export { calculateVecuronium } from './vecuronium.js';
-
-
+var __mod_state_10 = (function (calculations) {
 /**
  * Gerenciador de estado para a calculadora RSI
  * Mantém inputs e outputs sincronizados e recalcula automaticamente
  */
 
-import * as calculations from './calculations/index.js';
+
 
 // Estado inicial
 const state = {
@@ -69,7 +202,7 @@ const state = {
  * @param {string} name - Nome do input
  * @param {number|string} value - Valor do input
  */
-export function updateInput(name, value) {
+function updateInput(name, value) {
   state.inputs[name] = value;
   recalculate();
 }
@@ -132,7 +265,7 @@ function generateResultadoText() {
  * Mostra uma aba
  * @param {string} tabName - Nome da aba
  */
-export function showTab(tabName) {
+function showTab(tabName) {
   state.inputs.activeTab = tabName;
   updateInput('activeTab', tabName);
 }
@@ -140,7 +273,7 @@ export function showTab(tabName) {
 /**
  * Copia o resultado para a área de transferência
  */
-export function copyResult() {
+function copyResult() {
   if (!state.outputs.resultadoText || state.outputs.resultadoText.trim() === '') {
     alert('Nenhum texto para copiar');
     return;
@@ -156,15 +289,16 @@ export function copyResult() {
 recalculate();
 
 // Exporta o estado e funções
-export { state, updateInput, showTab, copyResult };
+return { updateInput: updateInput, showTab: showTab, copyResult: copyResult, state: state };
+})(__mod_index_9);
 
-
+var __mod_ui_11 = (function (state, updateInput, showTab, copyResult) {
 /**
  * Manipulação de DOM e eventos para a calculadora RSI
  * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
  */
 
-import { state, updateInput, showTab, copyResult } from './state.js';
+
 
 // Função para atualizar o DOM
 function updateDOM() {
@@ -255,7 +389,7 @@ function updateDOM() {
 }
 
 // Mapeamento de ações para event delegation
-export const actions = {
+const actions = {
   showTab,
   copyResult
 };
@@ -299,28 +433,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializa o DOM
   updateDOM();
 });
-
-
-
-// Firefox MV2 event delegation (replaces inline onclick)
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-fn]').forEach(function (el) {
-    var fn = el.getAttribute('data-fn');
-    var arg = el.getAttribute('data-arg');
-    el.addEventListener('click', function (e) {
-      if (typeof window[fn] === 'function') {
-        arg !== null ? window[fn](e, arg) : window[fn]();
-      }
-    });
-  });
-
-  // Adicional: suporte para data-action (usado em ui.js)
-  document.querySelectorAll('[data-action]').forEach(function (el) {
-    var action = el.getAttribute('data-action');
-    el.addEventListener('click', function (e) {
-      if (typeof window[action] === 'function') {
-        window[action](e);
-      }
-    });
-  });
-});
+return { actions: actions };
+})(__mod_state_10.state, __mod_state_10.updateInput, __mod_state_10.showTab, __mod_state_10.copyResult);

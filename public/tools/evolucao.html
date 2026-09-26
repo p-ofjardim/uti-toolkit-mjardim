@@ -6,7 +6,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <title>Gerador de Evolução Clínica - UTI</title>
     
-<<style>/* ===== Shared Styles for UTI Toolkit ===== */
+<style>/* ===== Shared Styles for UTI Toolkit ===== */
 /* Common styles used across all tools */
 
 /* Base Styles */
@@ -827,35 +827,497 @@ button.copy-btn:hover {
         </div>
     </div>
     
-    <script type="module" src="ui.js"></script>
-<script type="module">
+    
+<script>
+var __mod_preencher_estabilidade_0 = (function () {
+// Pure function to return stability defaults
+// Returns an object with all field values for clinical stability
+function preencherEstabilidade() {
+  return {
+    ventilac: 'Estabilidade em ar ambiente',
+    neuro: 'Estável',
+    rass: '',
+    sedacao: 'Sem sedação',
+    atb: 'Sem antibiótico',
+    febre: 'Afebril',
+    infecto: 'Sem critérios infecciosos',
+    diurese: 'Diurese satisfatória',
+    diuretico: 'Sem diurético',
+    bh: 'Neutro',
+    'esc-renal': 'Função renal preservada',
+    hemato: 'Estável',
+    hemoterapia: 'Sem hemoterapia',
+    glicemias: 'Normoglicêmico',
+    dhes: 'Sem DHEs',
+    bic: 'Sem DABs',
+    dieta: 'Via oral',
+    'disf-tgi': 'Sem disfunção do TGI',
+    evacuac: 'Evacuações presentes',
+    cvc: 'Sem CVC',
+    cdl: 'Sem CDL',
+    pia: 'Sem PIA',
+    svd: 'Sem SVD',
+    'les-pele': 'Sem lesões de pele',
+    profilax: 'Sem profilaxias farmacológicas',
+    nora: '',
+    vaso: '',
+    dobuta: '',
+    tridil: '',
+    nipride: '',
+    'ventilac-valor': '',
+    vm: '',
+    adapt: '',
+    'dieta-valor': ''
+  };
+}
+return { preencherEstabilidade: preencherEstabilidade };
+})();
+
+var __mod_limpar_formulario_1 = (function () {
+// Pure function to return empty state for all form fields
+// Returns an object with all field values set to empty strings
+function limparFormulario() {
+  return {
+    nora: '',
+    vaso: '',
+    dobuta: '',
+    tridil: '',
+    nipride: '',
+    ventilac: '',
+    'ventilac-valor': '',
+    vm: '',
+    adapt: '',
+    neuro: '',
+    rass: '',
+    sedacao: '',
+    atb: '',
+    febre: '',
+    infecto: '',
+    diurese: '',
+    diuretico: '',
+    bh: '',
+    'esc-renal': '',
+    hemato: '',
+    hemoterapia: '',
+    glicemias: '',
+    dhes: '',
+    bic: '',
+    dieta: '',
+    'dieta-valor': '',
+    'disf-tgi': '',
+    evacuac: '',
+    cvc: '',
+    cdl: '',
+    pia: '',
+    svd: '',
+    'les-pele': '',
+    profilax: ''
+  };
+}
+return { limparFormulario: limparFormulario };
+})();
+
+var __mod_atualizar_opcoes_diurese_2 = (function () {
+// Pure function to return gender-specific diurese options
+// Returns object with oligurico/anurico options based on gender
+function atualizarOpcoesDiurese(sexo) {
+  const isFem = sexo === 'F';
+  return {
+    oligurico: isFem ? 'Oligúrica' : 'Oligúrico',
+    anurico: isFem ? 'Anúrica' : 'Anúrico'
+  };
+}
+return { atualizarOpcoesDiurese: atualizarOpcoesDiurese };
+})();
+
+var __mod_ajustar_genero_3 = (function () {
+// Pure function to adjust gender-specific terms in text
+// Takes text and gender, returns adjusted text
+function ajustarGenero(texto, sexo) {
+  if (sexo === 'F') {
+    texto = texto.replace(/adaptado/gi, 'adaptada');
+    texto = texto.replace(/olig\u00farico/gi, 'olig\u00farica');
+    texto = texto.replace(/an\u00farico/gi, 'an\u00farica');
+    texto = texto.replace(/normoglic\u00eamico/gi, 'normoglic\u00eamica');
+    texto = texto.replace(/disglic\u00eamico/gi, 'disglic\u00eamica');
+    texto = texto.replace(/hipoglic\u00eamico/gi, 'hipoglic\u00eamica');
+    texto = texto.replace(/hipot\u00e9rmico/gi, 'hipot\u00e9rmica');
+  }
+  return texto;
+}
+return { ajustarGenero: ajustarGenero };
+})();
+
+var __mod_processar_hemodinamica_4 = (function () {
+// Pure function: processes hemodynamics section
+// Input: nora, vaso, dobuta, tridil, nipride (all strings)
+// Output: string describing hemodynamic state
+function processarHemodinamica(nora, vaso, dobuta, tridil, nipride) {
+  // Se todos vazios ou zero
+  if (!nora && !vaso && !dobuta && !tridil && !nipride) {
+    return 'Estabilidade hemodinâmica.';
+  }
+
+  // Se algum tem valor
+  const drogas = [];
+  if (nora) drogas.push(`Noradrenalina a ${nora} mL/h`);
+  if (vaso) drogas.push(`Vasopressina a ${vaso} U/min`);
+  if (dobuta) drogas.push(`Dobutamina a ${dobuta} mcg/kg/min`);
+  if (tridil) drogas.push(`Nitroglicerina a ${tridil} mcg/min`);
+  if (nipride) drogas.push(`Nitroprussiato a ${nipride} mcg/kg/min`);
+
+  return `Instabilidade hemodinâmica, em uso de ${drogas.join(', ')}.`;
+}
+return { processarHemodinamica: processarHemodinamica };
+})();
+
+var __mod_processar_ventilacao_5 = (function () {
+// Pure function: processes ventilation section
+// Input: ventilac, ventilacValor, vm, adapt (all strings)
+// Output: string describing ventilation state
+function processarVentilacao(ventilac, ventilacValor, vm, adapt) {
+  if (!ventilac) return '';
+
+  let texto = '';
+
+  switch (ventilac) {
+    case 'Estabilidade em ar ambiente':
+      texto = 'Estabilidade ventilatória';
+      break;
+    case 'Estabilidade em oxigenoterapia':
+      texto = 'Estabilidade ventilatória, em oxigenoterapia de baixo fluxo';
+      break;
+    case 'Traqueostomia com oxigenoterapia':
+      texto = 'Estabilidade ventilatória, em oxigenoterapia pela traqueostomia';
+      break;
+    case 'Traqueostomia em ar ambiente':
+      texto = 'Estabilidade ventilatória, traqueostomia em ar ambiente';
+      break;
+    case 'Instabilidade':
+      texto = 'Instabilidade ventilatória';
+      break;
+    case 'Masc. Alto Fluxo':
+      texto = `Instabilidade ventilatória, em uso de máscara de alto fluxo a ${ventilacValor || '???'} L/min`;
+      break;
+    case 'Masc. Venturi':
+      texto = `Instabilidade ventilatória, em uso de máscara de Venturi a ${ventilacValor || '???'}%`;
+      break;
+    default:
+      return '';
+  }
+
+  // Adiciona VM e adaptação se preenchidos
+  if (vm) {
+    const adaptText = adapt ? `, ${adapt.toLowerCase()}` : '';
+    texto += ` em ${vm}${adaptText}`;
+  }
+
+  return texto + '.';
+}
+return { processarVentilacao: processarVentilacao };
+})();
+
+var __mod_processar_neuro_6 = (function () {
+// Pure function: processes neurology section
+// Input: neuro, rass, sedacao (all strings)
+// Output: string describing neurological state
+function processarNeuro(neuro, rass, sedacao) {
+  if (!neuro) return '';
+
+  let texto = neuro === 'Estável' ? 'Estabilidade neurológica' : 'Instabilidade neurológica';
+
+  if (rass) {
+    texto += `, RASS ${rass}`;
+  }
+
+  if (sedacao) {
+    texto += `; ${sedacao.toLowerCase()}`;
+  }
+
+  return texto + '.';
+}
+return { processarNeuro: processarNeuro };
+})();
+
+var __mod_processar_infecto_7 = (function () {
+// Pure function: processes infection section
+// Input: atb, febre, infecto (all strings)
+// Output: string describing infection state
+function processarInfecto(atb, febre, infecto) {
+  const partes = [];
+  if (atb) partes.push(atb);
+  if (febre) partes.push(febre.toLowerCase());
+  if (infecto) partes.push(infecto.toLowerCase());
+
+  if (partes.length === 0) return '';
+
+  return partes.join(', ') + '.';
+}
+return { processarInfecto: processarInfecto };
+})();
+
+var __mod_processar_renal_8 = (function () {
+// Pure function: processes renal section
+// Input: diurese, diuretico, bh, escRenal (all strings)
+// Output: string describing renal state
+function processarRenal(diurese, diuretico, bh, escRenal) {
+  const partes = [];
+  if (diurese) partes.push(diurese);
+  if (diuretico) partes.push(diuretico.toLowerCase());
+  if (bh) partes.push(`balanço hídrico ${bh.toLowerCase()}`);
+  if (escRenal) partes.push(escRenal.toLowerCase());
+
+  if (partes.length === 0) return '';
+
+  // Formata com ponto e vírgula
+  return partes.join('; ') + '.';
+}
+return { processarRenal: processarRenal };
+})();
+
+var __mod_processar_hematologico_9 = (function () {
+// Pure function: processes hematology section
+// Input: hemato, hemoterapia (strings)
+// Output: string describing hematological state
+function processarHematologico(hemato, hemoterapia) {
+  if (!hemato) return '';
+
+  let texto = hemato === 'Estável' ? 'Estabilidade hematológica' : 'Instabilidade hematológica';
+
+  if (hemoterapia && hemoterapia !== 'Sem hemoterapia') {
+    texto += `, ${hemoterapia.toLowerCase()}`;
+  }
+
+  return texto.charAt(0).toUpperCase() + texto.slice(1) + '.';
+}
+return { processarHematologico: processarHematologico };
+})();
+
+var __mod_processar_metabolico_10 = (function () {
+// Pure function: processes metabolic section
+// Input: glicemias, dhes, bic (all strings)
+// Output: string describing metabolic state
+function processarMetabolico(glicemias, dhes, bic) {
+  // Valores considerados "normais"
+  const glicemiasNormal = glicemias === 'Normoglicêmico' || !glicemias;
+  const dhesNormal = dhes === 'Sem DHEs' || !dhes;
+  const bicNormal = bic === 'Sem DABs' || !bic;
+
+  // Se todos estiverem normais
+  if (glicemiasNormal && dhesNormal && bicNormal) {
+    return 'Estabilidade metabólica.';
+  }
+
+  // Caso contrário, lista apenas os não normais
+  const partes = [];
+  if (glicemias && !glicemiasNormal) partes.push(glicemias.toLowerCase());
+  if (dhes && !dhesNormal) partes.push(dhes);
+  if (bic && !bicNormal) partes.push(bic.toLowerCase());
+
+  if (partes.length === 0) return '';
+
+  return 'Instabilidade metabólica; ' + partes.join('; ') + '.';
+}
+return { processarMetabolico: processarMetabolico };
+})();
+
+var __mod_processar_nutricao_11 = (function () {
+// Pure function: processes nutrition section
+// Input: dieta, dietaValor, disfTgi, evacuac (all strings)
+// Output: string describing nutrition state
+function processarNutricao(dieta, dietaValor, disfTgi, evacuac) {
+  const partes = [];
+  if (dieta) {
+    if (dieta === 'Dieta enteral' && dietaValor) {
+      partes.push(`Tolerando dieta enteral a ${dietaValor}`);
+    } else if (dieta === 'NPT') {
+      partes.push(`Tolerando ${dieta} a ${dietaValor || '???'} mL/h`);
+    } else if (dieta === 'NPP') {
+      partes.push(`Tolerando ${dieta} a ${dietaValor || '???'} mL/h`);
+    } else if (dieta === 'Via oral') {
+      partes.push('Tolerando dieta via oral');
+    } else if (dieta) {
+      partes.push(dieta.charAt(0).toUpperCase() + dieta.slice(1));
+    }
+  }
+  if (disfTgi && disfTgi !== 'Sem disfunção do TGI') {
+    partes.push(disfTgi.toLowerCase());
+  }
+  if (evacuac) {
+    partes.push(evacuac.toLowerCase());
+  }
+
+  if (partes.length === 0) return '';
+
+  return partes.join('; ') + '.';
+}
+return { processarNutricao: processarNutricao };
+})();
+
+var __mod_processar_lesoes_pele_12 = (function () {
+// Pure function: processes skin lesions section
+// Input: lesPele (string)
+// Output: string describing skin lesion state
+function processarLesoesPele(lesPele) {
+  if (!lesPele) return '';
+  return lesPele + '.';
+}
+return { processarLesoesPele: processarLesoesPele };
+})();
+
+var __mod_processar_invasoes_13 = (function () {
+// Pure function: processes invasions section
+// Input: cvc, cdl, pia, svd (all strings)
+// Output: string describing invasion state
+function processarInvasoes(cvc, cdl, pia, svd) {
+  const invasoes = [];
+  if (cvc && cvc !== 'Sem CVC') invasoes.push(`CVC em ${cvc}`);
+  if (cdl && cdl !== 'Sem CDL') invasoes.push(`CDL em ${cdl}`);
+  if (pia && pia !== 'Sem PIA') invasoes.push(`PIA em ${pia}`);
+  if (svd === 'Com SVD') invasoes.push('em uso de SVD');
+
+  if (invasoes.length === 0) {
+    return 'Sem invasões.';
+  }
+
+  return invasoes.join('; ') + '.';
+}
+return { processarInvasoes: processarInvasoes };
+})();
+
+var __mod_processar_profilaxia_14 = (function () {
+// Pure function: processes prophylaxis section
+// Input: profilax (string)
+// Output: string describing prophylaxis state
+function processarProfilaxia(profilax) {
+  if (!profilax) return '';
+  return profilax + '.';
+}
+return { processarProfilaxia: processarProfilaxia };
+})();
+
+var __mod_gerar_evolucao_15 = (function (processarHemodinamica, processarVentilacao, processarNeuro, processarInfecto, processarRenal, processarHematologico, processarMetabolico, processarNutricao, processarLesoesPele, processarInvasoes, processarProfilaxia) {
+// Pure function: orchestrates all section processors to generate evolution text
+// Input: all form inputs as an object
+// Output: final evolution text string
+
+// Import all processor functions
+
+
+
+
+
+
+
+
+
+
+
+
+function gerarEvolucao(inputs) {
+  const {
+    box,
+    data,
+    sexo,
+    nora,
+    vaso,
+    dobuta,
+    tridil,
+    nipride,
+    ventilac,
+    'ventilac-valor': ventilacValor,
+    vm,
+    adapt,
+    neuro,
+    rass,
+    sedacao,
+    atb,
+    febre,
+    infecto,
+    diurese,
+    diuretico,
+    bh,
+    'esc-renal': escRenal,
+    hemato,
+    hemoterapia,
+    glicemias,
+    dhes,
+    bic,
+    dieta,
+    'dieta-valor': dietaValor,
+    'disf-tgi': disfTgi,
+    evacuac,
+    cvc,
+    cdl,
+    pia,
+    svd,
+    'les-pele': lesPele,
+    profilax
+  } = inputs;
+
+  const linhas = [];
+
+  // 1. HEMODINÂMICA
+  const hemoText = processarHemodinamica(nora, vaso, dobuta, tridil, nipride);
+  if (hemoText) linhas.push(hemoText);
+
+  // 2. VENTILAÇÃO
+  const ventText = processarVentilacao(ventilac, ventilacValor, vm, adapt);
+  if (ventText) linhas.push(ventText);
+
+  // 3. NEUROLÓGICO + SEDAÇÃO
+  const neuroText = processarNeuro(neuro, rass, sedacao);
+  if (neuroText) linhas.push(neuroText);
+
+  // 4. INFECÇÃO
+  const infectoText = processarInfecto(atb, febre, infecto);
+  if (infectoText) linhas.push(infectoText);
+
+  // 5. RENAL
+  const renalText = processarRenal(diurese, diuretico, bh, escRenal);
+  if (renalText) linhas.push(renalText);
+
+  // 6. HEMATOLÓGICO
+  const hematologicoText = processarHematologico(hemato, hemoterapia);
+  if (hematologicoText) linhas.push(hematologicoText);
+
+  // 7. METABÓLICO
+  const metabolicoText = processarMetabolico(glicemias, dhes, bic);
+  if (metabolicoText) linhas.push(metabolicoText);
+
+  // 8. NUTRIÇÃO + ELIMINAÇÃO
+  const nutricaoText = processarNutricao(dieta, dietaValor, disfTgi, evacuac);
+  if (nutricaoText) linhas.push(nutricaoText);
+
+  // 9. LESÕES DE PELE
+  const lesoesPeleText = processarLesoesPele(lesPele);
+  if (lesoesPeleText) linhas.push(lesoesPeleText);
+
+  // 10. INVASÕES
+  const invasoesText = processarInvasoes(cvc, cdl, pia, svd);
+  if (invasoesText) linhas.push(invasoesText);
+
+  // 11. PROFILAXIA
+  const profilaxiaText = processarProfilaxia(profilax);
+  if (profilaxiaText) linhas.push(profilaxiaText);
+
+  // Monta o texto final
+  let textoFinal = `# Box ${box}\n\n`;
+  textoFinal += linhas.join('\n\n');
+
+  return textoFinal;
+}
+return { gerarEvolucao: gerarEvolucao };
+})(__mod_processar_hemodinamica_4.processarHemodinamica, __mod_processar_ventilacao_5.processarVentilacao, __mod_processar_neuro_6.processarNeuro, __mod_processar_infecto_7.processarInfecto, __mod_processar_renal_8.processarRenal, __mod_processar_hematologico_9.processarHematologico, __mod_processar_metabolico_10.processarMetabolico, __mod_processar_nutricao_11.processarNutricao, __mod_processar_lesoes_pele_12.processarLesoesPele, __mod_processar_invasoes_13.processarInvasoes, __mod_processar_profilaxia_14.processarProfilaxia);
+
+var __mod_index_16 = (function (__reexport_preencherEstabilidade, __reexport_limparFormulario, __reexport_atualizarOpcoesDiurese, __reexport_ajustarGenero, __reexport_processarHemodinamica, __reexport_processarVentilacao, __reexport_processarNeuro, __reexport_processarInfecto, __reexport_processarRenal, __reexport_processarHematologico, __reexport_processarMetabolico, __reexport_processarNutricao, __reexport_processarLesoesPele, __reexport_processarInvasoes, __reexport_processarProfilaxia, __reexport_gerarEvolucao) {
 // Central export for all evolucao calculations
+return { preencherEstabilidade: __reexport_preencherEstabilidade, limparFormulario: __reexport_limparFormulario, atualizarOpcoesDiurese: __reexport_atualizarOpcoesDiurese, ajustarGenero: __reexport_ajustarGenero, processarHemodinamica: __reexport_processarHemodinamica, processarVentilacao: __reexport_processarVentilacao, processarNeuro: __reexport_processarNeuro, processarInfecto: __reexport_processarInfecto, processarRenal: __reexport_processarRenal, processarHematologico: __reexport_processarHematologico, processarMetabolico: __reexport_processarMetabolico, processarNutricao: __reexport_processarNutricao, processarLesoesPele: __reexport_processarLesoesPele, processarInvasoes: __reexport_processarInvasoes, processarProfilaxia: __reexport_processarProfilaxia, gerarEvolucao: __reexport_gerarEvolucao };
+})(__mod_preencher_estabilidade_0.preencherEstabilidade, __mod_limpar_formulario_1.limparFormulario, __mod_atualizar_opcoes_diurese_2.atualizarOpcoesDiurese, __mod_ajustar_genero_3.ajustarGenero, __mod_processar_hemodinamica_4.processarHemodinamica, __mod_processar_ventilacao_5.processarVentilacao, __mod_processar_neuro_6.processarNeuro, __mod_processar_infecto_7.processarInfecto, __mod_processar_renal_8.processarRenal, __mod_processar_hematologico_9.processarHematologico, __mod_processar_metabolico_10.processarMetabolico, __mod_processar_nutricao_11.processarNutricao, __mod_processar_lesoes_pele_12.processarLesoesPele, __mod_processar_invasoes_13.processarInvasoes, __mod_processar_profilaxia_14.processarProfilaxia, __mod_gerar_evolucao_15.gerarEvolucao);
 
-export { preencherEstabilidade } from './preencher-estabilidade.js';
-export { limparFormulario } from './limpar-formulario.js';
-export { atualizarOpcoesDiurese } from './atualizar-opcoes-diurese.js';
-export { ajustarGenero } from './ajustar-genero.js';
-export { processarHemodinamica } from './processar-hemodinamica.js';
-export { processarVentilacao } from './processar-ventilacao.js';
-export { processarNeuro } from './processar-neuro.js';
-export { processarInfecto } from './processar-infecto.js';
-export { processarRenal } from './processar-renal.js';
-export { processarHematologico } from './processar-hematologico.js';
-export { processarMetabolico } from './processar-metabolico.js';
-export { processarNutricao } from './processar-nutricao.js';
-export { processarLesoesPele } from './processar-lesoes-pele.js';
-export { processarInvasoes } from './processar-invasoes.js';
-export { processarProfilaxia } from './processar-profilaxia.js';
-export { gerarEvolucao } from './gerar-evolucao.js';
-
-
+var __mod_state_17 = (function (preencherEstabilidade, limparFormulario, ajustarGenero, gerarEvolucao) {
 // Central state management for evolucao tool
-import {
-  preencherEstabilidade,
-  limparFormulario,
-  ajustarGenero,
-  gerarEvolucao
-} from './calculations/index.js';
+
 
 // Define all input fields
 const inputFields = [
@@ -967,27 +1429,12 @@ function getState() {
 initializeState();
 
 // Export everything
-export {
-  state,
-  updateInput,
-  recalculate,
-  fillEstabilidade as preencherEstabilidade,
-  clearFormulario as limparFormulario,
-  copyResult,
-  updateDiureseOptions as atualizarOpcoesDiurese,
-  getState
-};
+return { state: state, updateInput: updateInput, recalculate: recalculate, preencherEstabilidade: fillEstabilidade, limparFormulario: clearFormulario, copyResult: copyResult, atualizarOpcoesDiurese: updateDiureseOptions, getState: getState };
+})(__mod_index_16.preencherEstabilidade, __mod_index_16.limparFormulario, __mod_index_16.ajustarGenero, __mod_index_16.gerarEvolucao);
 
-
+var __mod_ui_18 = (function (state, updateInput, preencherEstabilidade, limparFormulario, copyResult, atualizarOpcoesDiurese) {
 // UI management for evolucao tool
-import {
-  state,
-  updateInput,
-  preencherEstabilidade,
-  limparFormulario,
-  copyResult,
-  atualizarOpcoesDiurese
-} from './state.js';
+
 
 // DOM elements cache
 const elements = {};
@@ -1134,10 +1581,8 @@ if (document.readyState === 'loading') {
 }
 
 // Export for testing
-export { init, syncForm, syncResult, updateDiureseSelect };
-
-
-
+return { init: init, syncForm: syncForm, syncResult: syncResult, updateDiureseSelect: updateDiureseSelect };
+})(__mod_state_17.state, __mod_state_17.updateInput, __mod_state_17.preencherEstabilidade, __mod_state_17.limparFormulario, __mod_state_17.copyResult, __mod_state_17.atualizarOpcoesDiurese);
 </script>
 </body>
 </html>

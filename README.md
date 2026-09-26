@@ -37,6 +37,7 @@ O projeto foi refatorado para seguir os princípios Unix: **ferramentas pequenas
 │       │   └── ui.js               # Manipulação DOM + event delegation
 │
 ├── public/                       # PWA (gerado automaticamente pelo build)
+├── docs/                         # GitHub Pages (gerado pelo build:pwa, com caminhos reescritos para /uti-toolkit-mjardim/)
 │   ├── index.html
 │   ├── manifest.json
 │   ├── sw.js
