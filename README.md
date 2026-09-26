@@ -16,49 +16,64 @@ Calculadoras clínicas para UTI, empacotadas como **PWA instalável** (Android e
 
 ---
 
-## Arquitetura
+## Nova Arquitetura (Unix Philosophy)
+
+O projeto foi refatorado para seguir os princípios Unix: **ferramentas pequenas, focadas e composáveis**.
+
+### Estrutura de Diretórios
 
 ```
 .
-├── public/                  # PWA (servida pelo Node.js)
-│   ├── index.html           # Shell: cabeçalho, nav inferior, iframes por ferramenta
-│   ├── manifest.json        # Web App Manifest (nome, ícones, display standalone)
-│   ├── sw.js                # Service Worker — cache-first para uso offline
-│   ├── icons/               # SVG 192 px e 512 px
-│   └── tools/               # Páginas das ferramentas (HTML auto-contido)
-│       ├── ventilacao.html
-│       ├── rsi.html
-│       ├── infusao.html
-│       ├── agua-livre.html
-│       └── evolucao.html
+├── src/                          # Fonte único de verdade (Single Source of Truth)
+│   └── tools/
+│       ├── <ferramenta>/
+│       │   ├── index.html          # Markup puro (sem JS/CSS inline)
+│       │   ├── style.css           # Estilos separados
+│       │   ├── calculations/       # Cálculos modularizados (1 arquivo por função)
+│       │   │   ├── <calc1>.js
+│       │   │   ├── <calc2>.js
+│       │   │   └── index.js         # Exporta todos os cálculos
+│       │   ├── state.js            # Gerenciamento de estado centralizado
+│       │   └── ui.js               # Manipulação DOM + event delegation
 │
-├── extension/               # Extensão Firefox (MV2)
-│   ├── manifest.json        # MV2, gecko id, data_collection_permissions
-│   ├── background.js        # Abre/foca aba dedicada ao clicar no ícone
-│   ├── index.html           # Shell da extensão (sem PWA/SW)
-│   ├── app.js               # JS extraído de index.html pelo build
-│   ├── icons/               # SVG 48 px, 96 px, 128 px
-│   ├── tools/               # Cópias das ferramentas adaptadas para MV2
-│   │   ├── *.html           # Sem blocos <script> inline
-│   │   └── *.js             # Scripts extraídos + event delegation
-│   └── LICENSE
+├── public/                       # PWA (gerado automaticamente pelo build)
+│   ├── index.html
+│   ├── manifest.json
+│   ├── sw.js
+│   └── tools/                    # HTML auto-contido (CSS/JS inline)
 │
-├── server.js                # Servidor Node.js (http nativo) — porta 5000
-├── build-extension.js       # Build: extrai scripts, converte onclick → data-fn, gera .xpi
-└── uti-toolkit-firefox.xpi  # Pacote pronto para submissão ao AMO
+├── extension/                    # Extensão Firefox (gerado automaticamente)
+│   ├── manifest.json
+│   ├── background.js
+│   ├── index.html
+│   ├── app.js
+│   └── tools/                    # Arquivos para MV2 (CSS/JS externos)
+│
+├── scripts/
+│   ├── build-pwa.js             # Gera PWA a partir de src/
+│   └── build-extension.js        # Gera extensão Firefox a partir de src/
+│
+├── test/
+│   └── all-calculations.test.js # Runner de testes
+│
+├── package.json
+└── README.md
 ```
 
-### Por que iframes no shell?
+### Princípios da Nova Arquitetura
 
-Cada ferramenta tem IDs de DOM repetidos (ex.: `peso`, `resultado`). O shell de iframes isola os contextos JavaScript sem necessidade de refatorar os arquivos individuais.
+1. **Single Source of Truth**: Todo código está em `src/`, eliminando duplicação entre PWA e extensão
+2. **Cálculos Modularizados**: Cada função de cálculo está em um arquivo separado (Unix: "do one thing well")
+3. **Funções Puras**: Todos os cálculos são pure functions (sem acesso ao DOM, sem side effects)
+4. **Event Delegation**: Compatível com Firefox MV2 CSP (sem `onclick` inline)
+5. **Data Attributes**: Usa `data-field` e `data-action` para event delegation
+6. **Build Automatizado**: Scripts Node.js geram ambos os formatos (PWA e extensão)
 
-### Compliance Firefox MV2
+### Fluxo de Dados
 
-O Firefox MV2 proíbe `'unsafe-inline'` em `script-src`. O `build-extension.js` resolve isso automaticamente:
-1. Extrai blocos `<script>` para arquivos `.js` externos
-2. Converte `onclick="fn(arg)"` → `data-fn="fn" data-arg="arg"`
-3. Injeta um listener de event delegation em cada `.js`
-4. Empacota tudo como `.xpi`
+```
+Input (DOM) → state.js (updateInput) → recalculate() → state.outputs → ui.js (syncResult)
+```
 
 ---
 
@@ -94,32 +109,184 @@ Para instalar no **Firefox para Android**: acesse `about:addons` → menu de tr�
 
 - Node.js 18+
 
-### Rodar localmente
+### Instalar dependências
 
 ```bash
+npm install
+```
+
+### Rodar localmente (PWA)
+
+```bash
+npm run dev
+# ou
 node server.js
 # Acesse http://localhost:5000
 ```
 
-### Gerar o `.xpi`
+### Gerar builds
 
 ```bash
-node build-extension.js
-# Saída: uti-toolkit-firefox.xpi
+# Gera PWA e extensão
+npm run build
+
+# Apenas PWA
+npm run build:pwa
+
+# Apenas extensão Firefox
+npm run build:extension
 ```
 
-> **Importante:** o `build-extension.js` extrai scripts do HTML **apenas na primeira execução** (quando os blocos `<script>` ainda existem nos `.html`). Em execuções subsequentes ele preserva os `.js` já gerados. Para regenerar do zero, copie os arquivos de `public/tools/` para `extension/tools/` antes de rodar.
+### Rodar testes
+
+```bash
+npm test              # Roda todos os testes uma vez
+npm run test:watch   # Roda testes em modo watch (auto-reload)
+```
 
 ### Adicionar uma nova ferramenta
 
-1. Crie `public/tools/nova-ferramenta.html` (HTML auto-contido com CSS e JS inline)
-2. Adicione um iframe em `public/index.html`:
+1. Crie a estrutura em `src/tools/nova-ferramenta/`:
+   ```
+   nova-ferramenta/
+   ├── index.html
+   ├── style.css
+   ├── calculations/
+   │   ├── calc1.js
+   │   ├── calc2.js
+   │   └── index.js
+   ├── state.js
+   └── ui.js
+   ```
+
+2. Adicione o iframe em `public/index.html`:
    ```html
    <iframe id="frame-nova" src="tools/nova-ferramenta.html" ...></iframe>
    ```
+
 3. Adicione o botão na nav inferior de `public/index.html`
-4. Copie o arquivo para `extension/tools/` e repita o passo 2–3 em `extension/index.html`
-5. Rode `node build-extension.js` para extrair os scripts e regenerar o `.xpi`
+
+4. Execute `npm run build` para gerar os arquivos de saída
+
+---
+
+## Estrutura de uma Ferramenta
+
+### Exemplo: água-livre
+
+```
+src/tools/agua-livre/
+├── index.html          # Markup com data-field e data-action
+├── style.css           # Estilos CSS
+├── calculations/
+│   ├── tbw-percentage.js    # Cálculo de % TBW
+│   ├── water-deficit.js      # Cálculo de déficit de água
+│   ├── correction-rate.js    # Taxa de correção
+│   └── index.js              # Exporta todos os cálculos
+├── state.js            # Estado centralizado
+└── ui.js               # Event delegation
+```
+
+### calculations/calc.js (Exemplo)
+
+```javascript
+/**
+ * Calcula a porcentagem de TBW
+ * @param {number} age - Idade em anos
+ * @param {string} gender - Sexo ('male' ou 'female')
+ * @returns {number} Porcentagem de TBW (0.45 a 0.6)
+ */
+export function calculateTBWPercentage(age, gender) {
+  if (age >= 65) {
+    return gender === 'male' ? 0.5 : 0.45;
+  }
+  return gender === 'male' ? 0.6 : 0.5;
+}
+```
+
+### state.js (Estrutura)
+
+```javascript
+import { calculateTBWPercentage } from './calculations/index.js';
+
+const state = {
+  inputs: { peso: '', sodio: '', idade: '', sexo: 'M' },
+  outputs: { tbw: null, deficit: null, resultadoText: '' }
+};
+
+function updateInput(field, value) {
+  state.inputs[field] = value;
+  recalculate();
+}
+
+function recalculate() {
+  state.outputs.tbw = calculateTBWPercentage(
+    state.inputs.idade, 
+    state.inputs.sexo
+  );
+  // ... outros cálculos
+}
+
+export { state, updateInput };
+```
+
+### ui.js (Estrutura)
+
+```javascript
+import { state, updateInput } from './state.js';
+
+function init() {
+  // Bind inputs
+  document.querySelectorAll('[data-field]').forEach(el => {
+    const field = el.getAttribute('data-field');
+    el.addEventListener('input', () => {
+      updateInput(field, el.value);
+    });
+  });
+
+  // Bind actions
+  document.querySelectorAll('[data-action]').forEach(el => {
+    const action = el.getAttribute('data-action');
+    el.addEventListener('click', actions[action]);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+```
+
+---
+
+## Testes Automatizados
+
+Todos os cálculos são testados automaticamente:
+
+```bash
+npm test
+```
+
+### Exemplo de teste
+
+```javascript
+// src/tools/agua-livre/calculations/__tests__/tbw-percentage.test.js
+import { calculateTBWPercentage } from '../tbw-percentage.js';
+import { strictEqual } from 'assert';
+
+const tests = [];
+
+tests.push(async () => {
+  strictEqual(calculateTBWPercentage(30, 'male'), 0.6);
+});
+
+tests.push(async () => {
+  strictEqual(calculateTBWPercentage(70, 'female'), 0.45);
+});
+
+export default tests;
+```
 
 ---
 
