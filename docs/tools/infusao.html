@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Calculadora de Infusão de Medicamentos UTI</title>
+    
+<<style>/* ===== Shared Styles for UTI Toolkit ===== */
+/* Common styles used across all tools */
+
+/* Base Styles */
+body {
+    padding-bottom: 80px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* Typography */
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+h2 {
+    color: #34495e;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    font-size: 16px;
+}
+
+/* Container */
+.container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Buttons */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button.success {
+    background-color: #2ecc71;
+}
+
+button.success:hover {
+    background-color: #27ae60;
+}
+
+button.secondary {
+    background-color: #95a5a6;
+}
+
+button.secondary:hover {
+    background-color: #7f8c8d;
+}
+
+button.copy-btn {
+    background-color: #2ecc71;
+}
+
+button.copy-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Layout */
+.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Sections and Cards */
+.section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.calc-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.calc-card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+/* Results */
+.result {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e8f4fc;
+    border-radius: 6px;
+    border-left: 5px solid #3498db;
+    display: none;
+}
+
+.result h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.result-item {
+    margin: 10px 0;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+}
+
+.result-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.result-label {
+    font-weight: 600;
+    color: #7f8c8d;
+}
+
+.result-container {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.result-text {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: white;
+    resize: vertical;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #2980b9;
+}
+
+.tab-button.active {
+    background-color: #2c3e50;
+}
+
+.tab {
+    display: none;
+    padding: 20px;
+    background: white;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab.active {
+    display: block;
+}
+
+/* Utility Classes */
+.formula {
+    font-family: monospace;
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 10px;
+    background: #ecf0f1;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.note {
+    font-size: 12px;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.warning::before {
+    content: "\26a0\fe0f ";
+}
+
+.explanation {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.med-info {
+    background-color: #e3f2fd;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 13px;
+    display: none;
+}
+
+.medication-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fefefe;
+}
+
+.medication-name {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.medication-info {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+.dose-range {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.dose-range input {
+    width: 60px;
+}
+
+.dose-range span {
+    font-size: 14px;
+    color: #555;
+}
+
+.reference {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Checklist */
+.checklist {
+    margin: 15px 0;
+}
+
+.checklist-item {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.checklist-result {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.checklist-result.ok {
+    background: #d4edda;
+    color: #155724;
+}
+
+.checklist-result.not-ok {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.header-controls .form-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Inputs Row */
+.inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+    .row {
+        grid-template-columns: 1fr;
+    }
+    .inputs {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+</style></head>
+<body>
+    <div class="container">
+        <h1>💉 Calculadora de Infusão de Medicamentos UTI</h1>
+        
+        <form id="infusionForm">
+            <div class="form-group">
+                <label for="medicamento">Medicamento:</label>
+                <select id="medicamento" required>
+                    <option value="">-- Selecione --</option>
+                    <optgroup label="🫀 AMINAS (Vasopressores/Inotrópicos)">
+                        <option value="noradrenalina">Noradrenalina</option>
+                        <option value="dobutamina">Dobutamina</option>
+                        <option value="vasopressina">Vasopressina</option>
+                        <option value="dopamina">Dopamina</option>
+                    </optgroup>
+                    <optgroup label="💤 SEDAÇÃO/ANALGESIA">
+                        <option value="fentanil">Fentanil</option>
+                        <option value="midazolam">Midazolam</option>
+                        <option value="propofol">Propofol</option>
+                        <option value="cetamina">Cetamina</option>
+                        <option value="dexmedetomidina">Dexmedetomidina</option>
+                    </optgroup>
+                    <optgroup label="🦴 BLOQUEADORES NEUROMUSCULARES">
+                        <option value="rocuronio">Rocurônio</option>
+                        <option value="cisatracurio">Cisatracúrio</option>
+                    </optgroup>
+                    <optgroup label="🫁 VASODILATADORES">
+                        <option value="nitroprussiato">Nitroprussiato</option>
+                        <option value="nitroglicerina">Nitroglicerina</option>
+                    </optgroup>
+                    <option value="outros">🔄 OUTROS (Personalizado)</option>
+                </select>
+            </div>
+            
+            <div class="two-columns">
+                <div class="form-group">
+                    <label for="dose">Dose Desejada:</label>
+                    <input type="number" id="dose" step="0.01" min="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="unidadeDose">Unidade:</label>
+                    <select id="unidadeDose" required>
+                        <option value="mcg/kg/min">mcg/kg/min</option>
+                        <option value="mcg/kg/h">mcg/kg/h</option>
+                        <option value="mg/kg/h">mg/kg/h</option>
+                        <option value="mcg/min">mcg/min</option>
+                        <option value="mcg/h">mcg/h</option>
+                        <option value="U/min">U/min</option>
+                        <option value="mg/min">mg/min</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div class="form-group">
+                    <label for="peso">Peso (kg):</label>
+                    <input type="number" id="peso" step="0.1" min="1" max="200" value="70" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="concentracao">Concentração:</label>
+                    <input type="number" id="concentracao" step="0.001" min="0.001" required>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div class="form-group">
+                    <label for="unidadeConc">Unidade Concentração:</label>
+                    <select id="unidadeConc" required>
+                        <option value="mg/mL">mg/mL</option>
+                        <option value="mcg/mL">mcg/mL</option>
+                        <option value="U/mL">U/mL</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="volumeTotal">Volume Total (mL):</label>
+                    <input type="number" id="volumeTotal" step="1" min="0" placeholder="Opcional">
+                </div>
+            </div>
+            
+            <button type="submit" data-action="calculateInfusion">🔄 Calcular Taxa de Infusão</button>
+            
+            <div id="medInfo" class="med-info"></div>
+        </form>
+        
+        <div id="result" class="result">
+            <h3>✅ Resultados:</h3>
+            
+            <div class="result-item">
+                <span class="result-label">Taxa de Infusão:</span>
+                <div id="taxaInfusao" class="result-value"></div>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Dose Total por Hora:</span>
+                <div id="doseHora"></div>
+            </div>
+            
+            <div class="result-item" id="tempoFrascoItem" style="display: none;">
+                <span class="result-label">Tempo do Frasco:</span>
+                <div id="tempoFrasco"></div>
+            </div>
+            
+            <div class="result-item" id="goteirasItem" style="display: none;">
+                <span class="result-label">Goteiras por Minuto:</span>
+                <div id="goteirasMin"></div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ ATENÇÃO:</strong> Sempre verifique a prescrição médica, a diluição preparada e os sinais vitais do paciente. 
+            Esta calculadora é uma ferramenta de suporte - a responsabilidade clínica é do profissional de saúde.
+        </div>
+        
+        <div class="explanation">
+            <h2>📊 Como Usar</h2>
+            
+            <p><strong>1. Selecione o medicamento</strong> - As diluições padrão serão preenchidas automaticamente.</p>
+            <p><strong>2. Informe a dose desejada</strong> e a unidade correspondente.</p>
+            <p><strong>3. Informe o peso do paciente</strong> (se a dose for por kg).</p>
+            <p><strong>4. Verifique/ajuste a concentração</strong> da solução preparada.</p>
+            <p><strong>5. Opcional:</strong> Informe o volume total para calcular o tempo de infusão do frasco.</p>
+            
+            <h2>📐 Fórmulas Utilizadas</h2>
+            
+            <p><strong>Taxa de Infusão (mL/h):</strong></p>
+            <p class="formula">
+                Taxa = (Dose × Peso × Fator) / Concentração
+            </p>
+            
+            <p><strong>Fatores de conversão:</strong></p>
+            <ul>
+                <li><strong>mcg/kg/min → mcg/h:</strong> × Peso × 60</li>
+                <li><strong>mcg/kg/h → mcg/h:</strong> × Peso</li>
+                <li><strong>mg/kg/h → mg/h:</strong> × Peso</li>
+                <li><strong>U/min → U/h:</strong> × 60</li>
+            </ul>
+            
+            <p><strong>Exemplo (Noradrenalina):</strong></p>
+            <p>Dose: 0.1 mcg/kg/min, Peso: 70 kg, Concentração: 0.1 mg/mL (100 mcg/mL)</p>
+            <p class="formula">
+                Dose/h = 0.1 × 70 × 60 = 420 mcg/h<br>
+                Taxa = 420 mcg/h ÷ 100 mcg/mL = 4.2 mL/h
+            </p>
+            
+            <h2>💡 Dicas</h2>
+            <ul>
+                <li>Para <strong>Nitroglicerina</strong>, a dose é em mcg/min (não por kg).</li>
+                <li>Para <strong>Vasopressina</strong>, a dose é em U/min (não por kg).</li>
+                <li>Goteiras/min = (Taxa mL/h × 20) / 60 (1 mL = 20 goteiras padrão).</li>
+            </ul>
+        </div>
+        
+        <div class="reference">
+            Baseado nas diluições padrão do CTI e doses usualmente utilizadas em UTI. 
+            Fontes: Protocolos de Terapia Intensiva e referências clínicas.
+        </div>
+    </div>
+<script type="module">
+// Exporta todas as funções de cálculo para infusão
+
+export { medicamentos, getMedicamento, getAllMedicamentoIds } from './medicamentos.js';
+export { calculateInfusionRate, calculateTempoFrasco, calculateGoteirasMin } from './infusion-rate.js';
+
+
+/**
+ * Gerenciador de estado para a calculadora de infusão
+ * Mantém inputs e outputs sincronizados e recalcula automaticamente
+ */
+
+import { 
+  getMedicamento, 
+  calculateInfusionRate, 
+  calculateTempoFrasco, 
+  calculateGoteirasMin 
+} from './calculations/index.js';
+
+// Estado inicial
+const state = {
+  inputs: {
+    medicamento: '',
+    dose: '',
+    unidadeDose: 'mcg/kg/min',
+    peso: 70,
+    concentracao: '',
+    unidadeConc: 'mg/mL',
+    volumeTotal: ''
+  },
+  outputs: {
+    taxaMLh: null,
+    doseHora: null,
+    tempoFrasco: null,
+    goteirasMin: null,
+    medInfo: null
+  }
+};
+
+/**
+ * Atualiza um input e recalcula todas as dependências
+ * @param {string} name - Nome do input
+ * @param {number|string} value - Valor do input
+ */
+export function updateInput(name, value) {
+  state.inputs[name] = value;
+  recalculate();
+}
+
+/**
+ * Recalcula todos os outputs com base nos inputs atuais
+ */
+function recalculate() {
+  const medicamento = state.inputs.medicamento;
+  const dose = parseFloat(state.inputs.dose) || 0;
+  const peso = parseFloat(state.inputs.peso) || 0;
+  const concentracao = parseFloat(state.inputs.concentracao) || 0;
+  const volumeTotal = parseFloat(state.inputs.volumeTotal) || 0;
+  
+  // Obtém informações do medicamento
+  if (medicamento && medicamento !== 'outros') {
+    const med = getMedicamento(medicamento);
+    if (med) {
+      state.outputs.medInfo = med;
+      
+      // Preenche campos automaticamente se não foram alterados pelo usuário
+      if (!state.inputs.dose || state.inputs.dose === '') {
+        state.inputs.dose = med.doseUsual.split('-')[0];
+      }
+      if (!state.inputs.unidadeDose || state.inputs.unidadeDose === '') {
+        state.inputs.unidadeDose = med.unidadeDose;
+      }
+      if (!state.inputs.concentracao || state.inputs.concentracao === '') {
+        state.inputs.concentracao = med.concentracao;
+      }
+      if (!state.inputs.unidadeConc || state.inputs.unidadeConc === '') {
+        state.inputs.unidadeConc = med.unidadeConc;
+      }
+    }
+  } else {
+    state.outputs.medInfo = null;
+  }
+  
+  // Calcula taxa de infusão
+  const result = calculateInfusionRate(
+    dose,
+    peso,
+    state.inputs.unidadeDose,
+    concentracao,
+    state.inputs.unidadeConc
+  );
+  
+  state.outputs.taxaMLh = result.taxaMLh;
+  state.outputs.doseHora = result.doseHora;
+  
+  // Calcula tempo do frasco
+  state.outputs.tempoFrasco = calculateTempoFrasco(volumeTotal, state.outputs.taxaMLh);
+  
+  // Calcula goteiras por minuto
+  if (state.outputs.taxaMLh !== null) {
+    state.outputs.goteirasMin = calculateGoteirasMin(state.outputs.taxaMLh);
+  } else {
+    state.outputs.goteirasMin = null;
+  }
+}
+
+/**
+ * Copia o resultado para a área de transferência
+ */
+export function copyResult() {
+  if (!state.outputs.taxaMLh) {
+    alert('Nenhum resultado para copiar');
+    return;
+  }
+  
+  const text = `Taxa de Infusão: ${state.outputs.taxaMLh} mL/h\n` +
+                `Dose Total por Hora: ${state.outputs.doseHora}\n` +
+                (state.outputs.tempoFrasco ? `Tempo do Frasco: ${state.outputs.tempoFrasco}\n` : '') +
+                `Goteiras por Minuto: ${state.outputs.goteirasMin}`;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Texto copiado para a área de transferência!');
+  }).catch(err => {
+    alert('Erro ao copiar: ' + err);
+  });
+}
+
+/**
+ * Limpa o resultado
+ */
+export function clearResult() {
+  // Não precisamos limpar o estado, apenas ocultar o resultado no DOM
+}
+
+// Inicializa o estado
+recalculate();
+
+// Exporta o estado e funções
+export { state, updateInput, copyResult, clearResult };
+
+
+/**
+ * Manipulação de DOM e eventos para a calculadora de infusão
+ * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
+ */
+
+import { state, updateInput, copyResult, clearResult } from './state.js';
+import { getMedicamento } from './calculations/index.js';
+
+// Função para atualizar o DOM
+function updateDOM() {
+  // Atualiza medicamento
+  const medicamentoSelect = document.getElementById('medicamento');
+  if (medicamentoSelect) {
+    medicamentoSelect.value = state.inputs.medicamento;
+  }
+
+  // Atualiza dose
+  const doseInput = document.getElementById('dose');
+  if (doseInput) {
+    doseInput.value = state.inputs.dose;
+  }
+
+  // Atualiza unidade dose
+  const unidadeDoseSelect = document.getElementById('unidadeDose');
+  if (unidadeDoseSelect) {
+    unidadeDoseSelect.value = state.inputs.unidadeDose;
+  }
+
+  // Atualiza peso
+  const pesoInput = document.getElementById('peso');
+  if (pesoInput) {
+    pesoInput.value = state.inputs.peso;
+  }
+
+  // Atualiza concentração
+  const concentracaoInput = document.getElementById('concentracao');
+  if (concentracaoInput) {
+    concentracaoInput.value = state.inputs.concentracao;
+  }
+
+  // Atualiza unidade concentração
+  const unidadeConcSelect = document.getElementById('unidadeConc');
+  if (unidadeConcSelect) {
+    unidadeConcSelect.value = state.inputs.unidadeConc;
+  }
+
+  // Atualiza volume total
+  const volumeTotalInput = document.getElementById('volumeTotal');
+  if (volumeTotalInput) {
+    volumeTotalInput.value = state.inputs.volumeTotal;
+  }
+
+  // Atualiza medInfo
+  const medInfoDiv = document.getElementById('medInfo');
+  if (medInfoDiv) {
+    if (state.outputs.medInfo) {
+      const med = state.outputs.medInfo;
+      medInfoDiv.innerHTML = `
+        <strong>${med.nome}</strong> (${med.categoria})<br>
+        Diluição padrão: ${med.diluicao}<br>
+        Concentração: ${med.concentracao} ${med.unidadeConc}<br>
+        <em>${med.observacoes}</em>
+      `;
+      medInfoDiv.style.display = 'block';
+    } else if (state.inputs.medicamento === 'outros') {
+      medInfoDiv.innerHTML = '<em>Preencha os campos manualmente para medicamentos personalizados</em>';
+      medInfoDiv.style.display = 'block';
+    } else {
+      medInfoDiv.style.display = 'none';
+    }
+  }
+
+  // Atualiza resultados
+  const resultDiv = document.getElementById('result');
+  const taxaInfusaoDiv = document.getElementById('taxaInfusao');
+  const doseHoraDiv = document.getElementById('doseHora');
+  const tempoFrascoDiv = document.getElementById('tempoFrasco');
+  const tempoFrascoItem = document.getElementById('tempoFrascoItem');
+  const goteirasMinDiv = document.getElementById('goteirasMin');
+  const goteirasItem = document.getElementById('goteirasItem');
+
+  if (resultDiv && taxaInfusaoDiv && doseHoraDiv) {
+    if (state.outputs.taxaMLh !== null) {
+      taxaInfusaoDiv.textContent = `${state.outputs.taxaMLh} mL/h`;
+      doseHoraDiv.textContent = state.outputs.doseHora;
+      
+      if (state.outputs.tempoFrasco) {
+        tempoFrascoDiv.textContent = state.outputs.tempoFrasco;
+        tempoFrascoItem.style.display = 'block';
+      } else {
+        tempoFrascoItem.style.display = 'none';
+      }
+      
+      if (state.outputs.goteirasMin) {
+        goteirasMinDiv.textContent = state.outputs.goteirasMin;
+        goteirasItem.style.display = 'block';
+      } else {
+        goteirasItem.style.display = 'none';
+      }
+      
+      resultDiv.style.display = 'block';
+    } else {
+      resultDiv.style.display = 'none';
+    }
+  }
+}
+
+/**
+ * Função para calcular a infusão
+ */
+export function calculateInfusion() {
+  // Força recálculo
+  updateInput('medicamento', state.inputs.medicamento);
+  updateDOM();
+}
+
+// Mapeamento de ações para event delegation
+export const actions = {
+  calculateInfusion,
+  copyResult,
+  clearResult
+};
+
+// Inicializa o DOM
+document.addEventListener('DOMContentLoaded', () => {
+  // Configura event delegation para todos os elementos com data-action
+  document.querySelectorAll('[data-action]').forEach(el => {
+    const action = el.getAttribute('data-action');
+    if (actions[action]) {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        actions[action](e);
+      });
+    }
+  });
+
+  // Preenche campos automaticamente ao selecionar medicamento
+  const medicamentoSelect = document.getElementById('medicamento');
+  if (medicamentoSelect) {
+    medicamentoSelect.addEventListener('change', function() {
+      const medId = this.value;
+      updateInput('medicamento', medId);
+      
+      if (medId && medId !== 'outros') {
+        const med = getMedicamento(medId);
+        if (med) {
+          // Atualiza campos com valores padrão
+          updateInput('dose', med.doseUsual.split('-')[0]);
+          updateInput('unidadeDose', med.unidadeDose);
+          updateInput('concentracao', med.concentracao);
+          updateInput('unidadeConc', med.unidadeConc);
+        }
+      }
+      
+      updateDOM();
+    });
+  }
+
+  // Atualiza inputs ao digitarem ou mudarem
+  document.querySelectorAll('input, select').forEach(input => {
+    const id = input.id;
+    if (id) {
+      input.addEventListener('input', () => {
+        updateInput(id, input.value);
+      });
+      input.addEventListener('change', () => {
+        updateInput(id, input.value);
+      });
+    }
+  });
+
+  // Adiciona evento para limpar ao clicar nos inputs
+  const form = document.getElementById('infusionForm');
+  if (form) {
+    form.querySelectorAll('input').forEach(input => {
+      input.addEventListener('focus', clearResult);
+    });
+  }
+
+  // Inicializa o DOM
+  updateDOM();
+});
+
+
+
+</script>
+</body>
+</html>

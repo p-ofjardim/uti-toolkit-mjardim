@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Calculadora de Déficit de Água Livre</title>
+    
+<<style>/* ===== Shared Styles for UTI Toolkit ===== */
+/* Common styles used across all tools */
+
+/* Base Styles */
+body {
+    padding-bottom: 80px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* Typography */
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+h2 {
+    color: #34495e;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    font-size: 16px;
+}
+
+/* Container */
+.container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Buttons */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button.success {
+    background-color: #2ecc71;
+}
+
+button.success:hover {
+    background-color: #27ae60;
+}
+
+button.secondary {
+    background-color: #95a5a6;
+}
+
+button.secondary:hover {
+    background-color: #7f8c8d;
+}
+
+button.copy-btn {
+    background-color: #2ecc71;
+}
+
+button.copy-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Layout */
+.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Sections and Cards */
+.section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.calc-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.calc-card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+/* Results */
+.result {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e8f4fc;
+    border-radius: 6px;
+    border-left: 5px solid #3498db;
+    display: none;
+}
+
+.result h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.result-item {
+    margin: 10px 0;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+}
+
+.result-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.result-label {
+    font-weight: 600;
+    color: #7f8c8d;
+}
+
+.result-container {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.result-text {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: white;
+    resize: vertical;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #2980b9;
+}
+
+.tab-button.active {
+    background-color: #2c3e50;
+}
+
+.tab {
+    display: none;
+    padding: 20px;
+    background: white;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab.active {
+    display: block;
+}
+
+/* Utility Classes */
+.formula {
+    font-family: monospace;
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 10px;
+    background: #ecf0f1;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.note {
+    font-size: 12px;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.warning::before {
+    content: "\26a0\fe0f ";
+}
+
+.explanation {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.med-info {
+    background-color: #e3f2fd;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 13px;
+    display: none;
+}
+
+.medication-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fefefe;
+}
+
+.medication-name {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.medication-info {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+.dose-range {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.dose-range input {
+    width: 60px;
+}
+
+.dose-range span {
+    font-size: 14px;
+    color: #555;
+}
+
+.reference {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Checklist */
+.checklist {
+    margin: 15px 0;
+}
+
+.checklist-item {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.checklist-result {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.checklist-result.ok {
+    background: #d4edda;
+    color: #155724;
+}
+
+.checklist-result.not-ok {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.header-controls .form-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Inputs Row */
+.inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+    .row {
+        grid-template-columns: 1fr;
+    }
+    .inputs {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+</style></head>
+<body>
+    <div class="container">
+        <h1>💧 Calculadora de Déficit de Água Livre</h1>
+        
+        <form id="waterDeficitForm">
+            <div class="form-group">
+                <label for="sodium">Sódio Sérico Atual (Na⁺ em mEq/L):</label>
+                <input type="number" id="sodium" step="0.1" min="100" max="200" required>
+                <p class="note">Valor normal: 135-145 mEq/L</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="desiredSodium">Sódio Desejado (Na⁺ em mEq/L):</label>
+                <input type="number" id="desiredSodium" step="0.1" min="100" max="200" value="140" required>
+                <p class="note">Padrão: 140 mEq/L (ajustável conforme necessidade clínica)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="weight">Peso (kg):</label>
+                <input type="number" id="weight" step="0.1" min="1" max="200" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="age">Idade (anos):</label>
+                <input type="number" id="age" min="0" max="120" value="40">
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Sexo:</label>
+                <select id="gender">
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+            </div>
+            
+            <button type="submit">Calcular Déficit de Água Livre</button>
+        </form>
+        
+        <div id="result" class="result">
+            <h3>Resultado:</h3>
+            <div id="deficitValue" class="result-value"></div>
+            <p id="deficitDescription"></p>
+            <p><strong>Volume de água livre a ser reposto:</strong> <span id="waterVolume"></span></p>
+            <p id="correctionRate"></p>
+        </div>
+        
+        <div class="warning">
+            <strong>Taxa de correção máxima:</strong> Reduzir Na⁺ em até 8-10 mEq/L nas primeiras 24 horas para evitar síndrome de desmielinização osmótica.
+        </div>
+        
+        <div class="explanation">
+            <h3>📊 Explicação:</h3>
+            <p>Calcula o déficit de água livre baseando-se na <strong>quantidade total de soluto</strong> no corpo e no volume de água necessário para diluir o sódio ao nível desejado.</p>
+            
+            <p><strong>Fórmula (NEJM, Adrogue & Madias, 2000):</strong></p>
+            <p class="formula">
+                Déficit (L) = %TBW × Peso (kg) × (Na<sub>atual</sub> / Na<sub>desejado</sub> - 1)
+            </p>
+            
+            <p><strong>%TBW (Total Body Water):</strong></p>
+            <ul>
+                <li><strong>Homem adulto:</strong> 60% (0.6)</li>
+                <li><strong>Mulher adulta:</strong> 50% (0.5)</li>
+                <li><strong>Homem idoso (≥65 anos):</strong> 50% (0.5)</li>
+                <li><strong>Mulher idosa (≥65 anos):</strong> 45% (0.45)</li>
+                <li><strong>Criança:</strong> 60% (0.6)</li>
+            </ul>
+            
+            <p><strong>Interpretação:</strong></p>
+            <ul>
+                <li><strong>Resultado positivo:</strong> Volume de água livre a ser <strong>adicionado</strong> (hipenatremia)</li>
+                <li><strong>Resultado negativo:</strong> Volume de água livre a ser <strong>removido</strong> (hiponatremia)</li>
+            </ul>
+            
+            <p><strong>Exemplo:</strong> Paciente masculino, 70kg, 40 anos, Na⁺ atual = 125 mEq/L, Na⁺ desejado = 140 mEq/L</p>
+            <p class="formula">
+                Déficit = 0.6 × 70 × (125/140 - 1) = 0.6 × 70 × (-0.1071) = -4.497 L ≈ -4.5 L
+            </p>
+            <p class="note">*Resultado negativo indica que é necessário REMOVER 4.5 L de água livre para aumentar a concentração do sódio</p>
+            
+            <p><strong>Soluções recomendadas:</strong> Soro glicosado 5% ou salina 3%</p>
+        </div>
+        
+        <div class="reference">
+            Referência: Adrogue HJ, Madias NE. NEJM 2000; 342(20):1493-1499 e 342(21):1581-1589
+        </div>
+    </div>
+<script type="module">
+// Exporta todas as funções de cálculo para águia livre
+export { calculateTBWPercentage } from './tbw-percentage.js';
+export { calculateWaterDeficit } from './water-deficit.js';
+export { calculateMaxCorrectionRate, calculateCorrectionPercentage } from './correction-rate.js';
+
+
+/**
+ * Gerenciador de estado para a calculadora de água livre
+ * Mantém inputs e outputs sincronizados e recalcula automaticamente
+ */
+
+import * as calculations from './calculations/index.js';
+
+// Estado inicial
+const state = {
+  inputs: {
+    sodium: 140,          // Sódio sérico atual (mEq/L)
+    desiredSodium: 140,   // Sódio desejado (mEq/L)
+    weight: 70,           // Peso (kg)
+    age: 40,              // Idade (anos)
+    gender: 'male',       // Sexo ('male' ou 'female')
+  },
+  outputs: {
+    tbwPercentage: null,      // %TBW (Total Body Water)
+    waterDeficitLiters: null, // Déficit de água livre (L)
+    waterDeficitML: null,     // Déficit de água livre (mL)
+    maxCorrectionRate: null, // Taxa de correção máxima (mEq/L)
+    correctionPercentage: null, // Porcentagem de correção recomendada
+  },
+  // Dependências: quais outputs dependem de quais inputs
+  dependencies: {
+    tbwPercentage: ['age', 'gender'],
+    waterDeficitLiters: ['sodium', 'desiredSodium', 'weight', 'tbwPercentage'],
+    waterDeficitML: ['waterDeficitLiters'],
+    maxCorrectionRate: ['sodium', 'desiredSodium'],
+    correctionPercentage: ['sodium', 'desiredSodium'],
+  },
+};
+
+/**
+ * Atualiza um input e recalcula todas as dependências
+ * @param {string} name - Nome do input
+ * @param {number|string} value - Valor do input
+ */
+export function updateInput(name, value) {
+  // Atualiza o input
+  state.inputs[name] = value;
+  
+  // Recalcula todos os outputs
+  recalculate();
+}
+
+/**
+ * Recalcula todos os outputs com base nos inputs atuais
+ */
+function recalculate() {
+  // Calcula %TBW
+  state.outputs.tbwPercentage = calculations.calculateTBWPercentage(
+    state.inputs.age,
+    state.inputs.gender
+  );
+
+  // Calcula déficit de água livre (em litros)
+  state.outputs.waterDeficitLiters = calculations.calculateWaterDeficit(
+    state.inputs.sodium,
+    state.inputs.desiredSodium,
+    state.inputs.weight,
+    state.outputs.tbwPercentage
+  );
+
+  // Converte para mL
+  state.outputs.waterDeficitML = state.outputs.waterDeficitLiters * 1000;
+
+  // Calcula taxa de correção máxima
+  const currentDifference = state.inputs.sodium - state.inputs.desiredSodium;
+  state.outputs.maxCorrectionRate = calculations.calculateMaxCorrectionRate(currentDifference);
+  state.outputs.correctionPercentage = calculations.calculateCorrectionPercentage(currentDifference);
+}
+
+// Inicializa o estado
+recalculate();
+
+// Exporta o estado e funções
+export { state, updateInput };
+
+
+/**
+ * Manipulação de DOM e eventos para a calculadora de água livre
+ * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
+ */
+
+import { state, updateInput } from './state.js';
+
+// Elementos do DOM
+const form = document.getElementById('waterDeficitForm');
+const resultDiv = document.getElementById('result');
+const deficitValueElement = document.getElementById('deficitValue');
+const deficitDescriptionElement = document.getElementById('deficitDescription');
+const waterVolumeElement = document.getElementById('waterVolume');
+const correctionRateElement = document.getElementById('correctionRate');
+
+/**
+ * Atualiza o DOM com os valores do estado
+ */
+function updateDOM() {
+  // Atualiza inputs (para refletir mudanças programáticas)
+  document.getElementById('sodium').value = state.inputs.sodium;
+  document.getElementById('desiredSodium').value = state.inputs.desiredSodium;
+  document.getElementById('weight').value = state.inputs.weight;
+  document.getElementById('age').value = state.inputs.age;
+  document.getElementById('gender').value = state.inputs.gender;
+
+  // Atualiza outputs
+  if (state.outputs.waterDeficitLiters !== null) {
+    const roundedDeficitL = Math.round(state.outputs.waterDeficitLiters * 100) / 100;
+    const roundedDeficitML = Math.round(state.outputs.waterDeficitML * 100) / 100;
+    deficitValueElement.textContent = `${roundedDeficitL} L (${roundedDeficitML} mL)`;
+
+    // Determina a descrição com base no resultado
+    let descriptionText = '';
+    let volumeText = '';
+    let correctionText = '';
+
+    if (state.inputs.sodium < state.inputs.desiredSodium) {
+      // Hiponatremia: déficit negativo (precisa remover água)
+      descriptionText = `Excesso de água livre: <strong>Hiponatremia (Na⁺ ${state.inputs.sodium} < ${state.inputs.desiredSodium})</strong>`;
+      volumeText = `${Math.abs(roundedDeficitML)} mL de água livre`;
+      correctionText = `⚠️ Correção máxima recomendada: até ${state.outputs.maxCorrectionRate} mEq/L nas primeiras 24 horas (${state.outputs.correctionPercentage.toFixed(1)}% do déficit total).`;
+    } else if (state.inputs.sodium > state.inputs.desiredSodium) {
+      // Hipernatremia: déficit positivo (precisa adicionar água)
+      descriptionText = `Déficit de água livre: <strong>Hipernatremia (Na⁺ ${state.inputs.sodium} > ${state.inputs.desiredSodium})</strong>`;
+      volumeText = `${Math.abs(roundedDeficitML)} mL de água livre a ser reposta (Solução glicosada 5%)`;
+      correctionText = `⚠️ Correção máxima recomendada: reduzir até ${state.outputs.maxCorrectionRate} mEq/L nas primeiras 24 horas (${state.outputs.correctionPercentage.toFixed(1)}% do excesso total).`;
+    } else {
+      descriptionText = `Sódio dentro do alvo (Na⁺ = ${state.inputs.sodium} mEq/L)`;
+      volumeText = `Nenhum déficit`;
+      correctionText = ``;
+    }
+
+    deficitDescriptionElement.innerHTML = descriptionText;
+    waterVolumeElement.textContent = volumeText;
+    correctionRateElement.innerHTML = correctionText;
+
+    // Mostra o resultado
+    resultDiv.style.display = 'block';
+  }
+}
+
+/**
+ * Função para limpar o resultado
+ */
+function clearResult() {
+  resultDiv.style.display = 'none';
+}
+
+// Evento de submit do formulário
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  // Atualiza todos os inputs do formulário
+  updateInput('sodium', parseFloat(document.getElementById('sodium').value) || 0);
+  updateInput('desiredSodium', parseFloat(document.getElementById('desiredSodium').value) || 0);
+  updateInput('weight', parseFloat(document.getElementById('weight').value) || 0);
+  updateInput('age', parseInt(document.getElementById('age').value) || 0);
+  updateInput('gender', document.getElementById('gender').value);
+  
+  // Atualiza o DOM
+  updateDOM();
+  
+  // Rola a tela até o resultado
+  resultDiv.scrollIntoView({ behavior: 'smooth' });
+});
+
+// Adiciona evento para limpar ao clicar nos inputs
+const inputs = form.querySelectorAll('input');
+inputs.forEach(input => {
+  input.addEventListener('focus', clearResult);
+});
+
+// Inicializa o DOM
+updateDOM();
+
+
+
+</script>
+</body>
+</html>

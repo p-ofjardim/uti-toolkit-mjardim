@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Calculadora de Ventilação Mecânica - UTI</title>
+    
+<<style>/* ===== Shared Styles for UTI Toolkit ===== */
+/* Common styles used across all tools */
+
+/* Base Styles */
+body {
+    padding-bottom: 80px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* Typography */
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+h2 {
+    color: #34495e;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    font-size: 16px;
+}
+
+/* Container */
+.container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Buttons */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button.success {
+    background-color: #2ecc71;
+}
+
+button.success:hover {
+    background-color: #27ae60;
+}
+
+button.secondary {
+    background-color: #95a5a6;
+}
+
+button.secondary:hover {
+    background-color: #7f8c8d;
+}
+
+button.copy-btn {
+    background-color: #2ecc71;
+}
+
+button.copy-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Layout */
+.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Sections and Cards */
+.section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.calc-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.calc-card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+/* Results */
+.result {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e8f4fc;
+    border-radius: 6px;
+    border-left: 5px solid #3498db;
+    display: none;
+}
+
+.result h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.result-item {
+    margin: 10px 0;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+}
+
+.result-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.result-label {
+    font-weight: 600;
+    color: #7f8c8d;
+}
+
+.result-container {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.result-text {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: white;
+    resize: vertical;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #2980b9;
+}
+
+.tab-button.active {
+    background-color: #2c3e50;
+}
+
+.tab {
+    display: none;
+    padding: 20px;
+    background: white;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab.active {
+    display: block;
+}
+
+/* Utility Classes */
+.formula {
+    font-family: monospace;
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 10px;
+    background: #ecf0f1;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.note {
+    font-size: 12px;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.warning::before {
+    content: "\26a0\fe0f ";
+}
+
+.explanation {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.med-info {
+    background-color: #e3f2fd;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 13px;
+    display: none;
+}
+
+.medication-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fefefe;
+}
+
+.medication-name {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.medication-info {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+.dose-range {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.dose-range input {
+    width: 60px;
+}
+
+.dose-range span {
+    font-size: 14px;
+    color: #555;
+}
+
+.reference {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Checklist */
+.checklist {
+    margin: 15px 0;
+}
+
+.checklist-item {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.checklist-result {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.checklist-result.ok {
+    background: #d4edda;
+    color: #155724;
+}
+
+.checklist-result.not-ok {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.header-controls .form-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Inputs Row */
+.inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+    .row {
+        grid-template-columns: 1fr;
+    }
+    .inputs {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+</style></head>
+<body>
+    <div class="container">
+        <h1>🫁 Calculadora de Ventilação Mecânica - UTI</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-action="openTab" data-tab="ventilacao">Ventilação</button>
+            <button class="tab-button" data-action="openTab" data-tab="peso">Peso</button>
+            <button class="tab-button" data-action="openTab" data-tab="gasometria">Gasometria</button>
+            <button class="tab-button" data-action="openTab" data-tab="ajustes">Ajustes</button>
+            <button class="tab-button" data-action="openTab" data-tab="desmame">Desmame</button>
+        </div>
+
+        <!-- ===== ABA 1: VENTILAÇÃO MECÂNICA ===== -->
+        <div id="ventilacao" class="tab active">
+            <div class="calc-card">
+                <h3>📊 Volume Minuto (VE)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="ve-vt">Volume Corrente (VT):</label>
+                        <input type="number" id="ve-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="ve-fr">Frequência Respiratória (FR):</label>
+                        <input type="number" id="ve-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button data-action="calcVE">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="ve-result">📋 Copiar</button>
+                <div id="ve-result" class="result"></div>
+                <div class="formula">Fórmula: VE = VT × FR / 1000</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>⚖️ Relação I:E</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="ie-tinsp">Tempo Inspiratório (Tinsp):</label>
+                        <input type="number" id="ie-tinsp" step="0.1" min="0.5" max="5" placeholder="segundos">
+                    </div>
+                    <div class="input-group">
+                        <label for="ie-fr">Frequência Respiratória (FR):</label>
+                        <input type="number" id="ie-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button data-action="calcIE">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="ie-result">📋 Copiar</button>
+                <div id="ie-result" class="result"></div>
+                <div class="formula">Fórmula: I:E = 1 : (Ttotal - Tinsp) / Tinsp</div>
+                <div class="note">Onde Ttotal = 60/FR (em segundos)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📈 Complacência Estática</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="c-vt">Volume Corrente (VT):</label>
+                        <input type="number" id="c-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="c-pplat">Pressão de Platô (Pplat):</label>
+                        <input type="number" id="c-pplat" step="1" min="5" max="50" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="c-peep">PEEP:</label>
+                        <input type="number" id="c-peep" step="1" min="0" max="20" placeholder="cmH₂O" value="5">
+                    </div>
+                </div>
+                <button data-action="calcComplacencia">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="c-result">📋 Copiar</button>
+                <div id="c-result" class="result"></div>
+                <div class="formula">Fórmula: Complacência = VT / (Pplat - PEEP)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🔄 Resistência</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="r-ppeak">Pico de Pressão (Ppeak):</label>
+                        <input type="number" id="r-ppeak" step="1" min="5" max="50" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="r-pplat">Pressão de Platô (Pplat):</label>
+                        <input type="number" id="r-pplat" step="1" min="5" max="50" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="r-fluxo">Fluxo:</label>
+                        <input type="number" id="r-fluxo" step="1" min="10" max="120" placeholder="L/min" value="60">
+                    </div>
+                </div>
+                <button data-action="calcResistencia">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="r-result">📋 Copiar</button>
+                <div id="r-result" class="result"></div>
+                <div class="formula">Fórmula: Resistência = (Ppeak - Pplat) / Fluxo</div>
+                <div class="note">Fluxo deve estar em L/s (não L/min)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>⚡ Driving Pressure</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="dp-pplat">Pressão de Platô (Pplat):</label>
+                        <input type="number" id="dp-pplat" step="1" min="5" max="50" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="dp-peep">PEEP:</label>
+                        <input type="number" id="dp-peep" step="1" min="0" max="20" placeholder="cmH₂O" value="5">
+                    </div>
+                </div>
+                <button data-action="calcDrivingPressure">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="dp-result">📋 Copiar</button>
+                <div id="dp-result" class="result"></div>
+                <div class="formula">Fórmula: ΔP = Pplat - PEEP</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🏋️ Volume Corrente por Peso Ideal</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="vtpi-pi">Peso Ideal (kg):</label>
+                        <input type="number" id="vtpi-pi" step="0.1" min="20" max="200" placeholder="kg">
+                    </div>
+                </div>
+                <button data-action="calcVolumePesoIdeal">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="vtpi-result">📋 Copiar</button>
+                <div id="vtpi-result" class="result"></div>
+                <div class="formula">Fórmula: VT = 6-8 mL/kg de peso ideal</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 2: PESO ===== -->
+        <div id="peso" class="tab">
+            <div class="calc-card">
+                <h3>👨 Peso Ideal (Homem)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="pih-altura">Altura (cm):</label>
+                        <input type="number" id="pih-altura" step="1" min="100" max="250" placeholder="cm">
+                    </div>
+                </div>
+                <button data-action="calcPesoIdealHomem">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="pih-result">📋 Copiar</button>
+                <div id="pih-result" class="result"></div>
+                <div class="formula">Fórmula: 50 + 0.91 × (Altura - 152.4)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>👩 Peso Ideal (Mulher)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="pim-altura">Altura (cm):</label>
+                        <input type="number" id="pim-altura" step="1" min="100" max="250" placeholder="cm">
+                    </div>
+                </div>
+                <button data-action="calcPesoIdealMulher">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="pim-result">📋 Copiar</button>
+                <div id="pim-result" class="result"></div>
+                <div class="formula">Fórmula: 45.5 + 0.91 × (Altura - 152.4)</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 3: GASOMETRIA ===== -->
+        <div id="gasometria" class="tab">
+            <div class="calc-card">
+                <h3>🫁 P/F Ratio</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="pf-pao2">PaO₂:</label>
+                        <input type="number" id="pf-pao2" step="1" min="40" max="500" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="pf-fio2">FiO₂:</label>
+                        <input type="number" id="pf-fio2" step="0.01" min="0.21" max="1" placeholder="0.21-1" value="0.21">
+                    </div>
+                </div>
+                <button data-action="calcPF">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="pf-result">📋 Copiar</button>
+                <div id="pf-result" class="result"></div>
+                <div class="formula">Fórmula: P/F = PaO₂ / FiO₂</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>💨 PaCO₂ Esperado</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="paco2e-hco3">HCO₃:</label>
+                        <input type="number" id="paco2e-hco3" step="1" min="10" max="40" placeholder="mEq/L">
+                    </div>
+                </div>
+                <button data-action="calcPaCO2Esperado">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="paco2e-result">📋 Copiar</button>
+                <div id="paco2e-result" class="result"></div>
+                <div class="formula">Fórmula: PaCO₂ = 1.5 × HCO₃ + 8 ± 2</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>⚗️ ΔHCO₃ Esperado</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="hco3e-delta">ΔPaCO₂:</label>
+                        <input type="number" id="hco3e-delta" step="1" min="1" max="50" placeholder="mmHg">
+                    </div>
+                </div>
+                <button data-action="calcHCO3Esperado">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="hco3e-result">📋 Copiar</button>
+                <div id="hco3e-result" class="result"></div>
+                <div class="formula">Fórmula: ΔHCO₃ = 0.35 × ΔPaCO₂</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 4: AJUSTES ===== -->
+        <div id="ajustes" class="tab">
+            <div class="calc-card">
+                <h3>🔧 Ajuste de FR</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="afr-fr">FR Atual:</label>
+                        <input type="number" id="afr-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                    <div class="input-group">
+                        <label for="afr-paco2">PaCO₂ Atual:</label>
+                        <input type="number" id="afr-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="afr-paco2d">PaCO₂ Desejada:</label>
+                        <input type="number" id="afr-paco2d" step="1" min="20" max="100" placeholder="mmHg" value="40">
+                    </div>
+                </div>
+                <button data-action="calcAjusteFR">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="afr-result">📋 Copiar</button>
+                <div id="afr-result" class="result"></div>
+                <div class="formula">Fórmula: FR nova = FR × (PaCO₂ atual / PaCO₂ desejada)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🔧 Ajuste de VT</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="avt-vt">VT Atual:</label>
+                        <input type="number" id="avt-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="avt-paco2d">PaCO₂ Desejada:</label>
+                        <input type="number" id="avt-paco2d" step="1" min="20" max="100" placeholder="mmHg" value="40">
+                    </div>
+                    <div class="input-group">
+                        <label for="avt-paco2">PaCO₂ Atual:</label>
+                        <input type="number" id="avt-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                </div>
+                <button data-action="calcAjusteVT">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="avt-result">📋 Copiar</button>
+                <div id="avt-result" class="result"></div>
+                <div class="formula">Fórmula: VT novo = VT × (PaCO₂ atual / PaCO₂ desejada)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>🔧 Ajuste de VE</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="ave-ve">VE Atual:</label>
+                        <input type="number" id="ave-ve" step="0.1" min="1" max="50" placeholder="L/min">
+                    </div>
+                    <div class="input-group">
+                        <label for="ave-paco2">PaCO₂ Atual:</label>
+                        <input type="number" id="ave-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="ave-paco2d">PaCO₂ Desejada:</label>
+                        <input type="number" id="ave-paco2d" step="1" min="20" max="100" placeholder="mmHg" value="40">
+                    </div>
+                </div>
+                <button data-action="calcAjusteVE">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="ave-result">📋 Copiar</button>
+                <div id="ave-result" class="result"></div>
+                <div class="formula">Fórmula: VE novo = VE × (PaCO₂ atual / PaCO₂ desejada)</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>💡 VT Espontâneo</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="vtesp-ve">VE:</label>
+                        <input type="number" id="vtesp-ve" step="0.1" min="1" max="50" placeholder="L/min">
+                    </div>
+                    <div class="input-group">
+                        <label for="vtesp-fr">FR:</label>
+                        <input type="number" id="vtesp-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button data-action="calcVTEsp">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="vtesp-result">📋 Copiar</button>
+                <div id="vtesp-result" class="result"></div>
+                <div class="formula">Fórmula: VT = (VE × 1000) / FR</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>💡 VE Espontâneo</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="veesp-vt">VT:</label>
+                        <input type="number" id="veesp-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                    <div class="input-group">
+                        <label for="veesp-fr">FR:</label>
+                        <input type="number" id="veesp-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button data-action="calcVEEsp">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="veesp-result">📋 Copiar</button>
+                <div id="veesp-result" class="result"></div>
+                <div class="formula">Fórmula: VE = VT × FR / 1000</div>
+            </div>
+        </div>
+
+        <!-- ===== ABA 5: DESMAME ===== -->
+        <div id="desmame" class="tab">
+            <div class="calc-card">
+                <h3>🫁 RSBI (Rapid Shallow Breathing Index)</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="rsbi-fr">Frequência Respiratória (FR):</label>
+                        <input type="number" id="rsbi-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                    <div class="input-group">
+                        <label for="rsbi-vt">Volume Corrente (VT):</label>
+                        <input type="number" id="rsbi-vt" step="1" min="100" max="1000" placeholder="mL">
+                    </div>
+                </div>
+                <button data-action="calcRSBI">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="rsbi-result">📋 Copiar</button>
+                <div id="rsbi-result" class="result"></div>
+                <div class="formula">Fórmula: RSBI = FR / (VT / 1000)</div>
+                <div class="note">Interpretação: < 105 = Sucesso provável; > 105 = Falha provável</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📊 CROP Index</h3>
+                <div class="inputs">
+                    <div class="input-group">
+                        <label for="crop-cdin">Compliance Dinâmica (Cdyn):</label>
+                        <input type="number" id="crop-cdin" step="1" min="10" max="100" placeholder="mL/cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-pimax">PImax:</label>
+                        <input type="number" id="crop-pimax" step="1" min="20" max="150" placeholder="cmH₂O">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-pao2">PaO₂:</label>
+                        <input type="number" id="crop-pao2" step="1" min="40" max="500" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-paco2">PaCO₂:</label>
+                        <input type="number" id="crop-paco2" step="1" min="20" max="100" placeholder="mmHg">
+                    </div>
+                    <div class="input-group">
+                        <label for="crop-fr">FR:</label>
+                        <input type="number" id="crop-fr" step="1" min="5" max="40" placeholder="irpm">
+                    </div>
+                </div>
+                <button data-action="calcCROP">Calcular</button>
+                <button class="copy-btn" data-action="copyResult" data-target="crop-result">📋 Copiar</button>
+                <div id="crop-result" class="result"></div>
+                <div class="formula">Fórmula: CROP = (Cdyn × PImax × PaO₂ / PaCO₂) / FR</div>
+                <div class="note">Interpretação: > 15 = Sucesso provável; 13-15 = Inconclusivo; < 13 = Falha provável</div>
+            </div>
+
+            <div class="calc-card">
+                <h3>📋 Checklist de Desmame</h3>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-rsbi">
+                        <label for="check-rsbi">RSBI < 105</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-pf">
+                        <label for="check-pf">P/F Ratio > 200</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-paco2">
+                        <label for="check-paco2">PaCO₂ < 50 mmHg</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-ph">
+                        <label for="check-ph">pH > 7.30</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-hemodinamica">
+                        <label for="check-hemodinamica">Estabilidade hemodinâmica</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-neurologico">
+                        <label for="check-neurologico">Glasgow ≥ 13</label>
+                    </div>
+                </div>
+                <button data-action="calcChecklist">Avaliar</button>
+                <div id="checklist-result" class="checklist-result"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Calculadora de Ventilação Mecânica - UTI Toolkit | MJardim Serviços Médicos</p>
+        </div>
+    </div>
+<script type="module">
+// Exporta todas as funções de cálculo para ventilação
+
+// Ventilação
+import { calculateVE, formatVEResult } from './volume-minuto.js';
+import { calculateIE, formatIEResult } from './ie-ratio.js';
+import { calculateCompliance, formatComplianceResult } from './compliance.js';
+import { calculateResistance, formatResistanceResult } from './resistance.js';
+import { calculateDrivingPressure, formatDrivingPressureResult } from './driving-pressure.js';
+import { calculateVolumePesoIdeal, formatVolumePesoIdealResult } from './volume-peso-ideal.js';
+
+// Peso
+import { calculatePesoIdealHomem, formatPesoIdealHomemResult } from './peso-ideal-homem.js';
+import { calculatePesoIdealMulher, formatPesoIdealMulherResult } from './peso-ideal-mulher.js';
+
+// Gasometria
+import { calculatePF, formatPFResult } from './pf-ratio.js';
+import { calculatePaCO2Esperado, formatPaCO2EsperadoResult } from './paco2-esperado.js';
+import { calculateHCO3Esperado, formatHCO3EsperadoResult } from './hco3-esperado.js';
+
+// Ajustes
+import { calculateAjusteFR, formatAjusteFRResult } from './ajuste-fr.js';
+import { calculateAjusteVT, formatAjusteVTResult } from './ajuste-vt.js';
+import { calculateAjusteVE, formatAjusteVEResult } from './ajuste-ve.js';
+
+// Desmame
+import { calculateVTEspontaneo, formatVTEspontaneoResult } from './vt-espontaneo.js';
+import { calculateVEEspontaneo, formatVEEspontaneoResult } from './ve-espontaneo.js';
+import { calculateRSBI, formatRSBIResult } from './rsbi.js';
+import { calculateCROP, formatCROPResult } from './crop-index.js';
+
+// Re-exporta todas as funções
+export {
+  // Ventilação
+  calculateVE, formatVEResult,
+  calculateIE, formatIEResult,
+  calculateCompliance, formatComplianceResult,
+  calculateResistance, formatResistanceResult,
+  calculateDrivingPressure, formatDrivingPressureResult,
+  calculateVolumePesoIdeal, formatVolumePesoIdealResult,
+  
+  // Peso
+  calculatePesoIdealHomem, formatPesoIdealHomemResult,
+  calculatePesoIdealMulher, formatPesoIdealMulherResult,
+  
+  // Gasometria
+  calculatePF, formatPFResult,
+  calculatePaCO2Esperado, formatPaCO2EsperadoResult,
+  calculateHCO3Esperado, formatHCO3EsperadoResult,
+  
+  // Ajustes
+  calculateAjusteFR, formatAjusteFRResult,
+  calculateAjusteVT, formatAjusteVTResult,
+  calculateAjusteVE, formatAjusteVEResult,
+  
+  // Desmame
+  calculateVTEspontaneo, formatVTEspontaneoResult,
+  calculateVEEspontaneo, formatVEEspontaneoResult,
+  calculateRSBI, formatRSBIResult,
+  calculateCROP, formatCROPResult
+};
+
+
+/**
+ * Gerenciador de estado para a calculadora de ventilação mecânica
+ * Mantém inputs e outputs sincronizados e recalcula automaticamente
+ */
+
+import * as calculations from './calculations/index.js';
+
+// Estado inicial
+const state = {
+  inputs: {
+    // Ventilação
+    've-vt': '',
+    've-fr': '',
+    'ie-tinsp': '',
+    'ie-fr': '',
+    'c-vt': '',
+    'c-pplat': '',
+    'c-peep': 5,
+    'r-ppeak': '',
+    'r-pplat': '',
+    'r-fluxo': 1,
+    'dp-pplat': '',
+    'dp-peep': 5,
+    'vtpi-pi': '',
+    
+    // Peso
+    'pih-altura': '',
+    'pim-altura': '',
+    
+    // Gasometria
+    'pf-pao2': '',
+    'pf-fio2': 0.21,
+    'paco2e-hco3': '',
+    'hco3e-delta': '',
+    
+    // Ajustes
+    'afr-fr': '',
+    'afr-paco2': '',
+    'afr-paco2d': 40,
+    'avt-vt': '',
+    'avt-paco2d': 40,
+    'avt-paco2': '',
+    'ave-ve': '',
+    'ave-paco2': '',
+    'ave-paco2d': 40,
+    
+    // Desmame
+    'vtesp-ve': '',
+    'vtesp-fr': '',
+    'veesp-vt': '',
+    'veesp-fr': '',
+    'rsbi-fr': '',
+    'rsbi-vt': '',
+    'crop-cdin': '',
+    'crop-pimax': '',
+    'crop-pao2': '',
+    'crop-paco2': '',
+    'crop-fr': '',
+    
+    // Checklist
+    'check-rsbi': false,
+    'check-pf': false,
+    'check-paco2': false,
+    'check-ph': false,
+    'check-hemodinamica': false,
+    'check-neurologico': false
+  },
+  outputs: {
+    // Ventilação
+    ve: null,
+    ie: null,
+    compliance: null,
+    resistance: null,
+    drivingPressure: null,
+    volumePesoIdeal: null,
+    
+    // Peso
+    pesoIdealHomem: null,
+    pesoIdealMulher: null,
+    
+    // Gasometria
+    pf: null,
+    paco2Esperado: null,
+    hco3Esperado: null,
+    
+    // Ajustes
+    ajusteFR: null,
+    ajusteVT: null,
+    ajusteVE: null,
+    
+    // Desmame
+    vtEspontaneo: null,
+    veEspontaneo: null,
+    rsbi: null,
+    crop: null,
+    
+    // Checklist
+    checklist: null
+  },
+  activeTab: 'ventilacao'
+};
+
+/**
+ * Atualiza um input e recalcula todas as dependências
+ * @param {string} name - Nome do input
+ * @param {number|string|boolean} value - Valor do input
+ */
+export function updateInput(name, value) {
+  state.inputs[name] = value;
+  recalculate();
+}
+
+/**
+ * Recalcula todos os outputs com base nos inputs atuais
+ */
+function recalculate() {
+  // Ventilação
+  state.outputs.ve = calculations.calculateVE(
+    parseFloat(state.inputs['ve-vt']) || 0,
+    parseFloat(state.inputs['ve-fr']) || 0
+  );
+  
+  state.outputs.ie = calculations.calculateIE(
+    parseFloat(state.inputs['ie-tinsp']) || 0,
+    parseFloat(state.inputs['ie-fr']) || 0
+  );
+  
+  state.outputs.compliance = calculations.calculateCompliance(
+    parseFloat(state.inputs['c-vt']) || 0,
+    parseFloat(state.inputs['c-pplat']) || 0,
+    parseFloat(state.inputs['c-peep']) || 0
+  );
+  
+  state.outputs.resistance = calculations.calculateResistance(
+    parseFloat(state.inputs['r-ppeak']) || 0,
+    parseFloat(state.inputs['r-pplat']) || 0,
+    parseFloat(state.inputs['r-fluxo']) || 0
+  );
+  
+  state.outputs.drivingPressure = calculations.calculateDrivingPressure(
+    parseFloat(state.inputs['dp-pplat']) || 0,
+    parseFloat(state.inputs['dp-peep']) || 0
+  );
+  
+  state.outputs.volumePesoIdeal = calculations.calculateVolumePesoIdeal(
+    parseFloat(state.inputs['vtpi-pi']) || 0
+  );
+  
+  // Peso
+  state.outputs.pesoIdealHomem = calculations.calculatePesoIdealHomem(
+    parseFloat(state.inputs['pih-altura']) || 0
+  );
+  
+  state.outputs.pesoIdealMulher = calculations.calculatePesoIdealMulher(
+    parseFloat(state.inputs['pim-altura']) || 0
+  );
+  
+  // Gasometria
+  state.outputs.pf = calculations.calculatePF(
+    parseFloat(state.inputs['pf-pao2']) || 0,
+    parseFloat(state.inputs['pf-fio2']) || 0
+  );
+  
+  state.outputs.paco2Esperado = calculations.calculatePaCO2Esperado(
+    parseFloat(state.inputs['paco2e-hco3']) || 0
+  );
+  
+  state.outputs.hco3Esperado = calculations.calculateHCO3Esperado(
+    parseFloat(state.inputs['hco3e-delta']) || 0
+  );
+  
+  // Ajustes
+  state.outputs.ajusteFR = calculations.calculateAjusteFR(
+    parseFloat(state.inputs['afr-fr']) || 0,
+    parseFloat(state.inputs['afr-paco2']) || 0,
+    parseFloat(state.inputs['afr-paco2d']) || 0
+  );
+  
+  state.outputs.ajusteVT = calculations.calculateAjusteVT(
+    parseFloat(state.inputs['avt-vt']) || 0,
+    parseFloat(state.inputs['avt-paco2d']) || 0,
+    parseFloat(state.inputs['avt-paco2']) || 0
+  );
+  
+  state.outputs.ajusteVE = calculations.calculateAjusteVE(
+    parseFloat(state.inputs['ave-ve']) || 0,
+    parseFloat(state.inputs['ave-paco2']) || 0,
+    parseFloat(state.inputs['ave-paco2d']) || 0
+  );
+  
+  // Desmame
+  state.outputs.vtEspontaneo = calculations.calculateVTEspontaneo(
+    parseFloat(state.inputs['vtesp-ve']) || 0,
+    parseFloat(state.inputs['vtesp-fr']) || 0
+  );
+  
+  state.outputs.veEspontaneo = calculations.calculateVEEspontaneo(
+    parseFloat(state.inputs['veesp-vt']) || 0,
+    parseFloat(state.inputs['veesp-fr']) || 0
+  );
+  
+  state.outputs.rsbi = calculations.calculateRSBI(
+    parseFloat(state.inputs['rsbi-fr']) || 0,
+    parseFloat(state.inputs['rsbi-vt']) || 0
+  );
+  
+  state.outputs.crop = calculations.calculateCROP(
+    parseFloat(state.inputs['crop-cdin']) || 0,
+    parseFloat(state.inputs['crop-pimax']) || 0,
+    parseFloat(state.inputs['crop-pao2']) || 0,
+    parseFloat(state.inputs['crop-paco2']) || 0,
+    parseFloat(state.inputs['crop-fr']) || 0
+  );
+  
+  // Checklist
+  const checklistItems = [
+    state.inputs['check-rsbi'],
+    state.inputs['check-pf'],
+    state.inputs['check-paco2'],
+    state.inputs['check-ph'],
+    state.inputs['check-hemodinamica'],
+    state.inputs['check-neurologico']
+  ];
+  const allChecked = checklistItems.every(item => item === true);
+  state.outputs.checklist = allChecked ? 'ok' : 'not-ok';
+}
+
+/**
+ * Abre uma aba
+ * @param {string} tabName - Nome da aba
+ */
+export function openTab(tabName) {
+  state.activeTab = tabName;
+  updateInput('activeTab', tabName);
+}
+
+// Inicializa o estado
+recalculate();
+
+// Exporta o estado e funções
+export { state, updateInput, openTab };
+
+
+/**
+ * Manipulação de DOM e eventos para a calculadora de ventilação mecânica
+ * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
+ */
+
+import { state, updateInput, openTab } from './state.js';
+import * as calculations from './calculations/index.js';
+
+// Função para copiar resultado
+function copyResult(elementId) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    const text = element.textContent || element.innerText;
+    navigator.clipboard.writeText(text.replace(/[^0-9.,-]/g, ''));
+  }
+}
+
+// Função para atualizar o DOM
+function updateDOM() {
+  // Atualiza inputs
+  for (const [id, value] of Object.entries(state.inputs)) {
+    const element = document.getElementById(id);
+    if (element && element.type !== 'checkbox') {
+      element.value = value;
+    } else if (element && element.type === 'checkbox') {
+      element.checked = value;
+    }
+  }
+
+  // Atualiza tabs
+  document.querySelectorAll('.tab-button').forEach(button => {
+    const tabName = button.getAttribute('data-tab');
+    if (tabName === state.activeTab) {
+      button.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    } else {
+      button.classList.remove('active');
+      document.getElementById(tabName).classList.remove('active');
+    }
+  });
+
+  // Atualiza outputs
+  updateOutput('ve-result', calculations.formatVEResult(state.outputs.ve));
+  updateOutput('ie-result', calculations.formatIEResult(state.outputs.ie));
+  updateOutput('c-result', calculations.formatComplianceResult(state.outputs.compliance));
+  updateOutput('r-result', calculations.formatResistanceResult(state.outputs.resistance));
+  updateOutput('dp-result', calculations.formatDrivingPressureResult(state.outputs.drivingPressure));
+  updateOutput('vtpi-result', calculations.formatVolumePesoIdealResult(state.outputs.volumePesoIdeal));
+  updateOutput('pih-result', calculations.formatPesoIdealHomemResult(state.outputs.pesoIdealHomem));
+  updateOutput('pim-result', calculations.formatPesoIdealMulherResult(state.outputs.pesoIdealMulher));
+  updateOutput('pf-result', calculations.formatPFResult(state.outputs.pf));
+  updateOutput('paco2e-result', calculations.formatPaCO2EsperadoResult(state.outputs.paco2Esperado));
+  updateOutput('hco3e-result', calculations.formatHCO3EsperadoResult(state.outputs.hco3Esperado));
+  updateOutput('afr-result', calculations.formatAjusteFRResult(state.outputs.ajusteFR));
+  updateOutput('avt-result', calculations.formatAjusteVTResult(state.outputs.ajusteVT));
+  updateOutput('ave-result', calculations.formatAjusteVEResult(state.outputs.ajusteVE));
+  updateOutput('vtesp-result', calculations.formatVTEspontaneoResult(state.outputs.vtEspontaneo));
+  updateOutput('veesp-result', calculations.formatVEEspontaneoResult(state.outputs.veEspontaneo));
+  updateOutput('rsbi-result', calculations.formatRSBIResult(state.outputs.rsbi));
+  updateOutput('crop-result', calculations.formatCROPResult(state.outputs.crop));
+
+  // Atualiza checklist
+  const checklistResult = document.getElementById('checklist-result');
+  if (checklistResult) {
+    if (state.outputs.checklist === 'ok') {
+      checklistResult.className = 'checklist-result ok';
+      checklistResult.textContent = '✅ Todos os critérios de desmame estão atendidos!';
+    } else if (state.outputs.checklist === 'not-ok') {
+      checklistResult.className = 'checklist-result not-ok';
+      checklistResult.textContent = '❌ Alguns critérios de desmame não estão atendidos';
+    }
+  }
+}
+
+// Função para atualizar um output específico
+function updateOutput(elementId, content) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.innerHTML = content;
+  }
+}
+
+// Funções de cálculo (chamadas por data-action)
+function calcVE() {
+  updateInput('ve-vt', parseFloat(document.getElementById('ve-vt').value) || '');
+  updateInput('ve-fr', parseFloat(document.getElementById('ve-fr').value) || '');
+  updateDOM();
+}
+
+function calcIE() {
+  updateInput('ie-tinsp', parseFloat(document.getElementById('ie-tinsp').value) || '');
+  updateInput('ie-fr', parseFloat(document.getElementById('ie-fr').value) || '');
+  updateDOM();
+}
+
+function calcComplacencia() {
+  updateInput('c-vt', parseFloat(document.getElementById('c-vt').value) || '');
+  updateInput('c-pplat', parseFloat(document.getElementById('c-pplat').value) || '');
+  updateInput('c-peep', parseFloat(document.getElementById('c-peep').value) || 0);
+  updateDOM();
+}
+
+function calcResistencia() {
+  updateInput('r-ppeak', parseFloat(document.getElementById('r-ppeak').value) || '');
+  updateInput('r-pplat', parseFloat(document.getElementById('r-pplat').value) || '');
+  updateInput('r-fluxo', parseFloat(document.getElementById('r-fluxo').value) || 0);
+  updateDOM();
+}
+
+function calcDrivingPressure() {
+  updateInput('dp-pplat', parseFloat(document.getElementById('dp-pplat').value) || '');
+  updateInput('dp-peep', parseFloat(document.getElementById('dp-peep').value) || 0);
+  updateDOM();
+}
+
+function calcVolumePesoIdeal() {
+  updateInput('vtpi-pi', parseFloat(document.getElementById('vtpi-pi').value) || '');
+  updateDOM();
+}
+
+function calcPesoIdealHomem() {
+  updateInput('pih-altura', parseFloat(document.getElementById('pih-altura').value) || '');
+  updateDOM();
+}
+
+function calcPesoIdealMulher() {
+  updateInput('pim-altura', parseFloat(document.getElementById('pim-altura').value) || '');
+  updateDOM();
+}
+
+function calcPF() {
+  updateInput('pf-pao2', parseFloat(document.getElementById('pf-pao2').value) || '');
+  updateInput('pf-fio2', parseFloat(document.getElementById('pf-fio2').value) || 0);
+  updateDOM();
+}
+
+function calcPaCO2Esperado() {
+  updateInput('paco2e-hco3', parseFloat(document.getElementById('paco2e-hco3').value) || '');
+  updateDOM();
+}
+
+function calcHCO3Esperado() {
+  updateInput('hco3e-delta', parseFloat(document.getElementById('hco3e-delta').value) || '');
+  updateDOM();
+}
+
+function calcAjusteFR() {
+  updateInput('afr-fr', parseFloat(document.getElementById('afr-fr').value) || '');
+  updateInput('afr-paco2', parseFloat(document.getElementById('afr-paco2').value) || '');
+  updateInput('afr-paco2d', parseFloat(document.getElementById('afr-paco2d').value) || 0);
+  updateDOM();
+}
+
+function calcAjusteVT() {
+  updateInput('avt-vt', parseFloat(document.getElementById('avt-vt').value) || '');
+  updateInput('avt-paco2d', parseFloat(document.getElementById('avt-paco2d').value) || 0);
+  updateInput('avt-paco2', parseFloat(document.getElementById('avt-paco2').value) || '');
+  updateDOM();
+}
+
+function calcAjusteVE() {
+  updateInput('ave-ve', parseFloat(document.getElementById('ave-ve').value) || '');
+  updateInput('ave-paco2', parseFloat(document.getElementById('ave-paco2').value) || '');
+  updateInput('ave-paco2d', parseFloat(document.getElementById('ave-paco2d').value) || 0);
+  updateDOM();
+}
+
+function calcVTEsp() {
+  updateInput('vtesp-ve', parseFloat(document.getElementById('vtesp-ve').value) || '');
+  updateInput('vtesp-fr', parseFloat(document.getElementById('vtesp-fr').value) || '');
+  updateDOM();
+}
+
+function calcVEEsp() {
+  updateInput('veesp-vt', parseFloat(document.getElementById('veesp-vt').value) || '');
+  updateInput('veesp-fr', parseFloat(document.getElementById('veesp-fr').value) || '');
+  updateDOM();
+}
+
+function calcRSBI() {
+  updateInput('rsbi-fr', parseFloat(document.getElementById('rsbi-fr').value) || '');
+  updateInput('rsbi-vt', parseFloat(document.getElementById('rsbi-vt').value) || '');
+  updateDOM();
+}
+
+function calcCROP() {
+  updateInput('crop-cdin', parseFloat(document.getElementById('crop-cdin').value) || '');
+  updateInput('crop-pimax', parseFloat(document.getElementById('crop-pimax').value) || '');
+  updateInput('crop-pao2', parseFloat(document.getElementById('crop-pao2').value) || '');
+  updateInput('crop-paco2', parseFloat(document.getElementById('crop-paco2').value) || '');
+  updateInput('crop-fr', parseFloat(document.getElementById('crop-fr').value) || '');
+  updateDOM();
+}
+
+function calcChecklist() {
+  updateInput('check-rsbi', document.getElementById('check-rsbi').checked);
+  updateInput('check-pf', document.getElementById('check-pf').checked);
+  updateInput('check-paco2', document.getElementById('check-paco2').checked);
+  updateInput('check-ph', document.getElementById('check-ph').checked);
+  updateInput('check-hemodinamica', document.getElementById('check-hemodinamica').checked);
+  updateInput('check-neurologico', document.getElementById('check-neurologico').checked);
+  updateDOM();
+}
+
+// Mapeamento de ações para event delegation
+export const actions = {
+  openTab,
+  calcVE,
+  calcIE,
+  calcComplacencia,
+  calcResistencia,
+  calcDrivingPressure,
+  calcVolumePesoIdeal,
+  calcPesoIdealHomem,
+  calcPesoIdealMulher,
+  calcPF,
+  calcPaCO2Esperado,
+  calcHCO3Esperado,
+  calcAjusteFR,
+  calcAjusteVT,
+  calcAjusteVE,
+  calcVTEsp,
+  calcVEEsp,
+  calcRSBI,
+  calcCROP,
+  calcChecklist,
+  copyResult
+};
+
+// Inicializa o DOM
+document.addEventListener('DOMContentLoaded', () => {
+  // Configura event delegation para todos os botões com data-action
+  document.querySelectorAll('[data-action]').forEach(el => {
+    const action = el.getAttribute('data-action');
+    if (actions[action]) {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        actions[action](e);
+      });
+    }
+  });
+
+  // Configura event delegation para tabs
+  document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tabName = button.getAttribute('data-tab');
+      openTab(tabName);
+      updateDOM();
+    });
+  });
+
+  // Atualiza inputs ao digitarem
+  document.querySelectorAll('input[type="number"], input[type="text"], select').forEach(input => {
+    input.addEventListener('input', () => {
+      const id = input.id;
+      if (id) {
+        if (input.type === 'checkbox') {
+          updateInput(id, input.checked);
+        } else {
+          updateInput(id, input.value);
+        }
+      }
+    });
+  });
+
+  // Inicializa o DOM
+  updateDOM();
+});
+
+
+
+</script>
+</body>
+</html>
