@@ -91,7 +91,8 @@ tests.push(async () => {
     profilax: 'Sem profilaxias farmacológicas'
   };
   const result = gerarEvolucao(inputs);
-  ok(result.includes('Estabilidade hemodinâmica'));
+  ok(result.includes('Instabilidade hemodinâmica'));
+  ok(result.includes('Noradrenalina a 5 mL/h'));
   ok(result.includes('Estabilidade ventilatória'));
   ok(result.includes('Estabilidade neurológica'));
   ok(result.includes('Sem antibiótico'));
