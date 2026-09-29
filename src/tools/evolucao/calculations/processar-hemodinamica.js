@@ -2,8 +2,16 @@
 // Input: nora, vaso, dobuta, tridil, nipride (all strings)
 // Output: string describing hemodynamic state
 export function processarHemodinamica(nora, vaso, dobuta, tridil, nipride) {
+  const temDroga = (valor) => valor && parseFloat(valor) > 0;
+
   // Se todos vazios ou zero
-  if (!nora && !vaso && !dobuta && !tridil && !nipride) {
+  if (
+    !temDroga(nora) &&
+    !temDroga(vaso) &&
+    !temDroga(dobuta) &&
+    !temDroga(tridil) &&
+    !temDroga(nipride)
+  ) {
     return 'Estabilidade hemodinâmica.';
   }
 
