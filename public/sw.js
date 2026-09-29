@@ -1,15 +1,17 @@
-const CACHE_NAME = 'uti-toolkit-v1';
+const CACHE_NAME = 'uti-toolkit-v2';
+const BASE = '/';
+
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.svg',
-  '/icons/icon-512.svg',
-  '/tools/ventilacao.html',
-  '/tools/rsi.html',
-  '/tools/infusao.html',
-  '/tools/agua-livre.html',
-  '/tools/evolucao.html',
+  BASE,
+  BASE + 'index.html',
+  BASE + 'manifest.json',
+  BASE + 'icons/icon-192.svg',
+  BASE + 'icons/icon-512.svg',
+  BASE + 'tools/ventilacao.html',
+  BASE + 'tools/rsi.html',
+  BASE + 'tools/infusao.html',
+  BASE + 'tools/agua-livre.html',
+  BASE + 'tools/evolucao.html',
 ];
 
 self.addEventListener('install', (e) => {
@@ -29,6 +31,29 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+  const url = new URL(e.request.url);
+  if (!url.pathname.startsWith(BASE)) return;
+  if (e.request.method !== 'GET') return;
+
+  const isHTML =
+    e.request.mode === 'navigate' ||
+    (e.request.headers.get('accept') || '').includes('text/html');
+
+  if (isHTML) {
+    e.respondWith(
+      fetch(e.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+          return response;
+        })
+        .catch(() =>
+          caches.match(e.request).then((cached) => cached || caches.match(BASE + 'index.html'))
+        )
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then((cached) => cached || fetch(e.request))
   );
