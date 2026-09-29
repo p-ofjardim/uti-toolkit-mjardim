@@ -54,8 +54,7 @@ O projeto foi refatorado para seguir os princípios Unix: **ferramentas pequenas
 │   ├── build-pwa.js             # Gera PWA a partir de src/
 │   └── build-extension.js        # Gera extensão Firefox a partir de src/
 │
-├── test/
-│   └── all-calculations.test.js # Runner de testes
+├── test/                      # Vazio; testes vivem em __tests__/ junto aos cálculos
 │
 ├── package.json
 └── README.md
@@ -273,20 +272,17 @@ npm test
 
 ```javascript
 // src/tools/agua-livre/calculations/__tests__/tbw-percentage.test.js
+import { test } from 'node:test';
+import { strictEqual } from 'node:assert/strict';
 import { calculateTBWPercentage } from '../tbw-percentage.js';
-import { strictEqual } from 'assert';
 
-const tests = [];
-
-tests.push(async () => {
+test('adult male should return 0.6', () => {
   strictEqual(calculateTBWPercentage(30, 'male'), 0.6);
 });
 
-tests.push(async () => {
+test('elderly female (65+) should return 0.45', () => {
   strictEqual(calculateTBWPercentage(70, 'female'), 0.45);
 });
-
-export default tests;
 ```
 
 ---

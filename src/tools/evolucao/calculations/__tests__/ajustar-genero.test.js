@@ -1,63 +1,50 @@
+import { test } from 'node:test';
+import { strictEqual, ok } from 'node:assert/strict';
 import { ajustarGenero } from '../ajustar-genero.js';
-import { strictEqual, ok } from 'assert';
 
-const tests = [];
-
-// Test 1: Male should not modify text
-tests.push(async () => {
+test('male should not modify text', () => {
   const text = 'Paciente adaptado com oligúrico';
   const result = ajustarGenero(text, 'M');
   strictEqual(result, text);
 });
 
-// Test 2: Female should adjust adaptado
-tests.push(async () => {
+test('female should adjust adaptado', () => {
   const result = ajustarGenero('Paciente adaptado', 'F');
   ok(result.includes('adaptada'));
 });
 
-// Test 3: Female should adjust oligúrico
-tests.push(async () => {
+test('female should adjust oligúrico', () => {
   const result = ajustarGenero('Diurese oligúrico', 'F');
   ok(result.includes('oligúrica'));
 });
 
-// Test 4: Female should adjust anúrico
-tests.push(async () => {
+test('female should adjust anúrico', () => {
   const result = ajustarGenero('Diurese anúrico', 'F');
   ok(result.includes('anúrica'));
 });
 
-// Test 5: Female should adjust normoglicêmico
-tests.push(async () => {
+test('female should adjust normoglicêmico', () => {
   const result = ajustarGenero('Paciente normoglicêmico', 'F');
   ok(result.includes('normoglicêmica'));
 });
 
-// Test 6: Female should adjust disglicêmico
-tests.push(async () => {
+test('female should adjust disglicêmico', () => {
   const result = ajustarGenero('Paciente disglicêmico', 'F');
   ok(result.includes('disglicêmica'));
 });
 
-// Test 7: Female should adjust hipotérmico
-tests.push(async () => {
+test('female should adjust hipotérmico', () => {
   const result = ajustarGenero('Paciente hipotérmico', 'F');
   ok(result.includes('hipotérmica'));
 });
 
-// Test 8: Case insensitive
-tests.push(async () => {
+test('case insensitive adjustment preserves uppercase', () => {
   const result = ajustarGenero('PACIENTE ADAPTADO', 'F');
   ok(result.includes('ADAPTADA'));
 });
 
-// Test 9: Multiple replacements
-tests.push(async () => {
-  const text = 'Paciente adaptado e oligúrico';
-  const result = ajustarGenero(text, 'F');
+test('multiple replacements in one text', () => {
+  const result = ajustarGenero('Paciente adaptado e oligúrico', 'F');
   ok(result.includes('adaptada'));
   ok(result.includes('oligúrica'));
 });
-
-export default tests;

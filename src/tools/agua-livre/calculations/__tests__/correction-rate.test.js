@@ -1,52 +1,40 @@
+import { test } from 'node:test';
+import { strictEqual } from 'node:assert/strict';
 import { calculateMaxCorrectionRate, calculateCorrectionPercentage } from '../correction-rate.js';
-import { strictEqual } from 'assert';
 
-const tests = [];
-
-// Test calculateMaxCorrectionRate
-// Test 1: Difference >= 10 should return 10
-tests.push(async () => {
+test('difference >= 10 should return max correction rate of 10', () => {
   strictEqual(calculateMaxCorrectionRate(15), 10);
   strictEqual(calculateMaxCorrectionRate(20), 10);
   strictEqual(calculateMaxCorrectionRate(100), 10);
 });
 
-// Test 2: Difference < 10 should return the difference
-tests.push(async () => {
+test('difference < 10 should return the difference', () => {
   strictEqual(calculateMaxCorrectionRate(5), 5);
   strictEqual(calculateMaxCorrectionRate(8), 8);
   strictEqual(calculateMaxCorrectionRate(0), 0);
 });
 
-// Test 3: Negative differences
-tests.push(async () => {
+test('negative differences use absolute value', () => {
   strictEqual(calculateMaxCorrectionRate(-5), 5);
   strictEqual(calculateMaxCorrectionRate(-15), 10);
 });
 
-// Test calculateCorrectionPercentage
-// Test 4: Difference <= 10 should return 100
-tests.push(async () => {
+test('difference <= 10 should return 100 percentage', () => {
   strictEqual(calculateCorrectionPercentage(5), 100);
   strictEqual(calculateCorrectionPercentage(10), 100);
 });
 
-// Test 5: Percentage based on max correction
-tests.push(async () => {
+test('percentage based on max correction', () => {
   strictEqual(calculateCorrectionPercentage(20), 50);
   strictEqual(calculateCorrectionPercentage(40), 25);
 });
 
-// Test 6: Cap at 100%
-tests.push(async () => {
+test('caps at 100%', () => {
   strictEqual(calculateCorrectionPercentage(1), 100);
   strictEqual(calculateCorrectionPercentage(0.5), 100);
 });
 
-// Test 7: Negative differences
-tests.push(async () => {
+test('negative differences use absolute value for percentage', () => {
   strictEqual(calculateCorrectionPercentage(-20), 50);
   strictEqual(calculateCorrectionPercentage(-10), 100);
 });
-
-export default tests;
