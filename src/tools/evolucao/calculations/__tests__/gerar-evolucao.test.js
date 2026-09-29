@@ -1,17 +1,14 @@
+import { test } from 'node:test';
+import { ok } from 'node:assert/strict';
 import { gerarEvolucao } from '../gerar-evolucao.js';
-import { ok } from 'assert';
 
-const tests = [];
-
-// Test 1: Should generate text with box number
-tests.push(async () => {
+test('generates text with box number', () => {
   const inputs = { box: '11', data: '', sexo: 'M' };
   const result = gerarEvolucao(inputs);
   ok(result.includes('# Box 11'));
 });
 
-// Test 2: Should include hemodynamics section when present
-tests.push(async () => {
+test('includes hemodynamics section when drugs present', () => {
   const inputs = {
     box: '11',
     sexo: 'M',
@@ -26,8 +23,7 @@ tests.push(async () => {
   ok(result.includes('Noradrenalina a 5 mL/h'));
 });
 
-// Test 3: Should include ventilation section when present
-tests.push(async () => {
+test('includes ventilation section when present', () => {
   const inputs = {
     box: '11',
     sexo: 'M',
@@ -40,8 +36,7 @@ tests.push(async () => {
   ok(result.includes('Estabilidade ventilatória'));
 });
 
-// Test 4: Should include neuro section when present
-tests.push(async () => {
+test('includes neuro section when present', () => {
   const inputs = {
     box: '11',
     sexo: 'M',
@@ -53,15 +48,13 @@ tests.push(async () => {
   ok(result.includes('Estabilidade neurológica'));
 });
 
-// Test 5: Should handle empty inputs gracefully
-tests.push(async () => {
+test('handles empty inputs gracefully', () => {
   const inputs = { box: '11', sexo: 'M' };
   const result = gerarEvolucao(inputs);
   ok(result.includes('# Box 11'));
 });
 
-// Test 6: Should include all sections when all inputs present
-tests.push(async () => {
+test('includes all sections when all inputs present', () => {
   const inputs = {
     box: '11',
     sexo: 'M',
@@ -98,5 +91,3 @@ tests.push(async () => {
   ok(result.includes('Sem antibiótico'));
   ok(result.includes('Diurese satisfatória'));
 });
-
-export default tests;
