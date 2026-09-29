@@ -1,37 +1,31 @@
+import { test } from 'node:test';
+import { strictEqual, ok } from 'node:assert/strict';
 import { processarHemodinamica } from '../processar-hemodinamica.js';
-import { strictEqual, ok } from 'assert';
 
-const tests = [];
-
-// Test 1: All empty inputs should return stability
-tests.push(async () => {
+test('all empty inputs should return stability', () => {
   const result = processarHemodinamica('', '', '', '', '');
   strictEqual(result, 'Estabilidade hemodinâmica.');
 });
 
-// Test 2: All zero inputs should return stability
-tests.push(async () => {
+test('all zero inputs should return stability', () => {
   const result = processarHemodinamica('0', '0', '0', '0', '0');
   strictEqual(result, 'Estabilidade hemodinâmica.');
 });
 
-// Test 3: Noradrenaline only
-tests.push(async () => {
+test('noradrenaline only', () => {
   const result = processarHemodinamica('5', '', '', '', '');
   ok(result.includes('Instabilidade hemodinâmica'));
   ok(result.includes('Noradrenalina a 5 mL/h'));
 });
 
-// Test 4: Multiple drugs
-tests.push(async () => {
+test('multiple drugs', () => {
   const result = processarHemodinamica('5', '2', '10', '', '');
   ok(result.includes('Noradrenalina a 5 mL/h'));
   ok(result.includes('Vasopressina a 2 U/min'));
   ok(result.includes('Dobutamina a 10 mcg/kg/min'));
 });
 
-// Test 5: All drugs
-tests.push(async () => {
+test('all drugs', () => {
   const result = processarHemodinamica('5', '2', '10', '50', '2');
   ok(result.includes('Noradrenalina a 5 mL/h'));
   ok(result.includes('Vasopressina a 2 U/min'));
@@ -39,5 +33,3 @@ tests.push(async () => {
   ok(result.includes('Nitroglicerina a 50 mcg/min'));
   ok(result.includes('Nitroprussiato a 2 mcg/kg/min'));
 });
-
-export default tests;
