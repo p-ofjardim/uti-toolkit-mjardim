@@ -511,6 +511,7 @@ button.copy-btn:hover {
                 <li><strong>Resultado positivo:</strong> Volume de água livre a ser <strong>adicionado</strong> (hipenatremia)</li>
                 <li><strong>Resultado negativo:</strong> Não há déficit de água livre, mas possível sobrecarga hídrica, a depender do contexto clínico (hiponatremia)</li>
             </ul>
+            
         </div>
         
         <div class="reference">
@@ -676,7 +677,7 @@ const resultDiv = document.getElementById('result');
 const deficitValueElement = document.getElementById('deficitValue');
 const deficitDescriptionElement = document.getElementById('deficitDescription');
 const waterVolumeElement = document.getElementById('waterVolume');
-    const waterVolumeRow = waterVolumeElement.closest('p');
+const waterVolumeRow = waterVolumeElement.closest('p');
 const correctionRateElement = document.getElementById('correctionRate');
 
 /**

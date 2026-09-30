@@ -161,7 +161,7 @@ const resultDiv = document.getElementById('result');
 const deficitValueElement = document.getElementById('deficitValue');
 const deficitDescriptionElement = document.getElementById('deficitDescription');
 const waterVolumeElement = document.getElementById('waterVolume');
-  const waterVolumeRow = waterVolumeElement.closest('p');
+const waterVolumeRow = waterVolumeElement.closest('p');
 const correctionRateElement = document.getElementById('correctionRate');
 
 /**

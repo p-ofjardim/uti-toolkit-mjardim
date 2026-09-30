@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, refactor/unix-structure]
+    branches: [main]
   pull_request:
 
 jobs:
@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - name: Run tests
         run: npm test
+      - name: Verify generated artifacts in sync
+        run: |
+          npm run build
+          git diff --exit-code -- public docs extension
