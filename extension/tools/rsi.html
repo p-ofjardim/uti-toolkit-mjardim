@@ -5,172 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <title>Calculadora de Doses - Intubação Endotraqueal (RSI)</title>
-    <style>
-        body {
-            padding-bottom: 80px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        h2 {
-            color: #34495e;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 8px;
-            margin-top: 25px;
-        }
-        .container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .section {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #555;
-            font-size: 14px;
-        }
-        input[type="number"], select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        button.success {
-            background-color: #2ecc71;
-        }
-        button.success:hover {
-            background-color: #27ae60;
-        }
-        .result-container {
-            margin-top: 20px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-        .result-text {
-            width: 100%;
-            min-height: 100px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            background: white;
-            resize: vertical;
-            white-space: pre-wrap;
-        }
-        .medication-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #fefefe;
-        }
-        .medication-name {
-            font-weight: bold;
-            color: #2c3e50;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-        .medication-info {
-            font-size: 13px;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 12px;
-            border-radius: 6px;
-            margin: 15px 0;
-            font-size: 14px;
-        }
-        .warning::before {
-            content: "⚠️ ";
-        }
-        .notes {
-            font-size: 12px;
-            color: #7f8c8d;
-            font-style: italic;
-            margin-top: 10px;
-        }
-        .tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            background: #ecf0f1;
-            border-radius: 6px 6px 0 0;
-            font-weight: 600;
-        }
-        .tab.active {
-            background: #3498db;
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @media (max-width: 768px) {
-            .row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -180,17 +16,16 @@
             <div class="row">
                 <div class="form-group">
                     <label for="peso">Peso do Paciente (kg):</label>
-                    <input type="number" id="peso" step="0.1" min="0" placeholder="Ex: 70" value="70">
+                    <input type="number" id="peso" step="0.1" min="0" placeholder="Ex: 70">
                 </div>
             </div>
         </div>
         
-        <div class="tabs">
-            <button class="tab active" data-tab="inducao">💊 Agentes de Indução</button>
-            <button class="tab" data-tab="bloqueadores">🦵 Bloqueadores Neuromusculares</button>
-        </div>
+        <button class="success" data-action="calcular">🧮 Calcular</button>
         
-        <div id="inducao" class="tab-content active">
+        <!-- AGENTES DE INDUÇÃO -->
+        <div id="inducao" class="section">
+            <h3 class="section-title">💊 Agentes de Indução</h3>
             <div class="medication-card">
                 <div class="medication-name">Etomidato</div>
                 <div class="medication-info">
@@ -199,8 +34,8 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="etomidate-conc" class="calc-trigger">
-                            <option value="2" selected>2 mg/mL</option>
+                        <select id="etomidate-conc" data-field="etomidate-conc">
+                            <option value="2">2 mg/mL</option>
                         </select>
                     </div>
                 </div>
@@ -225,15 +60,15 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Dose (mg/kg):</label>
-                        <select id="ketamine-dose" class="calc-trigger">
-                            <option value="1" selected>1 mg/kg</option>
+                        <select id="ketamine-dose" data-field="ketamine-dose">
+                            <option value="1">1 mg/kg</option>
                             <option value="2">2 mg/kg</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="ketamine-conc" class="calc-trigger">
-                            <option value="10" selected>10 mg/mL</option>
+                        <select id="ketamine-conc" data-field="ketamine-conc">
+                            <option value="10">10 mg/mL</option>
                             <option value="50">50 mg/mL</option>
                         </select>
                     </div>
@@ -260,15 +95,15 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Dose (mg/kg):</label>
-                        <select id="propofol-dose" class="calc-trigger">
-                            <option value="1" selected>1 mg/kg</option>
+                        <select id="propofol-dose" data-field="propofol-dose">
+                            <option value="1">1 mg/kg</option>
                             <option value="2">2 mg/kg</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="propofol-conc" class="calc-trigger">
-                            <option value="10" selected>10 mg/mL</option>
+                        <select id="propofol-conc" data-field="propofol-conc">
+                            <option value="10">10 mg/mL</option>
                         </select>
                     </div>
                 </div>
@@ -279,7 +114,7 @@
                     </div>
                 </div>
                 <div class="notes">
-                    ✅ Vantagens: efeito amnésico, ⬇️ fluxo simpático, ↓ PIC, broncodilatação<br>
+                    ✅ Vantagens: efeito amnésico, ↑ fluxo simpático, ↓ PIC, broncodilatação<br>
                     ❌ Desvantagens: depressão cardiovascular (hipotensão, bradicardia)<br>
                     💡 Considerar em TCE com ↑ PIC, estado epileptico ou broncoespasmo<br>
                     ⚠️ Evitar em instabilidade hemodinâmica ou FE baixa<br>
@@ -295,16 +130,16 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Dose (mg/kg):</label>
-                        <select id="midazolam-dose" class="calc-trigger">
-                            <option value="0.1" selected>0.1 mg/kg</option>
+                        <select id="midazolam-dose" data-field="midazolam-dose">
+                            <option value="0.1">0.1 mg/kg</option>
                             <option value="0.2">0.2 mg/kg</option>
                             <option value="0.3">0.3 mg/kg</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="midazolam-conc" class="calc-trigger">
-                            <option value="1" selected>1 mg/mL</option>
+                        <select id="midazolam-conc" data-field="midazolam-conc">
+                            <option value="1">1 mg/mL</option>
                             <option value="5">5 mg/mL</option>
                         </select>
                     </div>
@@ -330,8 +165,8 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="methohexital-conc" class="calc-trigger">
-                            <option value="10" selected>10 mg/mL</option>
+                        <select id="methohexital-conc" data-field="methohexital-conc">
+                            <option value="10">10 mg/mL</option>
                         </select>
                     </div>
                 </div>
@@ -357,15 +192,15 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Dose (mg/kg):</label>
-                        <select id="thiopental-dose" class="calc-trigger">
-                            <option value="3" selected>3 mg/kg</option>
+                        <select id="thiopental-dose" data-field="thiopental-dose">
+                            <option value="3">3 mg/kg</option>
                             <option value="5">5 mg/kg</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="thiopental-conc" class="calc-trigger">
-                            <option value="25" selected>25 mg/mL</option>
+                        <select id="thiopental-conc" data-field="thiopental-conc">
+                            <option value="25">25 mg/mL</option>
                             <option value="50">50 mg/mL</option>
                         </select>
                     </div>
@@ -384,7 +219,9 @@
             </div>
         </div>
         
-        <div id="bloqueadores" class="tab-content">
+        <!-- BLOQUEADORES NEUROMUSCULARES -->
+        <div id="bloqueadores" class="section">
+            <h3 class="section-title">🦴 Bloqueadores Neuromusculares</h3>
             <div class="medication-card">
                 <div class="medication-name">Succinilcolina</div>
                 <div class="medication-info">
@@ -393,8 +230,8 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="succinylcholine-conc" class="calc-trigger">
-                            <option value="20" selected>20 mg/mL</option>
+                        <select id="succinylcholine-conc" data-field="succinylcholine-conc">
+                            <option value="20">20 mg/mL</option>
                         </select>
                     </div>
                 </div>
@@ -418,16 +255,16 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Dose (mg/kg):</label>
-                        <select id="rocuronium-dose" class="calc-trigger">
-                            <option value="0.6" selected>0.6 mg/kg</option>
+                        <select id="rocuronium-dose" data-field="rocuronium-dose">
+                            <option value="0.6">0.6 mg/kg</option>
                             <option value="1.0">1.0 mg/kg</option>
                             <option value="1.2">1.2 mg/kg</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="rocuronium-conc" class="calc-trigger">
-                            <option value="10" selected>10 mg/mL</option>
+                        <select id="rocuronium-conc" data-field="rocuronium-conc">
+                            <option value="10">10 mg/mL</option>
                         </select>
                     </div>
                 </div>
@@ -451,15 +288,15 @@
                 <div class="row">
                     <div class="form-group">
                         <label>Dose (mg/kg):</label>
-                        <select id="vecuronium-dose" class="calc-trigger">
-                            <option value="0.1" selected>0.1 mg/kg</option>
+                        <select id="vecuronium-dose" data-field="vecuronium-dose">
+                            <option value="0.1">0.1 mg/kg</option>
                             <option value="0.2">0.2 mg/kg</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Concentração (mg/mL):</label>
-                        <select id="vecuronium-conc" class="calc-trigger">
-                            <option value="10" selected>10 mg/mL</option>
+                        <select id="vecuronium-conc" data-field="vecuronium-conc">
+                            <option value="10">10 mg/mL</option>
                         </select>
                     </div>
                 </div>
@@ -483,10 +320,9 @@
         <div class="result-container">
             <h2>📋 Resultado</h2>
             <textarea id="resultado" class="result-text" readonly></textarea>
-            <button class="success" data-action="copy">📋 Copiar Texto</button>
+            <button class="success" data-action="copyResult">📋 Copiar Texto</button>
         </div>
     </div>
-    
-    <script src="rsi.js"></script>
+<script src="rsi.js"></script>
 </body>
 </html>

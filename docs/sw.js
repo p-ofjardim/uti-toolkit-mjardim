@@ -1,5 +1,6 @@
-const CACHE_NAME = 'uti-toolkit-gh-pages-v1';
+const CACHE_NAME = 'uti-toolkit-gh-pages-v2';
 const BASE = '/uti-toolkit-mjardim/';
+
 const ASSETS = [
   BASE,
   BASE + 'index.html',
@@ -31,9 +32,29 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
-  if (url.pathname.startsWith(BASE)) {
+  if (!url.pathname.startsWith(BASE)) return;
+  if (e.request.method !== 'GET') return;
+
+  const isHTML =
+    e.request.mode === 'navigate' ||
+    (e.request.headers.get('accept') || '').includes('text/html');
+
+  if (isHTML) {
     e.respondWith(
-      caches.match(e.request).then((cached) => cached || fetch(e.request))
+      fetch(e.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+          return response;
+        })
+        .catch(() =>
+          caches.match(e.request).then((cached) => cached || caches.match(BASE + 'index.html'))
+        )
     );
+    return;
   }
+
+  e.respondWith(
+    caches.match(e.request).then((cached) => cached || fetch(e.request))
+  );
 });

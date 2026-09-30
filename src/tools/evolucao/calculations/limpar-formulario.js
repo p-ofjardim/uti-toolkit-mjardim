@@ -1,0 +1,40 @@
+// Pure function to return empty state for all form fields
+// Returns an object with all field values set to empty strings
+export function limparFormulario() {
+  return {
+    nora: '',
+    vaso: '',
+    dobuta: '',
+    tridil: '',
+    nipride: '',
+    ventilac: '',
+    'ventilac-valor': '',
+    vm: '',
+    adapt: '',
+    neuro: '',
+    rass: '',
+    sedacao: '',
+    atb: '',
+    febre: '',
+    infecto: '',
+    diurese: '',
+    diuretico: '',
+    bh: '',
+    'esc-renal': '',
+    hemato: '',
+    hemoterapia: '',
+    glicemias: '',
+    dhes: '',
+    bic: '',
+    dieta: '',
+    'dieta-valor': '',
+    'disf-tgi': '',
+    evacuac: '',
+    cvc: '',
+    cdl: '',
+    pia: '',
+    svd: '',
+    'les-pele': '',
+    profilax: ''
+  };
+}

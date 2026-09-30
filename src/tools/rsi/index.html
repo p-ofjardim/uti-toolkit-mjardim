@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Calculadora de Doses - Intubação Endotraqueal (RSI)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>💉 Calculadora de Doses - Intubação Endotraqueal (RSI)</h1>
+        
+        <div class="section">
+            <div class="row">
+                <div class="form-group">
+                    <label for="peso">Peso do Paciente (kg):</label>
+                    <input type="number" id="peso" step="0.1" min="0" placeholder="Ex: 70">
+                </div>
+            </div>
+        </div>
+        
+        <button class="success" data-action="calcular">🧮 Calcular</button>
+        
+        <!-- AGENTES DE INDUÇÃO -->
+        <div id="inducao" class="section">
+            <h3 class="section-title">💊 Agentes de Indução</h3>
+            <div class="medication-card">
+                <div class="medication-name">Etomidato</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.3 mg/kg IV | <strong>Onset:</strong> 15-45 seg | <strong>Duração:</strong> 3-12 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="etomidate-conc" data-field="etomidate-conc">
+                            <option value="2">2 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="etomidate-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: mínimo efeito cardiovascular, ↓ PIC, efeito amnésico<br>
+                    ❌ Desvantagens: insuficiência adrenal*, mioclonia transitória<br>
+                    💡 Considerar em instabilidade hemodinâmica ou hipovolemia
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Cetamina</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1-2 mg/kg IV | <strong>Onset:</strong> 30-60 seg | <strong>Duração:</strong> 5-20 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="ketamine-dose" data-field="ketamine-dose">
+                            <option value="1">1 mg/kg</option>
+                            <option value="2">2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="ketamine-conc" data-field="ketamine-conc">
+                            <option value="10">10 mg/mL</option>
+                            <option value="50">50 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="ketamine-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: efeito amnésico, analgesia, estabilidade hemodinâmica, broncodilatação<br>
+                    ❌ Desvantagens: taquicardia, hipertensão, delírio, alucinações<br>
+                    💡 Considerar em instabilidade hemodinâmica, hipovolemia ou asma<br>
+                    ⚠️ Evitar em hipertensão grave ou secreções orais significativas
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Propofol</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1-2 mg/kg IV | <strong>Onset:</strong> 15-45 seg | <strong>Duração:</strong> 3-10 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="propofol-dose" data-field="propofol-dose">
+                            <option value="1">1 mg/kg</option>
+                            <option value="2">2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="propofol-conc" data-field="propofol-conc">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="propofol-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: efeito amnésico, ↑ fluxo simpático, ↓ PIC, broncodilatação<br>
+                    ❌ Desvantagens: depressão cardiovascular (hipotensão, bradicardia)<br>
+                    💡 Considerar em TCE com ↑ PIC, estado epileptico ou broncoespasmo<br>
+                    ⚠️ Evitar em instabilidade hemodinâmica ou FE baixa<br>
+                    ⚠️ Contraindicado em alergia a ovo/soja
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Midazolam</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.1-0.3 mg/kg IV | <strong>Onset:</strong> 30-90 seg | <strong>Duração:</strong> 15-90 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="midazolam-dose" data-field="midazolam-dose">
+                            <option value="0.1">0.1 mg/kg</option>
+                            <option value="0.2">0.2 mg/kg</option>
+                            <option value="0.3">0.3 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="midazolam-conc" data-field="midazolam-conc">
+                            <option value="1">1 mg/mL</option>
+                            <option value="5">5 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="midazolam-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: efeito amnésico, anticonvulsivante, ↓ PIC<br>
+                    ❌ Desvantagens: hipotensão, depressão respiratória, longa duração, potencial de abuso<br>
+                    💡 Dose de indução > dose de pré-medicação
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Metohexital</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1.5 mg/kg IV | <strong>Onset:</strong> < 30 seg | <strong>Duração:</strong> 4-8 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="methohexital-conc" data-field="methohexital-conc">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="methohexital-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: ↓ PIC<br>
+                    ❌ Desvantagens: hipotensão, depressão cardíaca, depressão respiratória<br>
+                    💡 Considerar em estabilidade hemodinâmica ou TCE com ↑ PIC<br>
+                    ⚠️ Não disponível nos EUA
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Tiopental</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 3-5 mg/kg IV | <strong>Onset:</strong> 30-60 seg | <strong>Duração:</strong> 5-30 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="thiopental-dose" data-field="thiopental-dose">
+                            <option value="3">3 mg/kg</option>
+                            <option value="5">5 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="thiopental-conc" data-field="thiopental-conc">
+                            <option value="25">25 mg/mL</option>
+                            <option value="50">50 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="thiopental-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    ✅ Vantagens: anticonvulsivante, ↓ PIC, efeito amnésico<br>
+                    ❌ Desvantagens: potencial de abuso, depressão cardíaca, hipotensão, extravasamento<br>
+                    ⚠️ Não disponível nos EUA
+                </div>
+            </div>
+        </div>
+        
+        <!-- BLOQUEADORES NEUROMUSCULARES -->
+        <div id="bloqueadores" class="section">
+            <h3 class="section-title">🦴 Bloqueadores Neuromusculares</h3>
+            <div class="medication-card">
+                <div class="medication-name">Succinilcolina</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 1.5 mg/kg IV | <strong>Onset:</strong> 30-60 seg | <strong>Duração:</strong> 5-10 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="succinylcholine-conc" data-field="succinylcholine-conc">
+                            <option value="20">20 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="succinylcholine-result" readonly>
+                    </div>
+                </div>
+                <div class="warning">
+                    ❌ <strong>Contraindicado em:</strong> história de hipertermia maligna, miopatias esqueléticas, fase aguda de queimadura/lesão muscular, lesão de neurônio motor superior<br>
+                    ⚠️ Evitar em risco de hipercalemia (imobilização prolongada, DRC, lesão por esmagamento)
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Rocurônio</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.6-1.2 mg/kg IV | <strong>Onset:</strong> 1-2 min | <strong>Duração:</strong> 22-94 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="rocuronium-dose" data-field="rocuronium-dose">
+                            <option value="0.6">0.6 mg/kg</option>
+                            <option value="1.0">1.0 mg/kg</option>
+                            <option value="1.2">1.2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="rocuronium-conc" data-field="rocuronium-conc">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="rocuronium-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    💡 Alternativa preferida se succinilcolina contraindicada<br>
+                    ⚠️ Cuidado em pacientes com incapacidade de ventilação com máscara (duração mais longa)
+                </div>
+            </div>
+            
+            <div class="medication-card">
+                <div class="medication-name">Vecurônio</div>
+                <div class="medication-info">
+                    <strong>Dose:</strong> 0.1-0.2 mg/kg IV | <strong>Onset:</strong> 2-4 min | <strong>Duração:</strong> 30-40 min
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose (mg/kg):</label>
+                        <select id="vecuronium-dose" data-field="vecuronium-dose">
+                            <option value="0.1">0.1 mg/kg</option>
+                            <option value="0.2">0.2 mg/kg</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Concentração (mg/mL):</label>
+                        <select id="vecuronium-conc" data-field="vecuronium-conc">
+                            <option value="10">10 mg/mL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label>Dose Total:</label>
+                        <input type="text" id="vecuronium-result" readonly>
+                    </div>
+                </div>
+                <div class="notes">
+                    💡 Alternativa apenas se succinilcolina e rocurônio indisponíveis<br>
+                    ⚠️ Onset e duração mais longos
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>ATENÇÃO:</strong> Estas doses são orientações gerais. Ajuste conforme condição clínica do paciente, experiência do profissional e protocolos locais.
+        </div>
+        
+        <div class="result-container">
+            <h2>📋 Resultado</h2>
+            <textarea id="resultado" class="result-text" readonly></textarea>
+            <button class="success" data-action="copyResult">📋 Copiar Texto</button>
+        </div>
+    </div>
+</body>
+</html>
