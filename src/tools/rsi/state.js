@@ -90,20 +90,18 @@ function generateResultadoText() {
   const peso = state.inputs.peso || 0;
   let texto = `Cálculo para paciente de ${peso} kg:\n\n`;
   
-  if (state.inputs.activeTab === 'inducao') {
-    texto += "=== AGENTES DE INDUÇÃO ===\n";
-    texto += `• Etomidato: ${state.outputs.etomidate.doseTotal.toFixed(1)} mg (${state.outputs.etomidate.volume.toFixed(1)} mL de solução a ${state.inputs['etomidate-conc']} mg/mL)\n`;
-    texto += `• Cetamina: ${state.outputs.ketamine.doseTotal.toFixed(1)} mg (${state.outputs.ketamine.volume.toFixed(1)} mL de solução a ${state.inputs['ketamine-conc']} mg/mL)\n`;
-    texto += `• Propofol: ${state.outputs.propofol.doseTotal.toFixed(1)} mg (${state.outputs.propofol.volume.toFixed(1)} mL de solução a ${state.inputs['propofol-conc']} mg/mL)\n`;
-    texto += `• Midazolam: ${state.outputs.midazolam.doseTotal.toFixed(1)} mg (${state.outputs.midazolam.volume.toFixed(1)} mL de solução a ${state.inputs['midazolam-conc']} mg/mL)\n`;
-    texto += `• Metohexital: ${state.outputs.methohexital.doseTotal.toFixed(1)} mg (${state.outputs.methohexital.volume.toFixed(1)} mL de solução a ${state.inputs['methohexital-conc']} mg/mL)\n`;
-    texto += `• Tiopental: ${state.outputs.thiopental.doseTotal.toFixed(1)} mg (${state.outputs.thiopental.volume.toFixed(1)} mL de solução a ${state.inputs['thiopental-conc']} mg/mL)\n`;
-  } else {
-    texto += "=== BLOQUEADORES NEUROMUSCULARES ===\n";
-    texto += `• Succinilcolina: ${state.outputs.succinylcholine.doseTotal.toFixed(1)} mg (${state.outputs.succinylcholine.volume.toFixed(1)} mL de solução a ${state.inputs['succinylcholine-conc']} mg/mL)\n`;
-    texto += `• Rocurônio: ${state.outputs.rocuronium.doseTotal.toFixed(1)} mg (${state.outputs.rocuronium.volume.toFixed(1)} mL de solução a ${state.inputs['rocuronium-conc']} mg/mL)\n`;
-    texto += `• Vecurônio: ${state.outputs.vecuronium.doseTotal.toFixed(1)} mg (${state.outputs.vecuronium.volume.toFixed(1)} mL de solução a ${state.inputs['vecuronium-conc']} mg/mL)\n`;
-  }
+  texto += "=== AGENTES DE INDUÇÃO ===\n";
+  texto += `• Etomidato: ${state.outputs.etomidate.doseTotal.toFixed(1)} mg (${state.outputs.etomidate.volume.toFixed(1)} mL de solução a ${state.inputs['etomidate-conc']} mg/mL)\n`;
+  texto += `• Cetamina: ${state.outputs.ketamine.doseTotal.toFixed(1)} mg (${state.outputs.ketamine.volume.toFixed(1)} mL de solução a ${state.inputs['ketamine-conc']} mg/mL)\n`;
+  texto += `• Propofol: ${state.outputs.propofol.doseTotal.toFixed(1)} mg (${state.outputs.propofol.volume.toFixed(1)} mL de solução a ${state.inputs['propofol-conc']} mg/mL)\n`;
+  texto += `• Midazolam: ${state.outputs.midazolam.doseTotal.toFixed(1)} mg (${state.outputs.midazolam.volume.toFixed(1)} mL de solução a ${state.inputs['midazolam-conc']} mg/mL)\n`;
+  texto += `• Metohexital: ${state.outputs.methohexital.doseTotal.toFixed(1)} mg (${state.outputs.methohexital.volume.toFixed(1)} mL de solução a ${state.inputs['methohexital-conc']} mg/mL)\n`;
+  texto += `• Tiopental: ${state.outputs.thiopental.doseTotal.toFixed(1)} mg (${state.outputs.thiopental.volume.toFixed(1)} mL de solução a ${state.inputs['thiopental-conc']} mg/mL)\n`;
+  texto += `\n${'─'.repeat(32)}\n\n`;
+  texto += "=== BLOQUEADORES NEUROMUSCULARES ===\n";
+  texto += `• Succinilcolina: ${state.outputs.succinylcholine.doseTotal.toFixed(1)} mg (${state.outputs.succinylcholine.volume.toFixed(1)} mL de solução a ${state.inputs['succinylcholine-conc']} mg/mL)\n`;
+  texto += `• Rocurônio: ${state.outputs.rocuronium.doseTotal.toFixed(1)} mg (${state.outputs.rocuronium.volume.toFixed(1)} mL de solução a ${state.inputs['rocuronium-conc']} mg/mL)\n`;
+  texto += `• Vecurônio: ${state.outputs.vecuronium.doseTotal.toFixed(1)} mg (${state.outputs.vecuronium.volume.toFixed(1)} mL de solução a ${state.inputs['vecuronium-conc']} mg/mL)\n`;
   
   texto += "\n⚠️  Verifique sempre a concentração do frasco antes da administração!";
   state.outputs.resultadoText = texto;
