@@ -161,6 +161,7 @@ const resultDiv = document.getElementById('result');
 const deficitValueElement = document.getElementById('deficitValue');
 const deficitDescriptionElement = document.getElementById('deficitDescription');
 const waterVolumeElement = document.getElementById('waterVolume');
+  const waterVolumeRow = waterVolumeElement.closest('p');
 const correctionRateElement = document.getElementById('correctionRate');
 
 /**
@@ -186,13 +187,15 @@ function updateDOM() {
     let correctionText = '';
 
     if (state.inputs.sodium < state.inputs.desiredSodium) {
-      // Hiponatremia: déficit negativo (precisa remover água)
+      // Hiponatremia: resultado negativo (possível sobrecarga hídrica)
       descriptionText = `Excesso de água livre: <strong>Hiponatremia (Na⁺ ${state.inputs.sodium} < ${state.inputs.desiredSodium})</strong>`;
-      volumeText = `${Math.abs(roundedDeficitML)} mL de água livre`;
+      waterVolumeRow.style.display = 'none';
+      volumeText = ``;
       correctionText = `⚠️ Correção máxima recomendada: até ${state.outputs.maxCorrectionRate} mEq/L nas primeiras 24 horas (${state.outputs.correctionPercentage.toFixed(1)}% do déficit total).`;
     } else if (state.inputs.sodium > state.inputs.desiredSodium) {
       // Hipernatremia: déficit positivo (precisa adicionar água)
       descriptionText = `Déficit de água livre: <strong>Hipernatremia (Na⁺ ${state.inputs.sodium} > ${state.inputs.desiredSodium})</strong>`;
+      waterVolumeRow.style.display = 'block';
       volumeText = `${Math.abs(roundedDeficitML)} mL de água livre a ser reposta (Solução glicosada 5%)`;
       correctionText = `⚠️ Correção máxima recomendada: reduzir até ${state.outputs.maxCorrectionRate} mEq/L nas primeiras 24 horas (${state.outputs.correctionPercentage.toFixed(1)}% do excesso total).`;
     } else {
