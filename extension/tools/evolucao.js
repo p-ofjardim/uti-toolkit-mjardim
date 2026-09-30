@@ -109,13 +109,18 @@ var __mod_ajustar_genero_3 = (function () {
 // Takes text and gender, returns adjusted text
 function ajustarGenero(texto, sexo) {
   if (sexo === 'F') {
-    texto = texto.replace(/adaptado/gi, 'adaptada');
-    texto = texto.replace(/olig\u00farico/gi, 'olig\u00farica');
-    texto = texto.replace(/an\u00farico/gi, 'an\u00farica');
-    texto = texto.replace(/normoglic\u00eamico/gi, 'normoglic\u00eamica');
-    texto = texto.replace(/disglic\u00eamico/gi, 'disglic\u00eamica');
-    texto = texto.replace(/hipoglic\u00eamico/gi, 'hipoglic\u00eamica');
-    texto = texto.replace(/hipot\u00e9rmico/gi, 'hipot\u00e9rmica');
+    const substituirPreservandoCaixa = (masculino, feminino) =>
+      texto.replace(new RegExp(masculino, 'gi'), (match) =>
+        match === match.toUpperCase() ? feminino.toUpperCase() : feminino
+      );
+
+    texto = substituirPreservandoCaixa('adaptado', 'adaptada');
+    texto = substituirPreservandoCaixa('oligúrico', 'oligúrica');
+    texto = substituirPreservandoCaixa('anúrico', 'anúrica');
+    texto = substituirPreservandoCaixa('normoglicêmico', 'normoglicêmica');
+    texto = substituirPreservandoCaixa('disglicêmico', 'disglicêmica');
+    texto = substituirPreservandoCaixa('hipoglicêmico', 'hipoglicêmica');
+    texto = substituirPreservandoCaixa('hipotérmico', 'hipotérmica');
   }
   return texto;
 }
@@ -127,8 +132,16 @@ var __mod_processar_hemodinamica_4 = (function () {
 // Input: nora, vaso, dobuta, tridil, nipride (all strings)
 // Output: string describing hemodynamic state
 function processarHemodinamica(nora, vaso, dobuta, tridil, nipride) {
+  const temDroga = (valor) => valor && parseFloat(valor) > 0;
+
   // Se todos vazios ou zero
-  if (!nora && !vaso && !dobuta && !tridil && !nipride) {
+  if (
+    !temDroga(nora) &&
+    !temDroga(vaso) &&
+    !temDroga(dobuta) &&
+    !temDroga(tridil) &&
+    !temDroga(nipride)
+  ) {
     return 'Estabilidade hemodinâmica.';
   }
 
