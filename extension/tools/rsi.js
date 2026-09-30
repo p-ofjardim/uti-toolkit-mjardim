@@ -281,7 +281,7 @@ function copyResult() {
 }
 
 recalculate();
-return { updateInput: updateInput, calcular: calcular, copyResult: copyResult };
+return { updateInput: updateInput, calcular: calcular, copyResult: copyResult, state: state };
 })(__mod_index_9);
 
 var __mod_ui_11 = (function (state, updateInput, calcular, copyResult) {
@@ -360,10 +360,12 @@ function updateDOM() {
 }
 
 // Mapeamento de ações para event delegation
-const actions = {
-  calcular,
+const boundActions = {
+  calcular: () => { calcular(); updateDOM(); },
   copyResult
 };
+
+const actions = boundActions;
 
 // Inicializa o DOM
 document.addEventListener('DOMContentLoaded', () => {
@@ -384,9 +386,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (id) {
       input.addEventListener('input', () => {
         updateInput(id, input.value);
+        updateDOM();
       });
       input.addEventListener('change', () => {
         updateInput(id, input.value);
+        updateDOM();
       });
     }
   });

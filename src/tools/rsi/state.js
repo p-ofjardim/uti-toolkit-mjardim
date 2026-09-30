@@ -130,3 +130,5 @@ export function copyResult() {
 
 recalculate();
 
+
+export { state };

@@ -73,10 +73,12 @@ function updateDOM() {
 }
 
 // Mapeamento de ações para event delegation
-export const actions = {
-  calcular,
+const boundActions = {
+  calcular: () => { calcular(); updateDOM(); },
   copyResult
 };
+
+export const actions = boundActions;
 
 // Inicializa o DOM
 document.addEventListener('DOMContentLoaded', () => {
@@ -97,9 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (id) {
       input.addEventListener('input', () => {
         updateInput(id, input.value);
+        updateDOM();
       });
       input.addEventListener('change', () => {
         updateInput(id, input.value);
+        updateDOM();
       });
     }
   });
