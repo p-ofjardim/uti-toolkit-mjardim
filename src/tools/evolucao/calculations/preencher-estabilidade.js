@@ -1,0 +1,40 @@
+// Pure function to return stability defaults
+// Returns an object with all field values for clinical stability
+export function preencherEstabilidade() {
+  return {
+    ventilac: 'Estabilidade em ar ambiente',
+    neuro: 'Estável',
+    rass: '',
+    sedacao: 'Sem sedação',
+    atb: 'Sem antibiótico',
+    febre: 'Afebril',
+    infecto: 'Sem critérios infecciosos',
+    diurese: 'Diurese satisfatória',
+    diuretico: 'Sem diurético',
+    bh: 'Neutro',
+    'esc-renal': 'Função renal preservada',
+    hemato: 'Estável',
+    hemoterapia: 'Sem hemoterapia',
+    glicemias: 'Normoglicêmico',
+    dhes: 'Sem DHEs',
+    bic: 'Sem DABs',
+    dieta: 'Via oral',
+    'disf-tgi': 'Sem disfunção do TGI',
+    evacuac: 'Evacuações presentes',
+    cvc: 'Sem CVC',
+    cdl: 'Sem CDL',
+    pia: 'Sem PIA',
+    svd: 'Sem SVD',
+    'les-pele': 'Sem lesões de pele',
+    profilax: 'Sem profilaxias farmacológicas',
+    nora: '',
+    vaso: '',
+    dobuta: '',
+    tridil: '',
+    nipride: '',
+    'ventilac-valor': '',
+    vm: '',
+    adapt: '',
+    'dieta-valor': ''
+  };
+}
