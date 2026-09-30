@@ -30,8 +30,10 @@ function rewriteBase(html, base) {
   return html.replace(/(src|href)="\/(?!\/)/g, `$1="${base}`);
 }
 
-// Processa cada ferramenta
+// Processa cada ferramenta (isolada: uma falha não interrompe as demais)
 const tools = fs.readdirSync(SRC_DIR);
+const failures = [];
+let succeeded = 0;
 for (const tool of tools) {
   const toolPath = path.join(SRC_DIR, tool);
   const stat = fs.statSync(toolPath);
@@ -39,6 +41,7 @@ for (const tool of tools) {
   if (!stat.isDirectory()) continue;
   console.log(`🔨 Processando ferramenta: ${tool}`);
 
+  try {
   // Caminhos dos arquivos
   const htmlPath = path.join(toolPath, 'index.html');
   const cssPath = path.join(toolPath, 'style.css');
@@ -86,6 +89,16 @@ for (const tool of tools) {
   const docsHtml = rewriteBase(html, BASE_PATH);
   fs.writeFileSync(path.join(DOCS_DIR, `${tool}.html`), docsHtml, 'utf8');
   console.log(`  ✅ Gerado: ${DOCS_DIR}${path.sep}${tool}.html`);
+  succeeded++;
+  } catch (err) {
+    failures.push({ tool, message: err.message });
+    console.error(`  ❌ ${tool}: ${err.message}`);
+  }
 }
 
-console.log('\n✅ Build PWA concluído!');
+if (failures.length > 0) {
+  console.error(`\n❌ Build PWA concluído com ${failures.length} falha(s): ${failures.map(f => f.tool).join(', ')}`);
+  process.exit(1);
+}
+
+console.log(`\n✅ Build PWA concluído! ${succeeded} ferramenta(s) processada(s).`);

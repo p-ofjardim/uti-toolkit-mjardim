@@ -26,8 +26,10 @@ const COPYRIGHT_HEADER = `/**
  * Licensed under the MIT License (see LICENSE for details).
  */`;
 
-// Processa cada ferramenta
+// Processa cada ferramenta (isolada: uma falha não interrompe as demais)
 const tools = fs.readdirSync(SRC_DIR);
+const failures = [];
+let succeeded = 0;
 for (const tool of tools) {
   const toolPath = path.join(SRC_DIR, tool);
   const stat = fs.statSync(toolPath);
@@ -35,6 +37,7 @@ for (const tool of tools) {
   if (!stat.isDirectory()) continue;
   console.log(`🔨 Processando ferramenta para extensão: ${tool}`);
 
+  try {
   // Caminhos dos arquivos
   const htmlPath = path.join(toolPath, 'index.html');
   const cssPath = path.join(toolPath, 'style.css');
@@ -81,6 +84,16 @@ for (const tool of tools) {
   const outputHtmlPath = path.join(EXT_DIR, `${tool}.html`);
   fs.writeFileSync(outputHtmlPath, html, 'utf8');
   console.log(`  ✅ HTML gerado: ${tool}.html`);
+  succeeded++;
+  } catch (err) {
+    failures.push({ tool, message: err.message });
+    console.error(`  ❌ ${tool}: ${err.message}`);
+  }
+}
+
+if (failures.length > 0) {
+  console.error(`\n❌ Build da extensão concluído com ${failures.length} falha(s): ${failures.map(f => f.tool).join(', ')}`);
+  process.exit(1);
 }
 
 // Gera o .xpi
