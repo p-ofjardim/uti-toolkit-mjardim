@@ -9,7 +9,6 @@ import * as calculations from './calculations/index.js';
 const state = {
   inputs: {
     peso: 70,
-    activeTab: 'inducao',
     // Indução
     'etomidate-conc': 2,
     'ketamine-dose': 1,
@@ -108,12 +107,10 @@ function generateResultadoText() {
 }
 
 /**
- * Mostra uma aba
- * @param {string} tabName - Nome da aba
+ * Recalcula todas as doses com os inputs atuais
  */
-export function showTab(tabName) {
-  state.inputs.activeTab = tabName;
-  updateInput('activeTab', tabName);
+export function calcular() {
+  recalculate();
 }
 
 /**
@@ -131,8 +128,5 @@ export function copyResult() {
   });
 }
 
-// Inicializa o estado
 recalculate();
 
-// Exporta o estado e funções
-export { state, updateInput, showTab, copyResult };

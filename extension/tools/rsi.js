@@ -161,7 +161,6 @@ var __mod_state_10 = (function (calculations) {
 const state = {
   inputs: {
     peso: 70,
-    activeTab: 'inducao',
     // Indução
     'etomidate-conc': 2,
     'ketamine-dose': 1,
@@ -260,12 +259,10 @@ function generateResultadoText() {
 }
 
 /**
- * Mostra uma aba
- * @param {string} tabName - Nome da aba
+ * Recalcula todas as doses com os inputs atuais
  */
-function showTab(tabName) {
-  state.inputs.activeTab = tabName;
-  updateInput('activeTab', tabName);
+function calcular() {
+  recalculate();
 }
 
 /**
@@ -283,14 +280,11 @@ function copyResult() {
   });
 }
 
-// Inicializa o estado
 recalculate();
-
-// Exporta o estado e funções
-return { updateInput: updateInput, showTab: showTab, copyResult: copyResult, state: state };
+return { updateInput: updateInput, calcular: calcular, copyResult: copyResult };
 })(__mod_index_9);
 
-var __mod_ui_11 = (function (state, updateInput, showTab, copyResult) {
+var __mod_ui_11 = (function (state, updateInput, calcular, copyResult) {
 /**
  * Manipulação de DOM e eventos para a calculadora RSI
  * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
@@ -304,27 +298,6 @@ function updateDOM() {
   const pesoInput = document.getElementById('peso');
   if (pesoInput) {
     pesoInput.value = state.inputs.peso;
-  }
-
-  // Atualiza tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  document.querySelectorAll('.tab-content').forEach(content => {
-    content.classList.remove('active');
-  });
-
-  // Ativa a aba ativa
-  const activeTabButton = Array.from(document.querySelectorAll('.tab')).find(
-    tab => tab.textContent.includes(state.inputs.activeTab === 'inducao' ? 'Indução' : 'Bloqueadores')
-  );
-  if (activeTabButton) {
-    activeTabButton.classList.add('active');
-  }
-  
-  const activeTabContent = document.getElementById(state.inputs.activeTab);
-  if (activeTabContent) {
-    activeTabContent.classList.add('active');
   }
 
   // Atualiza campos de dose
@@ -388,7 +361,7 @@ function updateDOM() {
 
 // Mapeamento de ações para event delegation
 const actions = {
-  showTab,
+  calcular,
   copyResult
 };
 
@@ -403,16 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
         actions[action](e);
       });
     }
-  });
-
-  // Configura event delegation para tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      const tabName = tab.getAttribute('data-tab');
-      showTab(tabName);
-      updateDOM();
-    });
   });
 
   // Atualiza inputs ao digitarem ou mudarem
@@ -432,4 +395,4 @@ document.addEventListener('DOMContentLoaded', () => {
   updateDOM();
 });
 return { actions: actions };
-})(__mod_state_10.state, __mod_state_10.updateInput, __mod_state_10.showTab, __mod_state_10.copyResult);
+})(__mod_state_10.state, __mod_state_10.updateInput, __mod_state_10.calcular, __mod_state_10.copyResult);

@@ -3,7 +3,7 @@
  * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
  */
 
-import { state, updateInput, showTab, copyResult } from './state.js';
+import { state, updateInput, calcular, copyResult } from './state.js';
 
 // Função para atualizar o DOM
 function updateDOM() {
@@ -11,27 +11,6 @@ function updateDOM() {
   const pesoInput = document.getElementById('peso');
   if (pesoInput) {
     pesoInput.value = state.inputs.peso;
-  }
-
-  // Atualiza tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  document.querySelectorAll('.tab-content').forEach(content => {
-    content.classList.remove('active');
-  });
-
-  // Ativa a aba ativa
-  const activeTabButton = Array.from(document.querySelectorAll('.tab')).find(
-    tab => tab.textContent.includes(state.inputs.activeTab === 'inducao' ? 'Indução' : 'Bloqueadores')
-  );
-  if (activeTabButton) {
-    activeTabButton.classList.add('active');
-  }
-  
-  const activeTabContent = document.getElementById(state.inputs.activeTab);
-  if (activeTabContent) {
-    activeTabContent.classList.add('active');
   }
 
   // Atualiza campos de dose
@@ -95,7 +74,7 @@ function updateDOM() {
 
 // Mapeamento de ações para event delegation
 export const actions = {
-  showTab,
+  calcular,
   copyResult
 };
 
@@ -110,16 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         actions[action](e);
       });
     }
-  });
-
-  // Configura event delegation para tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      const tabName = tab.getAttribute('data-tab');
-      showTab(tabName);
-      updateDOM();
-    });
   });
 
   // Atualiza inputs ao digitarem ou mudarem
