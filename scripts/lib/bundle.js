@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
+import { execFileSync } from 'child_process';
+import os from 'os';
 
 const IDENT = '[A-Za-z_$][A-Za-z0-9_$]*';
 const identRe = new RegExp(`^${IDENT}$`);
@@ -232,4 +234,17 @@ function bundleTool(entryFile) {
   return js;
 }
 
-export { bundleTool };
+function assertSyntax(js, label) {
+  const tmp = path.join(os.tmpdir(), `uti-toolkit-check-${process.pid}.js`);
+  try {
+    fs.writeFileSync(tmp, js, 'utf8');
+    execFileSync(process.execPath, ['--check', tmp], { stdio: 'pipe' });
+  } catch (err) {
+    const detail = err.stderr ? err.stderr.toString().split('\n')[0] : err.message;
+    throw new Error(`Sintaxe inválida no bundle gerado (${label}): ${detail}`);
+  } finally {
+    try { fs.unlinkSync(tmp); } catch {}
+  }
+}
+
+export { bundleTool, assertSyntax };

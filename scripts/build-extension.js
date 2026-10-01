@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
-import { bundleTool } from './lib/bundle.js';
+import { bundleTool, assertSyntax } from './lib/bundle.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, '..', 'src', 'tools');
@@ -68,6 +68,7 @@ for (const tool of tools) {
   let jsContent = COPYRIGHT_HEADER + '\n\n';
   if (fs.existsSync(uiPath)) {
     jsContent += bundleTool(uiPath);
+    assertSyntax(jsContent, tool);
   }
 
   // Remove scripts externos referenciados no HTML fonte (ex.: ui.js)
