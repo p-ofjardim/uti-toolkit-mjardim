@@ -504,7 +504,7 @@ function renderFeedback(toolName) {
   box.id = 'clinical-feedback';
   box.className = 'feedback-box';
   box.innerHTML =
-    '<p>Esta estimativa parece errada? Avise-nos — não é preciso saber programar.</p>' +
+    '<p>Esta estimativa parece errada? Avise-nos.</p>' +
     '<a class="feedback-link feedback-issue" href="' + issueUrl + '" target="_blank" rel="noopener">Reportar problema (GitHub)</a>' +
     '<a class="feedback-link feedback-mail" href="' + mailto + '">Reportar por e-mail</a>' +
     '<a class="feedback-link feedback-discussion" href="' + DISCUSSIONS_URL + '" target="_blank" rel="noopener">Tirar dúvida nas Discussions</a>';
