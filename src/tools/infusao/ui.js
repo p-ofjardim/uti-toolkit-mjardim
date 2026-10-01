@@ -5,6 +5,7 @@
 
 import { state, updateInput, copyResult, clearResult } from './state.js';
 import { getMedicamento } from './calculations/index.js';
+import { renderFeedback } from '../../styles/feedback.js';
 
 // Função para atualizar o DOM
 function updateDOM() {
@@ -123,6 +124,7 @@ export const actions = {
 
 // Inicializa o DOM
 document.addEventListener('DOMContentLoaded', () => {
+  renderFeedback('Infusão de Medicamentos');
   // Configura event delegation para todos os elementos com data-action
   document.querySelectorAll('[data-action]').forEach(el => {
     const action = el.getAttribute('data-action');

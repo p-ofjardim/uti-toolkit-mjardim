@@ -37,6 +37,25 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
+    .footer-feedback {
+      height: 34px;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      padding: 0 14px;
+      flex-shrink: 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.25);
+      /* Aligns with the home-indicator safe area of the nav above */
+      margin-bottom: env(safe-area-inset-bottom);
+    }
+    .footer-feedback span {
+      color: var(--text-muted);
+      font-size: 12px;
+      letter-spacing: 0.2px;
+    }
+    .footer-feedback .feedback-icon { font-size: 14px; line-height: 1; }
     .header-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
 
     .header-text h1 {
@@ -186,6 +205,10 @@
       <span class="nav-label">Evolução</span>
     </button>
   </nav>
+  <a class="footer-feedback" href="https://github.com/p-ofjardim/uti-toolkit-mjardim/issues/new/choose" target="_blank" rel="noopener" title="Reportar problema / Sugerir melhoria">
+    <span>Reportar problema / Sugerir melhoria</span>
+    <span class="feedback-icon">💬</span>
+  </a>
 
   
   

@@ -4,6 +4,7 @@
  */
 
 import { state, updateInput } from './state.js';
+import { renderFeedback } from '../../styles/feedback.js';
 
 // Elementos do DOM
 const form = document.getElementById('waterDeficitForm');
@@ -96,3 +97,4 @@ inputs.forEach(input => {
 
 // Inicializa o DOM
 updateDOM();
+renderFeedback('Água Livre e Sódio');

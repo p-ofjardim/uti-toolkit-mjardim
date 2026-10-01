@@ -1,0 +1,75 @@
+name: "Reportar problema"
+description: "Um cálculo, dose ou comportamento do app que parece errado."
+labels: ["triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Não é preciso saber programar para preencher este formulário.**
+        Descreva o que você digitou, o que esperava e o que apareceu.
+        Se preferir, anexe uma foto da tela do celular.
+  - type: dropdown
+    id: ferramenta
+    attributes:
+      label: "Em qual ferramenta ocorreu o problema?"
+      options:
+        - "Ventilação Mecânica"
+        - "RSI (doses de intubação)"
+        - "Infusão de Medicamentos"
+        - "Água Livre e Sódio"
+        - "Evolução Clínica"
+        - "Tela inicial / instalação do app"
+        - "Outro / não sei dizer"
+    validations:
+      required: true
+  - type: dropdown
+    id: dispositivo
+    attributes:
+      label: "Em qual dispositivo?"
+      options:
+        - "Android (celular/tablet)"
+        - "iPhone / iPad"
+        - "Computador (desktop)"
+        - "Mais de um / não sei dizer"
+    validations:
+      required: true
+  - type: dropdown
+    id: formato
+    attributes:
+      label: "Como você usa o app?"
+      options:
+        - "App instalado no celular (PWA)"
+        - "Extensão do Firefox"
+        - "Navegador, sem instalar"
+        - "Não sei dizer"
+    validations:
+      required: true
+  - type: textarea
+    id: entrada
+    attributes:
+      label: "O que você digitou / selecionou?"
+      description: "Ex.: peso 70 kg, sódio 152 mEq/L, noradrenalina 10 mcg/mL..."
+      placeholder: "Descreva os valores usados"
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: "O que você esperava que aparecesse?"
+      placeholder: "Ex.: esperava taxa de infusão de X mL/h"
+    validations:
+      required: true
+  - type: textarea
+    id: obtido
+    attributes:
+      label: "O que apareceu de fato?"
+      description: "Copie o resultado mostrado ou anexe uma captura de tela."
+      placeholder: "Resultado exibido pelo app"
+    validations:
+      required: true
+  - type: textarea
+    id: referencia
+    attributes:
+      label: "Referência (opcional)"
+      description: "Se tiver, indique o artigo, guideline ou livro que apoia o valor esperado (pode ser só o link)."
+      placeholder: "Ex.: Adrogue & Madias, NEJM 2000"

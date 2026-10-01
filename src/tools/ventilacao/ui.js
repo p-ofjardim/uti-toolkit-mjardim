@@ -5,6 +5,7 @@
 
 import { state, updateInput, openTab } from './state.js';
 import * as calculations from './calculations/index.js';
+import { renderFeedback } from '../../styles/feedback.js';
 
 // Função para copiar resultado
 function copyResult(elementId) {
@@ -229,6 +230,7 @@ export const actions = {
 
 // Inicializa o DOM
 document.addEventListener('DOMContentLoaded', () => {
+  renderFeedback('Ventilação Mecânica');
   // Configura event delegation para todos os botões com data-action
   document.querySelectorAll('[data-action]').forEach(el => {
     const action = el.getAttribute('data-action');
