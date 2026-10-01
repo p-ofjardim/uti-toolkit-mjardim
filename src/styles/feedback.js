@@ -9,7 +9,7 @@ var DISCUSSIONS_URL = 'https://github.com/p-ofjardim/uti-toolkit-mjardim/discuss
 var CONTACT_EMAIL = 'p-ofjardim@users.noreply.github.com';
 
 function collectInputs() {
-  var inputs = document.querySelectorAll('input, select, textarea');
+  var inputs = document.querySelectorAll('input, select');
   var lines = [];
   inputs.forEach(function (el) {
     var label = null;
@@ -39,11 +39,16 @@ function buildFeedbackBody(toolName) {
   return lines.join('\n');
 }
 
+function truncateBody(text) {
+  if (text.length <= BODY_MAX_CHARS) return text;
+  return text.slice(0, BODY_MAX_CHARS) + '\n(…texto truncado por limite de tamanho)';
+}
+
 function renderFeedback(toolName) {
   var container = document.querySelector('.container');
   if (!container || document.getElementById('clinical-feedback')) return;
 
-  var body = encodeURIComponent(buildFeedbackBody(toolName));
+  var body = encodeURIComponent(truncateBody(buildFeedbackBody(toolName)));
   var issueUrl = ISSUE_URL + '&title=' + encodeURIComponent('[' + toolName + '] Resultado parece errado') +
     '&body=' + body;
   var mailto = 'mailto:' + CONTACT_EMAIL +
@@ -62,4 +67,4 @@ function renderFeedback(toolName) {
   container.appendChild(box);
 }
 
-export { renderFeedback, collectInputs, buildFeedbackBody, ISSUE_URL, DISCUSSIONS_URL, CONTACT_EMAIL };
+export { renderFeedback, collectInputs, buildFeedbackBody, truncateBody, ISSUE_URL, DISCUSSIONS_URL, CONTACT_EMAIL };
