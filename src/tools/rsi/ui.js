@@ -4,6 +4,7 @@
  */
 
 import { state, updateInput, calcular, copyResult } from './state.js';
+import { renderFeedback } from '../../styles/feedback.js';
 
 // Função para atualizar o DOM
 function updateDOM() {
@@ -82,6 +83,7 @@ export const actions = boundActions;
 
 // Inicializa o DOM
 document.addEventListener('DOMContentLoaded', () => {
+  renderFeedback('RSI (doses de intubação)');
   // Configura event delegation para todos os elementos com data-action
   document.querySelectorAll('[data-action]').forEach(el => {
     const action = el.getAttribute('data-action');

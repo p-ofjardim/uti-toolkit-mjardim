@@ -4,6 +4,25 @@ Calculadoras clínicas para UTI, empacotadas como **PWA instalável** (Android e
 
 ---
 
+## Encontrou um problema ou tem uma sugestão? Não é preciso saber programar.
+
+- **Dúvidas de uso e discussões** (linguagem livre, sem formato):
+  [GitHub Discussions](https://github.com/p-ofjardim/uti-toolkit-mjardim/discussions)
+- **Reportar um cálculo/dose que parece errado ou sugerir nova ferramenta**
+  (formulário guiado): [Issues](https://github.com/p-ofjardim/uti-toolkit-mjardim/issues/new/choose)
+- **Dentro do app**: cada tela tem o aviso *"Esta estimativa parece errada? Avise-nos"*
+  e o menu principal tem *"Reportar problema / Sugerir melhoria"*.
+
+Contribuições clínicas (revisão de fórmulas, doses, redação e testes de instalação)
+são as mais valiosas — veja [CONTRIBUTING.md](CONTRIBUTING.md),
+seção *"Como contribuir sem saber programar"*.
+
+Quer acompanhar apenas as novidades? Use **Watch → Custom → Releases** para receber
+somente os lançamentos, com notas legíveis (novas calculadoras, correções clínicas).
+
+---
+
+
 ## Ferramentas disponíveis
 
 | Ferramenta | Descrição |

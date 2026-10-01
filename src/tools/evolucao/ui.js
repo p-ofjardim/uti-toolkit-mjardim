@@ -7,12 +7,14 @@ import {
   copyResult,
   atualizarOpcoesDiurese
 } from './state.js';
+import { renderFeedback } from '../../styles/feedback.js';
 
 // DOM elements cache
 const elements = {};
 
 // Initialize UI: bind events and populate form
 function init() {
+  renderFeedback('Evolução Clínica');
   // Cache all elements with data-field or data-action
   document.querySelectorAll('[data-field]').forEach(el => {
     const field = el.getAttribute('data-field');

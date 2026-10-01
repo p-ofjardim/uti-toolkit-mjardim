@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Perguntas e discussões (não é preciso saber programar)"
+    url: https://github.com/p-ofjardim/uti-toolkit-mjardim/discussions
+    about: "Dúvidas de uso clínico, sugestões de ferramentas e relatos de uso na UTI. Para uso geral, prefira as Discussions."
+  - name: "Relatar resultado clínico que parece errado"
+    url: https://github.com/p-ofjardim/uti-toolkit-mjardim/issues/new?template=bug-report.yml
+    about: "Um cálculo, dose ou texto do app que não corresponde ao esperado."

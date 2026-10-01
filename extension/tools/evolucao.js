@@ -619,8 +619,76 @@ initializeState();
 return { state: state, updateInput: updateInput, recalculate: recalculate, preencherEstabilidade: fillEstabilidade, limparFormulario: clearFormulario, copyResult: copyResult, atualizarOpcoesDiurese: updateDiureseOptions, getState: getState };
 })(__mod_index_16.preencherEstabilidade, __mod_index_16.limparFormulario, __mod_index_16.ajustarGenero, __mod_index_16.gerarEvolucao);
 
-var __mod_ui_18 = (function (state, updateInput, preencherEstabilidade, limparFormulario, copyResult, atualizarOpcoesDiurese) {
+var __mod_feedback_18 = (function () {
+/**
+ * Módulo de feedback clínico compartilhado
+ * Renderiza um link de feedback no fim de cada ferramenta,
+ * com contexto pré-preenchido (valores de entrada), sem exigir conta GitHub.
+ */
+
+var ISSUE_URL = 'https://github.com/p-ofjardim/uti-toolkit-mjardim/issues/new?template=bug-report.yml';
+var DISCUSSIONS_URL = 'https://github.com/p-ofjardim/uti-toolkit-mjardim/discussions';
+var CONTACT_EMAIL = 'p-ofjardim@users.noreply.github.com';
+
+function collectInputs() {
+  var inputs = document.querySelectorAll('input, select, textarea');
+  var lines = [];
+  inputs.forEach(function (el) {
+    var label = null;
+    if (el.id) {
+      var labelEl = document.querySelector('label[for="' + el.id + '"]');
+      if (labelEl) label = labelEl.textContent.trim();
+    }
+    if (!label) label = el.name || el.id || 'campo';
+    var value = el.type === 'checkbox' || el.type === 'radio' ? (el.checked ? el.value : '') : el.value;
+    if (value === '' || value == null) return;
+    lines.push('- ' + label + ': ' + value);
+  });
+  return lines.join('\n');
+}
+
+function buildFeedbackBody(toolName) {
+  var lines = [
+    'Ferramenta: ' + toolName,
+    '',
+    'Valores usados:',
+    collectInputs(),
+    '',
+    'O que eu esperava:',
+    '',
+    'O que apareceu:',
+  ];
+  return lines.join('\n');
+}
+
+function renderFeedback(toolName) {
+  var container = document.querySelector('.container');
+  if (!container || document.getElementById('clinical-feedback')) return;
+
+  var body = encodeURIComponent(buildFeedbackBody(toolName));
+  var issueUrl = ISSUE_URL + '&title=' + encodeURIComponent('[' + toolName + '] Resultado parece errado') +
+    '&body=' + body;
+  var mailto = 'mailto:' + CONTACT_EMAIL +
+    '?subject=' + encodeURIComponent('Feedback UTI Toolkit – ' + toolName) +
+    '&body=' + body;
+
+  var box = document.createElement('div');
+  box.id = 'clinical-feedback';
+  box.className = 'feedback-box';
+  box.innerHTML =
+    '<p>Esta estimativa parece errada? Avise-nos — não é preciso saber programar.</p>' +
+    '<a class="feedback-link feedback-issue" href="' + issueUrl + '" target="_blank" rel="noopener">Reportar problema (GitHub)</a>' +
+    '<a class="feedback-link feedback-mail" href="' + mailto + '">Reportar por e-mail</a>' +
+    '<a class="feedback-link feedback-discussion" href="' + DISCUSSIONS_URL + '" target="_blank" rel="noopener">Tirar dúvida nas Discussions</a>';
+
+  container.appendChild(box);
+}
+return { renderFeedback: renderFeedback, collectInputs: collectInputs, buildFeedbackBody: buildFeedbackBody, ISSUE_URL: ISSUE_URL, DISCUSSIONS_URL: DISCUSSIONS_URL, CONTACT_EMAIL: CONTACT_EMAIL };
+})();
+
+var __mod_ui_19 = (function (state, updateInput, preencherEstabilidade, limparFormulario, copyResult, atualizarOpcoesDiurese, renderFeedback) {
 // UI management for evolucao tool
+
 
 
 // DOM elements cache
@@ -628,6 +696,7 @@ const elements = {};
 
 // Initialize UI: bind events and populate form
 function init() {
+  renderFeedback('Evolução Clínica');
   // Cache all elements with data-field or data-action
   document.querySelectorAll('[data-field]').forEach(el => {
     const field = el.getAttribute('data-field');
@@ -769,4 +838,4 @@ if (document.readyState === 'loading') {
 
 // Export for testing
 return { init: init, syncForm: syncForm, syncResult: syncResult, updateDiureseSelect: updateDiureseSelect };
-})(__mod_state_17.state, __mod_state_17.updateInput, __mod_state_17.preencherEstabilidade, __mod_state_17.limparFormulario, __mod_state_17.copyResult, __mod_state_17.atualizarOpcoesDiurese);
+})(__mod_state_17.state, __mod_state_17.updateInput, __mod_state_17.preencherEstabilidade, __mod_state_17.limparFormulario, __mod_state_17.copyResult, __mod_state_17.atualizarOpcoesDiurese, __mod_feedback_18.renderFeedback);

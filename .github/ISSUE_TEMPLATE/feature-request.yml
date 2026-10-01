@@ -1,0 +1,34 @@
+name: "Sugestão de nova calculadora/ferramenta"
+description: "Sugira um cálculo ou recurso que falta no app."
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Não é preciso saber programar.** Descreva o cálculo em linguagem clínica;
+        quem desenvolve se encarrega da parte técnica.
+  - type: textarea
+    id: calculo
+    attributes:
+      label: "Qual cálculo ou ferramenta falta?"
+      description: "Ex.: índice de oxigenação, escore de gravidade, calculadora de reposição volêmica..."
+      placeholder: "Descreva a ferramenta desejada"
+    validations:
+      required: true
+  - type: textarea
+    id: formula
+    attributes:
+      label: "Como se calcula (se souber)?"
+      description: "A fórmula em linguagem natural, sem necessidade de notação de programação."
+      placeholder: "Ex.: resultado = peso × 0,3 × (valor desejado − valor atual)"
+  - type: textarea
+    id: referencia
+    attributes:
+      label: "Referência bibliográfica"
+      description: "Link do artigo, guideline ou livro que descreve o cálculo (aceito link direto)."
+      placeholder: "https://..."
+  - type: textarea
+    id: contexto
+    attributes:
+      label: "Em que situação clínica você usaria?"
+      placeholder: "Ex.: durante desmame ventilatório, à beira do leito"

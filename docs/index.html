@@ -47,6 +47,17 @@
       padding-top: env(safe-area-inset-top);
     }
 
+    .header-feedback {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .header-feedback:active { background: rgba(255,255,255,0.12); }
     .header-icon {
       font-size: 26px;
       line-height: 1;
@@ -227,6 +238,7 @@
       <p>MJardim Serviços Médicos</p>
     </div>
     <div class="header-tool-badge" id="tool-badge">Ventilação</div>
+    <a class="header-feedback" href="https://github.com/p-ofjardim/uti-toolkit-mjardim/issues/new/choose" target="_blank" rel="noopener" title="Reportar problema / Sugerir melhoria">Reportar problema / Sugerir melhoria</a>
   </header>
 
   <!-- Install-to-home-screen banner (shown when browser fires beforeinstallprompt) -->
