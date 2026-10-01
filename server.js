@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const HOST = process.env.HOST || '127.0.0.1';
 const PORT = process.env.PORT || 5000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
@@ -39,11 +40,12 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
       'Content-Type': mime,
       'Cache-Control': 'no-cache',
+      'X-Content-Type-Options': 'nosniff',
     });
     res.end(data);
   });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`UTI Toolkit running on http://0.0.0.0:${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`UTI Toolkit running on http://${HOST}:${PORT}`);
 });
