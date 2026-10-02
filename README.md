@@ -44,6 +44,11 @@ O projeto foi refatorado para seguir os princípios Unix: **ferramentas pequenas
 ```
 .
 ├── src/                          # Fonte único de verdade (Single Source of Truth)
+│   ├── shell/                    # Template único do shell (PWA, Pages e extensão)
+│   │   ├── index.html             # Marcadores {{BASE}}, {{PWA_ONLY}}
+│   │   ├── manifest.json
+│   │   ├── sw.js
+│   │   └── app.js                 # JS do shell (inline no PWA; externo na extensão)
 │   └── tools/
 │       ├── <ferramenta>/
 │       │   ├── index.html          # Markup puro (sem JS/CSS inline)
@@ -86,13 +91,47 @@ O projeto foi refatorado para seguir os princípios Unix: **ferramentas pequenas
 3. **Funções Puras**: Todos os cálculos são pure functions (sem acesso ao DOM, sem side effects)
 4. **Event Delegation**: Compatível com Firefox MV2 CSP (sem `onclick` inline)
 5. **Data Attributes**: Usa `data-field` e `data-action` para event delegation
-6. **Build Automatizado**: Scripts Node.js geram ambos os formatos (PWA e extensão)
+6. **Build Automatizado**: Scripts Node.js geram os três formatos (PWA local, GitHub Pages e extensão) a partir de `src/`
 
 ### Fluxo de Dados
 
 ```
 Input (DOM) → state.js (updateInput) → recalculate() → state.outputs → ui.js (syncResult)
 ```
+
+### Shell Único (PWA, GitHub Pages e Extensão)
+
+Os três shells (`public/`, `docs/` e `extension/`) são gerados a partir de um único
+template em `src/shell/` (`index.html`, `manifest.json`, `sw.js`, `app.js`).
+O build interpreta dois tipos de marcador:
+
+- **`{{BASE}}` / `{{CACHE_NAME}}`**: substituídos por parâmetros — `/` + `uti-toolkit-v<N>`
+  para `public/`, `/uti-toolkit-mjardim/` + `uti-toolkit-gh-pages-v<N>` para `docs/`,
+  string vazia (caminhos relativos) para a extensão. A versão do cache (`SW_VERSION`)
+  é declarada uma única vez em `scripts/build-pwa.js` e deve ser incrementada a cada
+  deploy com HTML novo.
+- **`{{PWA_ONLY}}`...`{{END_PWA_ONLY}}`** (HTML) e **`/* PWA-ONLY */`...`/* END PWA-ONLY */`**
+  (JS): blocos exclusivos do PWA — metas Apple/manifest, banner de instalação,
+  registro do service worker. O `build-pwa.js` os mantém; o `build-extension.js` os remove.
+
+**Racional dos blocos `PWA_ONLY` (decisão de design):** a divergência entre PWA e
+extensão foi auditada antes da unificação e classificada em dois tipos:
+
+1. **Constraint intencional** — partes que *não fazem sentido* numa extensão Firefox
+   (PWA instalável, service worker, `beforeinstallprompt`, caminhos absolutos), ou que
+   a CSP do MV2 **proíbe** (JS inline → por isso `app.js` é inlinado no PWA, mas copiado
+   como arquivo externo em `extension/app.js`). Essas partes ficam nos blocos marcados.
+2. **Drift** — cópia desatualizada por descuido (ex.: `--accent-light`, safe areas).
+   Corrigido adotando o CSS do PWA como superset.
+
+Optou-se por marcadores **inline no template** em vez de fragmentos em arquivos
+separados porque os blocos são poucos e pequenos: a leitura do shell inteiro num único
+arquivo tem precedência sobre a granularidade. Se os blocos condicionais crescerem em
+número ou tamanho, ou surgir uma terceira variante de plataforma, migrar para
+fragmentos (`src/shell/pwa/*.html`) é a evolução natural.
+
+Edições manuais em `public/`, `docs/` ou `extension/` são proibidas: todo o conteúdo
+deles é gerado por `npm run build`, e o CI falha se houver divergência (`git diff --exit-code`).
 
 ---
 
