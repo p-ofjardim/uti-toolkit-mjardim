@@ -101,14 +101,15 @@
     .app-content {
       flex: 1;
       position: relative;
-      overflow: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
 
     .tool-frame {
-      position: absolute;
-      inset: 0;
+      display: block;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       border: none;
       background: #fff;
       opacity: 0;
@@ -341,8 +342,47 @@
         item.classList.add('active');
         document.getElementById(`frame-${id}`).classList.add('active');
         badge.textContent = label;
+        sizeFrame(document.getElementById(`frame-${id}`));
       });
     });
+
+    // ── iOS iframe scroll fix ──
+    // iOS Safari does not scroll iframes with fixed height (WebKit bug 149264).
+    // Resize each same-origin frame to its content height and let .app-content scroll.
+    function sizeFrame(frame) {
+      if (!frame) return;
+      try {
+        const doc = frame.contentDocument;
+        if (!doc || !doc.body) return;
+        frame.style.height = 'auto';
+        const h = Math.max(
+          doc.body.scrollHeight,
+          doc.documentElement.scrollHeight,
+          frame.parentElement.clientHeight
+        );
+        frame.style.height = h + 'px';
+      } catch (e) { /* cross-origin: keep CSS height */ }
+    }
+    function sizeAllFrames() {
+      document.querySelectorAll('.tool-frame').forEach(sizeFrame);
+    }
+    document.querySelectorAll('.tool-frame').forEach(frame => {
+      frame.addEventListener('load', () => {
+        sizeFrame(frame);
+        try {
+          const doc = frame.contentDocument;
+          if (doc && doc.body && typeof ResizeObserver === 'function') {
+            if (frame._resizeObserver) frame._resizeObserver.disconnect();
+            const ro = new ResizeObserver(() => sizeFrame(frame));
+            ro.observe(doc.body);
+            frame._resizeObserver = ro;
+          }
+        } catch (e) { /* cross-origin */ }
+      });
+    });
+    window.addEventListener('load', sizeAllFrames);
+    window.addEventListener('resize', sizeAllFrames);
+    window.visualViewport && visualViewport.addEventListener('resize', sizeAllFrames);
   </script>
 </body>
 </html>
