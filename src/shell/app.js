@@ -1,14 +1,42 @@
-/**
- * Copyright (c) 2026 MJardim Serviços Médicos LTDA
- * Licensed under the MIT License (see LICENSE for details).
- */
-
 // Shell do UTI Toolkit: banner de instalação e registro do service worker (PWA),
 // navegação e redimensionamento de iframes (PWA e extensão).
 // O script roda no fim do <body>: o DOM já está parseado.
 // O build remove o bloco PWA-ONLY na versão da extensão.
 
+/* PWA-ONLY */
+let deferredPrompt = null;
+const installBanner = document.getElementById('install-banner');
+const installBtn    = document.getElementById('install-btn');
+const dismissBtn    = document.getElementById('dismiss-install');
 
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBanner.classList.add('show');
+});
+
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBanner.classList.remove('show');
+});
+
+dismissBtn.addEventListener('click', () => {
+  installBanner.classList.remove('show');
+});
+
+window.addEventListener('appinstalled', () => {
+  installBanner.classList.remove('show');
+  deferredPrompt = null;
+});
+
+// ── Service Worker ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('{{BASE}}sw.js').catch(() => {});
+}
+/* END PWA-ONLY */
 
 // ── Navigation ──
 const navItems = document.querySelectorAll('.nav-item');
