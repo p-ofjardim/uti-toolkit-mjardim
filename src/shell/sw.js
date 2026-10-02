@@ -1,5 +1,5 @@
-const CACHE_NAME = 'uti-toolkit-v4';
-const BASE = '/';
+const CACHE_NAME = '{{CACHE_NAME}}';
+const BASE = '{{BASE}}';
 
 const ASSETS = [
   BASE,

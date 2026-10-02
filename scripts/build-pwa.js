@@ -11,9 +11,26 @@ import { bundleTool, assertSyntax } from './lib/bundle.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, '..', 'src', 'tools');
-const PUBLIC_DIR = path.join(__dirname, '..', 'public', 'tools');
-const DOCS_DIR = path.join(__dirname, '..', 'docs', 'tools');
+const SHELL_DIR = path.join(__dirname, '..', 'src', 'shell');
+const PUBLIC_ROOT = path.join(__dirname, '..', 'public');
+const DOCS_ROOT = path.join(__dirname, '..', 'docs');
+const PUBLIC_DIR = path.join(PUBLIC_ROOT, 'tools');
+const DOCS_DIR = path.join(DOCS_ROOT, 'tools');
 const BASE_PATH = '/uti-toolkit-mjardim/';
+
+// Versionamento único do cache do service worker (incrementar a cada deploy com HTML novo)
+const SW_VERSION = 4;
+const CACHE_LOCAL = `uti-toolkit-v${SW_VERSION}`;
+const CACHE_DOCS = `uti-toolkit-gh-pages-v${SW_VERSION}`;
+
+/**
+ * Substitui os placeholders ({{BASE}}, {{CACHE_NAME}}) do template de shell.
+ */
+function renderTemplate(content, base, cacheName) {
+  return content
+    .replaceAll('{{BASE}}', base)
+    .replaceAll('{{CACHE_NAME}}', cacheName);
+}
 
 // Garante que os diretórios de saída existem
 if (!fs.existsSync(PUBLIC_DIR)) {
@@ -95,6 +112,15 @@ for (const tool of tools) {
     failures.push({ tool, message: err.message });
     console.error(`  ❌ ${tool}: ${err.message}`);
   }
+}
+
+// ── Shell (index.html, manifest.json, sw.js) a partir de src/shell/ ──
+const shellFiles = ['index.html', 'manifest.json', 'sw.js'];
+for (const file of shellFiles) {
+  const template = fs.readFileSync(path.join(SHELL_DIR, file), 'utf8');
+  fs.writeFileSync(path.join(PUBLIC_ROOT, file), renderTemplate(template, '/', CACHE_LOCAL), 'utf8');
+  fs.writeFileSync(path.join(DOCS_ROOT, file), renderTemplate(template, BASE_PATH, CACHE_DOCS), 'utf8');
+  console.log(`✅ Shell gerado: ${file} (public/ e docs/)`);
 }
 
 if (failures.length > 0) {

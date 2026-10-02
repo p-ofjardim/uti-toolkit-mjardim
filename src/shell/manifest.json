@@ -2,7 +2,7 @@
   "name": "UTI Toolkit – MJardim",
   "short_name": "UTI Toolkit",
   "description": "Calculadoras e ferramentas clínicas para UTI – MJardim Serviços Médicos",
-  "start_url": "/uti-toolkit-mjardim/",
+  "start_url": "{{BASE}}",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a3a5c",
@@ -10,13 +10,13 @@
   "lang": "pt-BR",
   "icons": [
     {
-      "src": "/uti-toolkit-mjardim/icons/icon-192.svg",
+      "src": "{{BASE}}icons/icon-192.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/uti-toolkit-mjardim/icons/icon-512.svg",
+      "src": "{{BASE}}icons/icon-512.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
