@@ -367,7 +367,18 @@
       document.querySelectorAll('.tool-frame').forEach(sizeFrame);
     }
     document.querySelectorAll('.tool-frame').forEach(frame => {
-      frame.addEventListener('load', () => sizeFrame(frame));
+      frame.addEventListener('load', () => {
+        sizeFrame(frame);
+        try {
+          const doc = frame.contentDocument;
+          if (doc && doc.body && typeof ResizeObserver === 'function') {
+            if (frame._resizeObserver) frame._resizeObserver.disconnect();
+            const ro = new ResizeObserver(() => sizeFrame(frame));
+            ro.observe(doc.body);
+            frame._resizeObserver = ro;
+          }
+        } catch (e) { /* cross-origin */ }
+      });
     });
     window.addEventListener('load', sizeAllFrames);
     window.addEventListener('resize', sizeAllFrames);

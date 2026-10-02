@@ -43,7 +43,17 @@ document.addEventListener('DOMContentLoaded', function () {
     frames.forEach(sizeFrame);
   }
   frames.forEach(function (frame) {
-    frame.addEventListener('load', function () { sizeFrame(frame); });
+    frame.addEventListener('load', function () {
+      sizeFrame(frame);
+      try {
+        const doc = frame.contentDocument;
+        if (doc && doc.body && typeof ResizeObserver === 'function') {
+          if (frame._resizeObserver) frame._resizeObserver.disconnect();
+          frame._resizeObserver = new ResizeObserver(function () { sizeFrame(frame); });
+          frame._resizeObserver.observe(doc.body);
+        }
+      } catch (e) { /* cross-origin */ }
+    });
   });
   window.addEventListener('load', sizeAllFrames);
   window.addEventListener('resize', sizeAllFrames);
