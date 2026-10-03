@@ -25,11 +25,24 @@ const CACHE_DOCS = `uti-toolkit-gh-pages-v${SW_VERSION}`;
 
 /**
  * Substitui os placeholders ({{BASE}}, {{CACHE_NAME}}) do template de shell.
+ * No modo PWA, o conteúdo dos blocos {{PWA_ONLY}}...{{END_PWA_ONLY}} é mantido
+ * (e os marcadores, removidos). No modo extensão, os blocos são removidos.
  */
-function renderTemplate(content, base, cacheName) {
-  return content
+function renderTemplate(content, base, cacheName, mode = 'pwa') {
+  let out = content
     .replaceAll('{{BASE}}', base)
     .replaceAll('{{CACHE_NAME}}', cacheName);
+  const blockRe = /\{\{PWA_ONLY\}\}([\s\S]*?)\{\{END_PWA_ONLY\}\}/g;
+  if (mode === 'pwa') {
+    out = out.replace(blockRe, '$1');
+    out = out.replaceAll('/* PWA-ONLY */\n', '').replaceAll('\n/* END PWA-ONLY */', '');
+  } else {
+    out = out.replace(blockRe, '');
+    out = out.replaceAll('/* PWA-ONLY */\n', '').replaceAll('\n/* END PWA-ONLY */', '');
+    out = out.replace(/^\s*\n/gm, '');
+  }
+  out = out.replaceAll('{{PWA_ONLY}}', '').replaceAll('{{END_PWA_ONLY}}', '');
+  return out;
 }
 
 // Garante que os diretórios de saída existem
@@ -115,11 +128,22 @@ for (const tool of tools) {
 }
 
 // ── Shell (index.html, manifest.json, sw.js) a partir de src/shell/ ──
+const shellAppJs = fs.readFileSync(path.join(SHELL_DIR, 'app.js'), 'utf8');
 const shellFiles = ['index.html', 'manifest.json', 'sw.js'];
 for (const file of shellFiles) {
   const template = fs.readFileSync(path.join(SHELL_DIR, file), 'utf8');
-  fs.writeFileSync(path.join(PUBLIC_ROOT, file), renderTemplate(template, '/', CACHE_LOCAL), 'utf8');
-  fs.writeFileSync(path.join(DOCS_ROOT, file), renderTemplate(template, BASE_PATH, CACHE_DOCS), 'utf8');
+  const rendered = renderTemplate(template, '/', CACHE_LOCAL);
+  const finalContent = rendered.replace(
+    '  {{SHELL_SCRIPT}}',
+    `<script>\n${renderTemplate(shellAppJs, '/', CACHE_LOCAL)}\n  </script>`
+  );
+  fs.writeFileSync(path.join(PUBLIC_ROOT, file), finalContent, 'utf8');
+  const docsContent = renderTemplate(template, BASE_PATH, CACHE_DOCS)
+    .replace(
+      '  {{SHELL_SCRIPT}}',
+      `<script>\n${renderTemplate(shellAppJs, BASE_PATH, CACHE_DOCS)}\n  </script>`
+    );
+  fs.writeFileSync(path.join(DOCS_ROOT, file), docsContent, 'utf8');
   console.log(`✅ Shell gerado: ${file} (public/ e docs/)`);
 }
 

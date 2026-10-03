@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0{{PWA_ONLY}}, viewport-fit=cover{{END_PWA_ONLY}}">{{PWA_ONLY}}
   <meta name="theme-color" content="#1a3a5c">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="UTI Toolkit">
   <link rel="manifest" href="{{BASE}}manifest.json">
-  <link rel="icon" href="{{BASE}}icons/icon-192.svg" type="image/svg+xml">
+  <link rel="icon" href="{{BASE}}icons/icon-192.svg" type="image/svg+xml">{{END_PWA_ONLY}}
   <title>UTI Toolkit – MJardim</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -180,7 +180,7 @@
       border-radius: 0 0 3px 3px;
     }
 
-    /* ── INSTALL BANNER ── */
+    {{PWA_ONLY}}/* ── INSTALL BANNER ── */
     #install-banner {
       display: none;
       background: var(--accent);
@@ -234,7 +234,7 @@
       animation: spin 0.7s linear infinite;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin { to { transform: rotate(360deg); } }{{END_PWA_ONLY}}
   </style>
 </head>
 <body>
@@ -248,12 +248,12 @@
     <div class="header-tool-badge" id="tool-badge">Ventilação</div>
   </header>
 
-  <!-- Install-to-home-screen banner (shown when browser fires beforeinstallprompt) -->
+  {{PWA_ONLY}}<!-- Install-to-home-screen banner (shown when browser fires beforeinstallprompt) -->
   <div id="install-banner">
     📲 Instalar app no celular —
     <button id="install-btn">Instalar</button>
     <button id="dismiss-install" style="background:transparent;border:none;color:rgba(255,255,255,0.6);font-size:18px;padding:0 4px;">×</button>
-  </div>
+  </div>{{END_PWA_ONLY}}
 
   <main class="app-content">
     <iframe id="frame-ventilacao" class="tool-frame active"  src="{{BASE}}tools/ventilacao.html" title="Ventilação Mecânica"></iframe>
@@ -290,98 +290,6 @@
     <span class="feedback-icon">💬</span>
   </a>
 
-  <script>
-    // ── PWA install prompt ──
-    let deferredPrompt = null;
-    const installBanner = document.getElementById('install-banner');
-    const installBtn    = document.getElementById('install-btn');
-    const dismissBtn    = document.getElementById('dismiss-install');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBanner.classList.add('show');
-    });
-
-    installBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBanner.classList.remove('show');
-    });
-
-    dismissBtn.addEventListener('click', () => {
-      installBanner.classList.remove('show');
-    });
-
-    window.addEventListener('appinstalled', () => {
-      installBanner.classList.remove('show');
-      deferredPrompt = null;
-    });
-
-    // ── Service Worker ──
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('{{BASE}}sw.js').catch(() => {});
-    }
-
-    // ── Navigation ──
-    const navItems = document.querySelectorAll('.nav-item');
-    const frames   = document.querySelectorAll('.tool-frame');
-    const badge    = document.getElementById('tool-badge');
-
-    navItems.forEach((item) => {
-      item.addEventListener('click', () => {
-        const id = item.dataset.frame;
-        const label = item.dataset.label;
-
-        navItems.forEach((n) => n.classList.remove('active'));
-        frames.forEach((f) => f.classList.remove('active'));
-
-        item.classList.add('active');
-        document.getElementById(`frame-${id}`).classList.add('active');
-        badge.textContent = label;
-        sizeFrame(document.getElementById(`frame-${id}`));
-      });
-    });
-
-    // ── iOS iframe scroll fix ──
-    // iOS Safari does not scroll iframes with fixed height (WebKit bug 149264).
-    // Resize each same-origin frame to its content height and let .app-content scroll.
-    function sizeFrame(frame) {
-      if (!frame) return;
-      try {
-        const doc = frame.contentDocument;
-        if (!doc || !doc.body) return;
-        frame.style.height = 'auto';
-        const h = Math.max(
-          doc.body.scrollHeight,
-          doc.documentElement.scrollHeight,
-          frame.parentElement.clientHeight
-        );
-        frame.style.height = h + 'px';
-      } catch (e) { /* cross-origin: keep CSS height */ }
-    }
-    function sizeAllFrames() {
-      document.querySelectorAll('.tool-frame').forEach(sizeFrame);
-    }
-    document.querySelectorAll('.tool-frame').forEach(frame => {
-      frame.addEventListener('load', () => {
-        sizeFrame(frame);
-        try {
-          const doc = frame.contentDocument;
-          if (doc && doc.body && typeof ResizeObserver === 'function') {
-            if (frame._resizeObserver) frame._resizeObserver.disconnect();
-            const ro = new ResizeObserver(() => sizeFrame(frame));
-            ro.observe(doc.body);
-            frame._resizeObserver = ro;
-          }
-        } catch (e) { /* cross-origin */ }
-      });
-    });
-    window.addEventListener('load', sizeAllFrames);
-    window.addEventListener('resize', sizeAllFrames);
-    window.visualViewport && visualViewport.addEventListener('resize', sizeAllFrames);
-  </script>
+  {{SHELL_SCRIPT}}
 </body>
 </html>

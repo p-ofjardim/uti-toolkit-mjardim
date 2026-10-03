@@ -12,6 +12,7 @@
       --header-h: 58px;
       --blue: #1a3a5c;
       --accent: #3498db;
+      --accent-light: #d6eaf8;
       --text-light: #ecf0f1;
       --text-muted: #a0b4c8;
     }
@@ -35,6 +36,8 @@
       gap: 12px;
       flex-shrink: 0;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      /* Safe area for notched phones */
+      padding-top: env(safe-area-inset-top);
     }
 
     .footer-feedback {
@@ -56,7 +59,11 @@
       letter-spacing: 0.2px;
     }
     .footer-feedback .feedback-icon { font-size: 14px; line-height: 1; }
-    .header-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
+    .header-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
 
     .header-text h1 {
       font-size: 17px;
@@ -115,6 +122,8 @@
       align-items: stretch;
       flex-shrink: 0;
       box-shadow: 0 -2px 10px rgba(0,0,0,0.25);
+      /* Safe area for home indicator (iPhone X+) */
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
     .nav-item {
@@ -130,6 +139,7 @@
       padding: 6px 4px;
       position: relative;
       transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .nav-item:active { background: rgba(255,255,255,0.08); }
@@ -149,8 +159,9 @@
     }
 
     .nav-item.active .nav-label { color: var(--accent); }
-    .nav-item.active .nav-icon  { transform: scale(1.15); }
+    .nav-item.active .nav-icon { transform: scale(1.15); }
 
+    /* Active indicator bar */
     .nav-item.active::after {
       content: '';
       position: absolute;
@@ -161,6 +172,7 @@
       background: var(--accent);
       border-radius: 0 0 3px 3px;
     }
+
   </style>
 </head>
 <body>
@@ -175,7 +187,6 @@
   </header>
 
   <main class="app-content">
-    <!-- Paths are relative — extension pages live at extension:// origin -->
     <iframe id="frame-ventilacao" class="tool-frame active"  src="tools/ventilacao.html" title="Ventilação Mecânica"></iframe>
     <iframe id="frame-rsi"        class="tool-frame"         src="tools/rsi.html"        title="Doses RSI"></iframe>
     <iframe id="frame-infusao"    class="tool-frame"         src="tools/infusao.html"    title="Infusão UTI"></iframe>
@@ -210,13 +221,6 @@
     <span class="feedback-icon">💬</span>
   </a>
 
-  
-  
-  
-  
-  
-  
-  
   <script src="app.js"></script>
 </body>
 </html>

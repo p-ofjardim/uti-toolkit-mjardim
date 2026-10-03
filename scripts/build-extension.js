@@ -13,7 +13,9 @@ import { bundleTool, assertSyntax } from './lib/bundle.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, '..', 'src', 'tools');
-const EXT_DIR = path.join(__dirname, '..', 'extension', 'tools');
+const SHELL_DIR = path.join(__dirname, '..', 'src', 'shell');
+const EXT_ROOT = path.join(__dirname, '..', 'extension');
+const EXT_DIR = path.join(EXT_ROOT, 'tools');
 
 // Garante que o diretório de saída existe
 if (!fs.existsSync(EXT_DIR)) {
@@ -96,6 +98,31 @@ if (failures.length > 0) {
   console.error(`\n❌ Build da extensão concluído com ${failures.length} falha(s): ${failures.map(f => f.tool).join(', ')}`);
   process.exit(1);
 }
+
+// ── Shell (index.html + app.js) a partir de src/shell/ no modo extensão ──
+// O modo 'ext' remove os blocos {{PWA_ONLY}} (metas PWA, banner de instalação,
+// registro do service worker) e usa caminhos relativos (base vazia).
+function renderShell(content, base, mode = 'ext') {
+  let out = content.replaceAll('{{BASE}}', base);
+  const blockRe = /\{\{PWA_ONLY\}\}([\s\S]*?)\{\{END_PWA_ONLY\}\}/g;
+  out = mode === 'pwa' ? out.replace(blockRe, '$1') : out.replace(blockRe, '');
+  out = out.replaceAll('{{PWA_ONLY}}', '').replaceAll('{{END_PWA_ONLY}}', '');
+  // Colapsa linhas em branco consecutivas que sobram após remover blocos PWA
+  return out.replace(/\n[ \t]*\n[ \t]*\n+/g, '\n\n');
+}
+
+function renderShellJs(content) {
+  const blockRe = /\/\* PWA-ONLY \*\/[\s\S]*?\/\* END PWA-ONLY \*\//g;
+  return content.replace(blockRe, '').replaceAll('{{BASE}}', '');
+}
+
+const shellTemplate = fs.readFileSync(path.join(SHELL_DIR, 'index.html'), 'utf8');
+const shellJs = fs.readFileSync(path.join(SHELL_DIR, 'app.js'), 'utf8');
+const extShell = renderShell(shellTemplate, '')
+  .replace('  {{SHELL_SCRIPT}}', '  <script src="app.js"></script>');
+fs.writeFileSync(path.join(EXT_ROOT, 'index.html'), extShell, 'utf8');
+fs.writeFileSync(path.join(EXT_ROOT, 'app.js'), COPYRIGHT_HEADER + '\n\n' + renderShellJs(shellJs), 'utf8');
+console.log('✅ Shell gerado: extension/index.html + extension/app.js');
 
 // Gera o .xpi
 console.log('\n📦 Gerando uti-toolkit-firefox.xpi...');
