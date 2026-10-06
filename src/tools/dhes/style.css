@@ -459,3 +459,8 @@ button.copy-btn:hover {
 
 .feedback-mail { background: #7f8c8d; }
 .feedback-discussion { background: #2c7a4b; }
+
+/* A ferramenta recalcula ao digitar: resultados sempre visíveis */
+.result {
+    display: block;
+}

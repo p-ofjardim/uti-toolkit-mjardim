@@ -19,7 +19,7 @@ const DOCS_DIR = path.join(DOCS_ROOT, 'tools');
 const BASE_PATH = '/uti-toolkit-mjardim/';
 
 // Versionamento único do cache do service worker (incrementar a cada deploy com HTML novo)
-const SW_VERSION = 6;
+const SW_VERSION = 7;
 const CACHE_LOCAL = `uti-toolkit-v${SW_VERSION}`;
 const CACHE_DOCS = `uti-toolkit-gh-pages-v${SW_VERSION}`;
 
