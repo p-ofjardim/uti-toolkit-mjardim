@@ -1,4 +1,5 @@
-// Exporta todas as funções de cálculo de reposição de potássio
+// Exporta todas as funções de cálculo dos distúrbios hidroeletrolíticos
+// Potássio
 import {
   calculateDeficitPotassio,
   faixaAlternativa70kg,
@@ -13,11 +14,25 @@ import {
   validarAporteTotalK,
   formatLimitesSeguranca,
 } from './limites-infusao-k.js';
+// Fosfato
 import {
   selecionarSal,
   calculateFosfatoPotassio,
   formatFosfatoResult,
 } from './fosfato-potassio.js';
+// Sódio / água livre
+import { calculateTBWPercentage } from './tbw-percentage.js';
+import { calculateWaterDeficit } from './water-deficit.js';
+import {
+  calculateMaxCorrectionRate,
+  calculateCorrectionPercentage,
+} from './correction-rate.js';
+// Cálcio
+import {
+  calculateCalcioCorrigido,
+  classifyCalcioCorrigido,
+  formatCalcioCorrigidoResult,
+} from './calcio-corrigido.js';
 
 export {
   calculateDeficitPotassio,
@@ -31,4 +46,11 @@ export {
   selecionarSal,
   calculateFosfatoPotassio,
   formatFosfatoResult,
+  calculateTBWPercentage,
+  calculateWaterDeficit,
+  calculateMaxCorrectionRate,
+  calculateCorrectionPercentage,
+  calculateCalcioCorrigido,
+  classifyCalcioCorrigido,
+  formatCalcioCorrigidoResult,
 };
