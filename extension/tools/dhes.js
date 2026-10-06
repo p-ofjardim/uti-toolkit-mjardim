@@ -275,26 +275,167 @@ function formatFosfatoResult(result) {
 return { selecionarSal: selecionarSal, calculateFosfatoPotassio: calculateFosfatoPotassio, formatFosfatoResult: formatFosfatoResult };
 })();
 
-var __mod_index_4 = (function (calculateDeficitPotassio, faixaAlternativa70kg, formatDeficitPotassioResult, classifyGravidadeHipocalemia, formatGravidadeResult, limiteVelocidadePorPeso, validarAporteTotalK, formatLimitesSeguranca, selecionarSal, calculateFosfatoPotassio, formatFosfatoResult) {
-// Exporta todas as funções de cálculo de reposição de potássio
-return { calculateDeficitPotassio: calculateDeficitPotassio, faixaAlternativa70kg: faixaAlternativa70kg, formatDeficitPotassioResult: formatDeficitPotassioResult, classifyGravidadeHipocalemia: classifyGravidadeHipocalemia, formatGravidadeResult: formatGravidadeResult, limiteVelocidadePorPeso: limiteVelocidadePorPeso, validarAporteTotalK: validarAporteTotalK, formatLimitesSeguranca: formatLimitesSeguranca, selecionarSal: selecionarSal, calculateFosfatoPotassio: calculateFosfatoPotassio, formatFosfatoResult: formatFosfatoResult };
-})(__mod_deficit_potassio_0.calculateDeficitPotassio, __mod_deficit_potassio_0.faixaAlternativa70kg, __mod_deficit_potassio_0.formatDeficitPotassioResult, __mod_gravidade_hipocalemia_1.classifyGravidadeHipocalemia, __mod_gravidade_hipocalemia_1.formatGravidadeResult, __mod_limites_infusao_k_2.limiteVelocidadePorPeso, __mod_limites_infusao_k_2.validarAporteTotalK, __mod_limites_infusao_k_2.formatLimitesSeguranca, __mod_fosfato_potassio_3.selecionarSal, __mod_fosfato_potassio_3.calculateFosfatoPotassio, __mod_fosfato_potassio_3.formatFosfatoResult);
-
-var __mod_state_5 = (function (calculations) {
+var __mod_tbw_percentage_4 = (function () {
 /**
- * Gerenciador de estado para a calculadora de reposição de potássio
+ * Calcula a porcentagem de TBW (Total Body Water) com base em idade e sexo
+ * @param {number} age - Idade em anos
+ * @param {string} gender - Sexo ('male' ou 'female')
+ * @returns {number} Porcentagem de TBW (0.45 a 0.6)
+ */
+function calculateTBWPercentage(age, gender) {
+  if (age >= 65) {
+    // Idoso
+    return gender === 'male' ? 0.5 : 0.45;
+  } else {
+    // Adulto
+    return gender === 'male' ? 0.6 : 0.5;
+  }
+}
+return { calculateTBWPercentage: calculateTBWPercentage };
+})();
+
+var __mod_water_deficit_5 = (function () {
+/**
+ * Calcula o déficit de água livre usando a fórmula de Adrogue-Madias (NEJM 2000)
+ * @param {number} sodium - Sódio sérico atual (mEq/L)
+ * @param {number} desiredSodium - Sódio desejado (mEq/L)
+ * @param {number} weight - Peso do paciente (kg)
+ * @param {number} tbwPercentage - Porcentagem de TBW (Total Body Water)
+ * @returns {number} Déficit de água livre em litros
+ */
+function calculateWaterDeficit(sodium, desiredSodium, weight, tbwPercentage) {
+  // Fórmula: Déficit (L) = %TBW × Peso × (Na_atual / Na_desejado - 1)
+  return tbwPercentage * weight * (sodium / desiredSodium - 1);
+}
+return { calculateWaterDeficit: calculateWaterDeficit };
+})();
+
+var __mod_correction_rate_6 = (function () {
+/**
+ * Calcula a taxa de correção máxima recomendada (8-10 mEq/L em 24h)
+ * @param {number} currentDifference - Diferença atual entre sódio e alvo (mEq/L)
+ * @returns {number} Taxa de correção máxima (mEq/L)
+ */
+function calculateMaxCorrectionRate(currentDifference) {
+  const MAX_CORRECTION = 10; // 10 mEq/L em 24h
+  return Math.min(MAX_CORRECTION, Math.abs(currentDifference));
+}
+
+/**
+ * Calcula a porcentagem de correção recomendada
+ * @param {number} currentDifference - Diferença atual entre sódio e alvo (mEq/L)
+ * @returns {number} Porcentagem de correção (0-100)
+ */
+function calculateCorrectionPercentage(currentDifference) {
+  const maxCorrection = calculateMaxCorrectionRate(currentDifference);
+  return Math.min((maxCorrection / Math.abs(currentDifference)) * 100, 100);
+}
+return { calculateMaxCorrectionRate: calculateMaxCorrectionRate, calculateCorrectionPercentage: calculateCorrectionPercentage };
+})();
+
+var __mod_calcio_corrigido_7 = (function () {
+/**
+ * Cálcio sérico corrigido pela albumina.
+ *
+ * Ca corrigido (mg/dL) = Ca total (mg/dL) + 0,8 × (4,0 − albumina em g/dL)
+ *
+ * Classificação: < 8,0 mg/dL hipocalcemia; 8,0–10,5 normal;
+ * > 11,0 hipercalcemia (limiar do INCA para hipercalcemia).
+ *
+ * Aviso clínico: os fatores de correção pela albumina não são confiáveis
+ * para diagnóstico de hipo/hipercalcemia em pacientes críticos; o único
+ * método confiável é o cálcio iônico com eletrodos ion-seletivos
+ * (Slomp, Crit Care Med 2003; Byrnes, Am J Surg 2005; The ICU Book,
+ * cap. Cálcio e Fósforo).
+ */
+function calculateCalcioCorrigido(calcioTotal, albumina) {
+  if (
+    typeof calcioTotal !== 'number' || !Number.isFinite(calcioTotal) || calcioTotal < 0 ||
+    typeof albumina !== 'number' || !Number.isFinite(albumina) || albumina < 0
+  ) {
+    return null;
+  }
+  return calcioTotal + 0.8 * (4.0 - albumina);
+}
+
+function classifyCalcioCorrigido(calcioCorrigido) {
+  if (typeof calcioCorrigido !== 'number' || !Number.isFinite(calcioCorrigido)) {
+    return null;
+  }
+  if (calcioCorrigido < 8.0) {
+    return {
+      rotulo: 'Hipocalcemia (cálcio corrigido < 8,0 mg/dL)',
+      classificacao: 'hipocalcemia',
+    };
+  }
+  if (calcioCorrigido > 11.0) {
+    return {
+      rotulo: 'Hipercalcemia (cálcio corrigido > 11,0 mg/dL)',
+      classificacao: 'hipercalcemia',
+    };
+  }
+  return {
+    rotulo: 'Cálcio corrigido dentro da faixa usual (8,0–11,0 mg/dL)',
+    classificacao: 'normal',
+  };
+}
+
+function formatCalcioCorrigidoResult(calcioTotal, albumina) {
+  const corrigido = calculateCalcioCorrigido(calcioTotal, albumina);
+  if (corrigido === null) {
+    return 'Informe cálcio total (mg/dL) e albumina (g/dL) válidos.';
+  }
+  const rounded = Math.round(corrigido * 100) / 100;
+  const classification = classifyCalcioCorrigido(corrigido);
+  return `Cálcio corrigido: <strong>${rounded.toFixed(2).replace('.', ',')} mg/dL</strong> — ${classification.rotulo}.`;
+}
+return { calculateCalcioCorrigido: calculateCalcioCorrigido, classifyCalcioCorrigido: classifyCalcioCorrigido, formatCalcioCorrigidoResult: formatCalcioCorrigidoResult };
+})();
+
+var __mod_index_8 = (function (calculateDeficitPotassio, faixaAlternativa70kg, formatDeficitPotassioResult, classifyGravidadeHipocalemia, formatGravidadeResult, limiteVelocidadePorPeso, validarAporteTotalK, formatLimitesSeguranca, selecionarSal, calculateFosfatoPotassio, formatFosfatoResult, calculateTBWPercentage, calculateWaterDeficit, calculateMaxCorrectionRate, calculateCorrectionPercentage, calculateCalcioCorrigido, classifyCalcioCorrigido, formatCalcioCorrigidoResult) {
+// Exporta todas as funções de cálculo dos distúrbios hidroeletrolíticos
+// Potássio
+
+
+
+// Fosfato
+
+// Sódio / água livre
+
+
+
+// Cálcio
+return { calculateDeficitPotassio: calculateDeficitPotassio, faixaAlternativa70kg: faixaAlternativa70kg, formatDeficitPotassioResult: formatDeficitPotassioResult, classifyGravidadeHipocalemia: classifyGravidadeHipocalemia, formatGravidadeResult: formatGravidadeResult, limiteVelocidadePorPeso: limiteVelocidadePorPeso, validarAporteTotalK: validarAporteTotalK, formatLimitesSeguranca: formatLimitesSeguranca, selecionarSal: selecionarSal, calculateFosfatoPotassio: calculateFosfatoPotassio, formatFosfatoResult: formatFosfatoResult, calculateTBWPercentage: calculateTBWPercentage, calculateWaterDeficit: calculateWaterDeficit, calculateMaxCorrectionRate: calculateMaxCorrectionRate, calculateCorrectionPercentage: calculateCorrectionPercentage, calculateCalcioCorrigido: calculateCalcioCorrigido, classifyCalcioCorrigido: classifyCalcioCorrigido, formatCalcioCorrigidoResult: formatCalcioCorrigidoResult };
+})(__mod_deficit_potassio_0.calculateDeficitPotassio, __mod_deficit_potassio_0.faixaAlternativa70kg, __mod_deficit_potassio_0.formatDeficitPotassioResult, __mod_gravidade_hipocalemia_1.classifyGravidadeHipocalemia, __mod_gravidade_hipocalemia_1.formatGravidadeResult, __mod_limites_infusao_k_2.limiteVelocidadePorPeso, __mod_limites_infusao_k_2.validarAporteTotalK, __mod_limites_infusao_k_2.formatLimitesSeguranca, __mod_fosfato_potassio_3.selecionarSal, __mod_fosfato_potassio_3.calculateFosfatoPotassio, __mod_fosfato_potassio_3.formatFosfatoResult, __mod_tbw_percentage_4.calculateTBWPercentage, __mod_water_deficit_5.calculateWaterDeficit, __mod_correction_rate_6.calculateMaxCorrectionRate, __mod_correction_rate_6.calculateCorrectionPercentage, __mod_calcio_corrigido_7.calculateCalcioCorrigido, __mod_calcio_corrigido_7.classifyCalcioCorrigido, __mod_calcio_corrigido_7.formatCalcioCorrigidoResult);
+
+var __mod_state_9 = (function (calculations) {
+/**
+ * Gerenciador de estado para a ferramenta de distúrbios hidroeletrolíticos
  * Mantém inputs e outputs sincronizados e recalcula automaticamente
  */
 
 
 const state = {
+  activeTab: 'potassio',
   inputs: {
-    peso: 70,
-    potassio: 3.0,
-    urgencia: 'nao',
-    fosfato: 1.2,
-    'potassio-plasma': 3.1,
-    'kcl-dia': 0,
+    // Potássio
+    'k-peso': 70,
+    'k-potassio': 3.0,
+    'k-urgencia': 'nao',
+    // Fosfato
+    'f-fosfato': 1.2,
+    'f-peso': 70,
+    'f-potassio-plasma': 3.1,
+    'f-kcl-dia': 0,
+    // Sódio
+    's-sodio': 140,
+    's-sodio-alvo': 140,
+    's-peso': 70,
+    's-idade': 40,
+    's-sexo': 'male',
+    // Cálcio
+    'c-calcio-total': 7.5,
+    'c-albumina': 2.5,
   },
   outputs: {
     deficit: null,
@@ -303,34 +444,36 @@ const state = {
     fosfato: null,
     sal: null,
     aporteTotal: null,
+    agua: null,
+    calcioCorrigido: null,
   },
 };
-
-function updateInput(name, value) {
-  state.inputs[name] = value;
-}
 
 function toNumber(value) {
   const parsed = typeof value === 'number' ? value : parseFloat(value);
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function calcular() {
-  const peso = toNumber(state.inputs.peso);
-  const potassio = toNumber(state.inputs.potassio);
+function updateInput(name, value) {
+  state.inputs[name] = value;
+}
+
+function calcularPotassio() {
+  const peso = toNumber(state.inputs['k-peso']);
+  const potassio = toNumber(state.inputs['k-potassio']);
   state.outputs.deficit = calculations.calculateDeficitPotassio(potassio, peso);
   state.outputs.faixa = calculations.faixaAlternativa70kg(potassio);
   state.outputs.gravidade = calculations.classifyGravidadeHipocalemia(
     potassio,
-    state.inputs.urgencia === 'sim'
+    state.inputs['k-urgencia'] === 'sim'
   );
 }
 
 function calcularFosfato() {
-  const peso = toNumber(state.inputs.peso);
-  const fosfato = toNumber(state.inputs.fosfato);
-  const potassioPlasma = toNumber(state.inputs['potassio-plasma']);
-  const kclDia = toNumber(state.inputs['kcl-dia']);
+  const peso = toNumber(state.inputs['f-peso']);
+  const fosfato = toNumber(state.inputs['f-fosfato']);
+  const potassioPlasma = toNumber(state.inputs['f-potassio-plasma']);
+  const kclDia = toNumber(state.inputs['f-kcl-dia']);
   state.outputs.fosfato = calculations.calculateFosfatoPotassio(fosfato, peso);
   state.outputs.sal = calculations.selecionarSal(potassioPlasma);
   const kFosfato = state.outputs.fosfato ? state.outputs.fosfato.potassiumMEq : 0;
@@ -340,12 +483,48 @@ function calcularFosfato() {
   };
 }
 
-calcular();
-calcularFosfato();
-return { updateInput: updateInput, calcular: calcular, calcularFosfato: calcularFosfato, state: state };
-})(__mod_index_4);
+function calcularSodio() {
+  const sodio = toNumber(state.inputs['s-sodio']);
+  const alvo = toNumber(state.inputs['s-sodio-alvo']);
+  const peso = toNumber(state.inputs['s-peso']);
+  const idade = toNumber(state.inputs['s-idade']);
+  const sexo = state.inputs['s-sexo'];
+  if (sodio === null || alvo === null || peso === null || !alvo) {
+    state.outputs.agua = null;
+    return;
+  }
+  const tbw = calculations.calculateTBWPercentage(idade || 0, sexo);
+  const deficitLiters = calculations.calculateWaterDeficit(sodio, alvo, peso, tbw);
+  const difference = sodio - alvo;
+  state.outputs.agua = {
+    deficitLiters,
+    deficitML: deficitLiters * 1000,
+    hipernatremia: difference > 0,
+    maxCorrectionRate: calculations.calculateMaxCorrectionRate(difference),
+    correctionPercentage: calculations.calculateCorrectionPercentage(difference),
+    sodio,
+    alvo,
+  };
+}
 
-var __mod_feedback_6 = (function () {
+function calcularCalcio() {
+  const calcioTotal = toNumber(state.inputs['c-calcio-total']);
+  const albumina = toNumber(state.inputs['c-albumina']);
+  state.outputs.calcioCorrigido = calculations.calculateCalcioCorrigido(calcioTotal, albumina);
+}
+
+function openTab(tabName) {
+  state.activeTab = tabName;
+}
+
+calcularPotassio();
+calcularFosfato();
+calcularSodio();
+calcularCalcio();
+return { updateInput: updateInput, calcularPotassio: calcularPotassio, calcularFosfato: calcularFosfato, calcularSodio: calcularSodio, calcularCalcio: calcularCalcio, openTab: openTab, state: state };
+})(__mod_index_8);
+
+var __mod_feedback_10 = (function () {
 /**
  * Módulo de feedback clínico compartilhado
  * Renderiza um link de feedback no fim de cada ferramenta,
@@ -418,9 +597,9 @@ function renderFeedback(toolName) {
 return { renderFeedback: renderFeedback, collectInputs: collectInputs, buildFeedbackBody: buildFeedbackBody, truncateBody: truncateBody, ISSUE_URL: ISSUE_URL, DISCUSSIONS_URL: DISCUSSIONS_URL, CONTACT_EMAIL: CONTACT_EMAIL };
 })();
 
-var __mod_ui_7 = (function (state, updateInput, calcular, calcularFosfato, calculations, renderFeedback) {
+var __mod_ui_11 = (function (state, updateInput, openTab, calcularPotassio, calcularFosfato, calcularSodio, calcularCalcio, calculations, renderFeedback) {
 /**
- * Manipulação de DOM e eventos para a calculadora de reposição de potássio
+ * Manipulação de DOM e eventos para a ferramenta de distúrbios hidroeletrolíticos
  * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
  */
 
@@ -432,35 +611,90 @@ function updateDOM() {
     const element = document.getElementById(id);
     if (element) element.value = value;
   }
-  document.getElementById('deficit-result').innerHTML =
+
+  document.querySelectorAll('.tab-button').forEach((button) => {
+    const tabName = button.getAttribute('data-tab');
+    if (tabName === state.activeTab) {
+      button.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    } else {
+      button.classList.remove('active');
+      document.getElementById(tabName).classList.remove('active');
+    }
+  });
+
+  // Potássio
+  document.getElementById('k-deficit-result').innerHTML =
     calculations.formatDeficitPotassioResult(state.outputs.deficit);
   const faixa = state.outputs.faixa;
-  document.getElementById('faixa-result').textContent = faixa
+  document.getElementById('k-faixa-result').textContent = faixa
     ? `Faixa alternativa de estimativa (adulto de 70 kg): ${faixa.min}–${faixa.max} mEq.`
     : '';
-  document.getElementById('gravidade-result').innerHTML =
+  document.getElementById('k-gravidade-result').innerHTML =
     calculations.formatGravidadeResult(state.outputs.gravidade);
-  document.getElementById('limites-result').textContent =
-    calculations.formatLimitesSeguranca(parseFloat(state.inputs.peso));
-  document.getElementById('fosfato-result').innerHTML =
+  document.getElementById('k-limites-result').textContent =
+    calculations.formatLimitesSeguranca(toNumber(state.inputs['k-peso']));
+
+  // Fosfato
+  document.getElementById('f-fosfato-result').innerHTML =
     calculations.formatFosfatoResult(state.outputs.fosfato);
   const sal = state.outputs.sal;
-  document.getElementById('sal-result').textContent = sal
-    ? `Sal selecionado para K plasmático informado: ${sal} (fosfato de potássio se K < 4 mEq/L; fosfato de sódio se K ≥ 4 mEq/L).`
+  document.getElementById('f-sal-result').textContent = sal
+    ? `Sal selecionado para o K plasmático informado: ${sal} (fosfato de potássio se K < 4 mEq/L; fosfato de sódio se K ≥ 4 mEq/L).`
     : 'Informe o K plasmático para selecionar o sal.';
   const aporte = state.outputs.aporteTotal;
-  document.getElementById('aporte-result').textContent = aporte
+  document.getElementById('f-aporte-result').textContent = aporte
     ? `Aporte total de K do dia (KCl + K do fosfato): ${Math.round(aporte.total)} mEq. Limite de velocidade periférico ajustado ao peso: ${aporte.limite ? aporte.limite.toFixed(0) : '?'} mEq/h.`
     : '';
+
+  // Sódio
+  const agua = state.outputs.agua;
+  const sResult = document.getElementById('s-result');
+  if (!agua) {
+    sResult.innerHTML = 'Informe sódio atual, alvo e peso válidos.';
+  } else {
+    const litros = Math.round(agua.deficitLiters * 100) / 100;
+    const mL = Math.round(agua.deficitML);
+    if (agua.hipernatremia) {
+      sResult.innerHTML =
+        `Déficit de água livre: <strong>${litros} L (${mL} mL)</strong> (hipernatremia — Na⁺ ${agua.sodio} > ${agua.alvo}). ` +
+        `Volume a repor: ${Math.abs(mL)} mL de água livre (solução glicosada 5%). ⚠️ Correção máxima: reduzir até ${agua.maxCorrectionRate} mEq/L nas primeiras 24 h (${agua.correctionPercentage.toFixed(1)}% do excesso total).`;
+    } else if (agua.sodio < agua.alvo) {
+      sResult.innerHTML =
+        `Excesso de água livre: <strong>hiponatremia (Na⁺ ${agua.sodio} < ${agua.alvo})</strong>. ` +
+        `⚠️ Correção máxima: até ${agua.maxCorrectionRate} mEq/L nas primeiras 24 h (${agua.correctionPercentage.toFixed(1)}% do déficit total).`;
+    } else {
+      sResult.innerHTML = `Sódio dentro do alvo (Na⁺ = ${agua.sodio} mEq/L). Nenhum déficit.`;
+    }
+  }
+
+  // Cálcio
+  document.getElementById('c-result').innerHTML =
+    calculations.formatCalcioCorrigidoResult(
+      toNumber(state.inputs['c-calcio-total']),
+      toNumber(state.inputs['c-albumina'])
+    );
 }
 
 const actions = {
-  calcular: () => {
-    calcular();
+  openTab: (e) => {
+    openTab(e.currentTarget.getAttribute('data-tab'));
+    updateDOM();
+  },
+  calcularPotassio: () => {
+    calcularPotassio();
     updateDOM();
   },
   calcularFosfato: () => {
     calcularFosfato();
+    updateDOM();
+  },
+  calcularSodio: () => {
+    calcularSodio();
+    updateDOM();
+  },
+  calcularCalcio: () => {
+    calcularCalcio();
     updateDOM();
   },
 };
@@ -468,7 +702,7 @@ const actions = {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderFeedback('Reposição de potássio e fosfato');
+  renderFeedback('Distúrbios hidroeletrolíticos');
   document.querySelectorAll('[data-action]').forEach((el) => {
     const action = el.getAttribute('data-action');
     if (actions[action]) {
@@ -481,21 +715,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('input, select').forEach((input) => {
     const id = input.id;
     if (id) {
-      input.addEventListener('input', () => {
+      const recalc = () => {
         updateInput(id, input.value);
-        calcular();
+        calcularPotassio();
         calcularFosfato();
+        calcularSodio();
+        calcularCalcio();
         updateDOM();
-      });
-      input.addEventListener('change', () => {
-        updateInput(id, input.value);
-        calcular();
-        calcularFosfato();
-        updateDOM();
-      });
+      };
+      input.addEventListener('input', recalc);
+      input.addEventListener('change', recalc);
     }
   });
   updateDOM();
 });
 return { actions: actions };
-})(__mod_state_5.state, __mod_state_5.updateInput, __mod_state_5.calcular, __mod_state_5.calcularFosfato, __mod_index_4, __mod_feedback_6.renderFeedback);
+})(__mod_state_9.state, __mod_state_9.updateInput, __mod_state_9.openTab, __mod_state_9.calcularPotassio, __mod_state_9.calcularFosfato, __mod_state_9.calcularSodio, __mod_state_9.calcularCalcio, __mod_index_8, __mod_feedback_10.renderFeedback);
