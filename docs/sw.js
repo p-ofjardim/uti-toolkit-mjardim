@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uti-toolkit-gh-pages-v4';
+const CACHE_NAME = 'uti-toolkit-gh-pages-v5';
 const BASE = '/uti-toolkit-mjardim/';
 
 const ASSETS = [
@@ -12,6 +12,8 @@ const ASSETS = [
   BASE + 'tools/infusao.html',
   BASE + 'tools/agua-livre.html',
   BASE + 'tools/evolucao.html',
+  BASE + 'tools/reposicao-potassio.html',
+  BASE + 'tools/calcio-corrigido.html',
 ];
 
 self.addEventListener('install', (e) => {

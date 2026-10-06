@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Reposição de Potássio (KCl) e Fosfato</title>
+    
+<style>/* ===== Shared Styles for UTI Toolkit ===== */
+/* Common styles used across all tools */
+
+/* Base Styles */
+body {
+    padding-bottom: 80px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* Typography */
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+h2 {
+    color: #34495e;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    font-size: 16px;
+}
+
+/* Container */
+.container {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+input[type="number"],
+input[type="text"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Buttons */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button.success {
+    background-color: #2ecc71;
+}
+
+button.success:hover {
+    background-color: #27ae60;
+}
+
+button.secondary {
+    background-color: #95a5a6;
+}
+
+button.secondary:hover {
+    background-color: #7f8c8d;
+}
+
+button.copy-btn {
+    background-color: #2ecc71;
+}
+
+button.copy-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Layout */
+.row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Sections and Cards */
+.section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.calc-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.calc-card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+/* Results */
+.result {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e8f4fc;
+    border-radius: 6px;
+    border-left: 5px solid #3498db;
+    display: none;
+}
+
+.result h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.result-item {
+    margin: 10px 0;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+}
+
+.result-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.result-label {
+    font-weight: 600;
+    color: #7f8c8d;
+}
+
+.result-container {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.result-text {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: white;
+    resize: vertical;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-button {
+    padding: 12px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #2980b9;
+}
+
+.tab-button.active {
+    background-color: #2c3e50;
+}
+
+.tab {
+    display: none;
+    padding: 20px;
+    background: white;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab.active {
+    display: block;
+}
+
+/* Utility Classes */
+.formula {
+    font-family: monospace;
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 10px;
+    background: #ecf0f1;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.note {
+    font-size: 12px;
+    color: #7f8c8d;
+    font-style: italic;
+    margin-top: 5px;
+}
+
+.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 12px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.warning::before {
+    content: "\26a0\fe0f ";
+}
+
+.explanation {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.med-info {
+    background-color: #e3f2fd;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-size: 13px;
+    display: none;
+}
+
+.medication-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fefefe;
+}
+
+.medication-name {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.medication-info {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+.dose-range {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.dose-range input {
+    width: 60px;
+}
+
+.dose-range span {
+    font-size: 14px;
+    color: #555;
+}
+
+.reference {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Checklist */
+.checklist {
+    margin: 15px 0;
+}
+
+.checklist-item {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.checklist-result {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.checklist-result.ok {
+    background: #d4edda;
+    color: #155724;
+}
+
+.checklist-result.not-ok {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.header-controls .form-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Inputs Row */
+.inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+    .row {
+        grid-template-columns: 1fr;
+    }
+    .inputs {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Feedback clínico (link de reporte dentro de cada ferramenta) */
+.feedback-box {
+    margin-top: 30px;
+    padding: 16px;
+    background: #eef5fb;
+    border: 1px solid #bcd6ea;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.feedback-box p {
+    margin: 0 0 10px;
+    color: #2c3e50;
+}
+
+.feedback-link {
+    display: inline-block;
+    margin: 4px 8px 4px 0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--accent, #3498db);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.feedback-mail { background: #7f8c8d; }
+.feedback-discussion { background: #2c7a4b; }
+</style></head>
+<body>
+    <div class="container">
+        <h1>🩸 Reposição de Potássio e Fosfato</h1>
+
+        <div class="form-group">
+            <label for="peso">Peso para cálculo (kg) — manual:</label>
+            <input type="number" id="peso" data-field="peso" step="0.1" min="1" max="300" value="70">
+            <p class="note">Peso habitual; não há fórmula validada de ajuste para obesidade — use o peso habitual com cautela em obesos.</p>
+        </div>
+
+        <div class="calc-card">
+            <h3>💧 Déficit total e dose diária de KCl</h3>
+            <div class="inputs">
+                <div class="input-group">
+                    <label for="potassio">Potássio sérico (mEq/L):</label>
+                    <input type="number" id="potassio" data-field="potassio" step="0.1" min="0" max="10" value="3.0">
+                </div>
+                <div class="input-group">
+                    <label for="urgencia">Urgência (arritmia, ECG alterado, fraqueza):</label>
+                    <select id="urgencia" data-field="urgencia">
+                        <option value="nao">Não</option>
+                        <option value="sim">Sim</option>
+                    </select>
+                </div>
+            </div>
+            <button data-action="calcular">Calcular</button>
+            <div id="deficit-result" class="result"></div>
+            <div id="faixa-result" class="result-text"></div>
+            <div id="gravidade-result" class="result"></div>
+            <div id="limites-result" class="result-text"></div>
+            <div class="warning">
+                <strong>Limites de segurança IV:</strong> 10–20 mEq/h pela periferia (0,5 mEq/kg/h, até máximo de 10–20 mEq/h); concentração máxima 80 mEq/L na periferia; até 40 mEq/h apenas com via central e monitorização contínua em situações excepcionais; nunca em bolus fora da urgência; cautela na insuficiência renal; verificar magnesemia na reposição refratária.
+            </div>
+            <div class="warning">
+                <strong>CAD:</strong> KCl 10–30 mEq/L/h para manter K entre 4 e 5 mEq/L; reter insulina se K &lt; 3,3 mEq/L; déficit médio de 3 a 5 mEq/kg.
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <h3>🧪 Reposição de fosfato de potássio (KH₂PO₄)</h3>
+            <div class="inputs">
+                <div class="input-group">
+                    <label for="fosfato">Fosfatemia (mg/dL):</label>
+                    <input type="number" id="fosfato" data-field="fosfato" step="0.1" min="0" max="10" value="1.2">
+                </div>
+                <div class="input-group">
+                    <label for="potassio-plasma">K plasmático para seleção do sal (mEq/L):</label>
+                    <input type="number" id="potassio-plasma" data-field="potassio-plasma" step="0.1" min="0" max="10" value="3.1">
+                </div>
+                <div class="input-group">
+                    <label for="kcl-dia">KCl já prescrito no dia (mEq):</label>
+                    <input type="number" id="kcl-dia" data-field="kcl-dia" step="1" min="0" max="500" value="0">
+                </div>
+            </div>
+            <button data-action="calcularFosfato">Calcular fosfato</button>
+            <div id="fosfato-result" class="result"></div>
+            <div id="sal-result" class="result-text"></div>
+            <div id="aporte-result" class="result-text"></div>
+            <div class="warning">
+                <strong>Indicação restrita:</strong> fosfato &lt; 1,0 mg/dL ou hipofosfatemia sintomática (disfunção cardíaca, insuficiência respiratória, fraqueza, hipóxia); sem reposição de rotina na CAD pelo risco de hipocalcemia; monitorar calcemia.
+            </div>
+        </div>
+
+        <div class="explanation">
+            <h3>📊 Explicação:</h3>
+            <p><strong>Déficit ajustado ao peso</strong> (Marino, tabela para adulto de 70 kg — K 3,0 → 175 mEq; 2,5 → 350; 2,0 → 470; 1,5 → 700; 1,0 → 875):</p>
+            <p class="formula">Déficit (mEq) = valor da tabela × (peso ÷ 70)</p>
+            <p><strong>Dose por gravidade</strong> (DynaMed): leve (3,0–3,5) 60–80 mEq/dia VO; moderada (2,5–3,0) 40–120 mEq/dia VO a cada 3–4 h; grave (&lt; 2,5) KCl 20–40 mEq/L IV a 10 mEq/h; urgência 5–10 mEq IV em 15–20 min.</p>
+            <p><strong>Fosfato de potássio</strong> (Tabela 38.5 de Marino; solução com 3 mmol de PO₄/mL e 4,3 mEq de K/mL):</p>
+            <p class="formula">Volume (mL) = dose (mmol) ÷ 3; K concomitante (mEq) = volume × 4,3; infusão em 6 h</p>
+            <p>O K do fosfato integra o aporte total de K do dia (KCl + K do fosfato) e deve respeitar os limites de velocidade.</p>
+        </div>
+
+        <div class="reference">
+            Referência: Marino PL. The ICU Book — cap. Potassium e cap. Calcium and Phosphorus; DynaMed. Hypokalemia in Adults; Diretriz da Sociedade Brasileira de Diabetes — CAD, ed. 2025
+        </div>
+    </div>
+<script>
+var __mod_deficit_potassio_0 = (function () {
+/**
+ * Déficit total de potássio ajustado ao peso (Marino PL, The ICU Book, cap. Potassium).
+ * Tabela de referência para adulto de 70 kg:
+ * K 3,0 → 175 mEq; K 2,5 → 350; K 2,0 → 470; K 1,5 → 700; K 1,0 → 875.
+ * Déficit (mEq) = valor da tabela × (peso ÷ 70).
+ */
+const DEFICIT_TABLE_70KG = [
+  { potassium: 3.0, deficit: 175 },
+  { potassium: 2.5, deficit: 350 },
+  { potassium: 2.0, deficit: 470 },
+  { potassium: 1.5, deficit: 700 },
+  { potassium: 1.0, deficit: 875 },
+];
+
+const REFERENCE_WEIGHT_KG = 70;
+
+/**
+ * Retorna o valor-base do déficit da tabela de 70 kg para o potássio sérico dado,
+ * interpolando linearmente entre os pontos da tabela (inclusive extrapolação).
+ * Retorna null para entradas inválidas (não numéricas ou K <= 0).
+ */
+function baseDeficit70kg(potassium) {
+  if (typeof potassium !== 'number' || !Number.isFinite(potassium) || potassium <= 0) {
+    return null;
+  }
+  if (potassium >= 3.0) return 175 - (potassium - 3.0) * 150;
+  const table = DEFICIT_TABLE_70KG;
+  for (let i = 0; i < table.length - 1; i++) {
+    const hi = table[i];
+    const lo = table[i + 1];
+    if (potassium <= hi.potassium && potassium >= lo.potassium) {
+      const fraction = (hi.potassium - potassium) / (hi.potassium - lo.potassium);
+      return hi.deficit + fraction * (lo.deficit - hi.deficit);
+    }
+  }
+  const lowest = table[table.length - 1];
+  const fraction = (lowest.potassium - potassium) / 0.5;
+  return lowest.deficit + fraction * (lowest.deficit - 700 + 175);
+}
+
+/**
+ * Calcula o déficit total de potássio ajustado ao peso (mEq).
+ * Retorna null para entradas inválidas (peso <= 0).
+ */
+function calculateDeficitPotassio(potassium, weightKg) {
+  const base = baseDeficit70kg(potassium);
+  if (base === null) return null;
+  if (typeof weightKg !== 'number' || !Number.isFinite(weightKg) || weightKg <= 0) {
+    return null;
+  }
+  if (potassium >= 4.0) return 0;
+  return base * (weightKg / REFERENCE_WEIGHT_KG);
+}
+
+/**
+ * Faixa alternativa de estimativa do déficit para adulto de 70 kg
+ * (mesma referência): K 3,0–3,5 → 100–200 mEq; K 2,5–2,9 → 200–400 mEq;
+ * K 2,0–2,4 → 400–1000 mEq. Retorna null fora das faixas ou entradas inválidas.
+ */
+function faixaAlternativa70kg(potassium) {
+  if (typeof potassium !== 'number' || !Number.isFinite(potassium)) return null;
+  if (potassium >= 3.0 && potassium <= 3.5) return { min: 100, max: 200 };
+  if (potassium >= 2.5 && potassium < 3.0) return { min: 200, max: 400 };
+  if (potassium >= 2.0 && potassium < 2.5) return { min: 400, max: 1000 };
+  return null;
+}
+
+function formatDeficitPotassioResult(deficit) {
+  if (deficit === null || deficit === undefined) {
+    return 'Informe potássio sérico (mEq/L) e peso (kg) válidos.';
+  }
+  const rounded = Math.round(deficit);
+  if (deficit <= 0) return 'Déficit estimado: desprezível (K sérico ≥ 4,0 mEq/L).';
+  return `Déficit estimado: <strong>${rounded} mEq</strong> de potássio para repor até ~4,0 mEq/L.`;
+}
+return { baseDeficit70kg: baseDeficit70kg, calculateDeficitPotassio: calculateDeficitPotassio, faixaAlternativa70kg: faixaAlternativa70kg, formatDeficitPotassioResult: formatDeficitPotassioResult };
+})();
+
+var __mod_gravidade_hipocalemia_1 = (function () {
+/**
+ * Classificação da gravidade da hipocalemia e conduta de reposição de KCl
+ * (DynaMed, Hypokalemia in Adults; Marino PL, The ICU Book, cap. Potassium).
+ *
+ * Leve: K 3,0–3,5 → 60–80 mEq/dia VO em doses divididas (75 mEq/dia IV se
+ * intolerância oral).
+ * Moderada: K 2,5–3,0 → 40–120 mEq/dia VO a cada 3–4 h em 2–4 doses.
+ * Grave: K < 2,5 → KCl 20–40 mEq/L IV a 10 mEq/h com monitorização;
+ * reavaliar K a cada 2–4 h.
+ * Urgência (arritmia, ECG alterado, fraqueza muscular): 5–10 mEq IV em
+ * 15–20 min; reavaliar após 40–60 mEq.
+ */
+function classifyGravidadeHipocalemia(potassium, urgente) {
+  if (typeof potassium !== 'number' || !Number.isFinite(potassium)) return null;
+  if (potassium >= 4.0) {
+    return {
+      gravidade: 'normal',
+      rotulo: 'Normocalemia',
+      conduta: 'Sem indicação de reposição.',
+    };
+  }
+  if (urgente) {
+    return {
+      gravidade: 'urgencia',
+      rotulo: 'Urgência (arritmia, ECG alterado ou fraqueza muscular)',
+      conduta: 'KCl 5–10 mEq IV em 15–20 min; reavaliar após 40–60 mEq.',
+    };
+  }
+  if (potassium >= 3.0 && potassium < 4.0) {
+    return {
+      gravidade: 'leve',
+      rotulo: 'Hipocalemia leve (K 3,0–3,5 mEq/L)',
+      conduta: '60–80 mEq/dia VO em doses divididas (75 mEq/dia IV se intolerância oral).',
+    };
+  }
+  if (potassium >= 2.5 && potassium < 3.0) {
+    return {
+      gravidade: 'moderada',
+      rotulo: 'Hipocalemia moderada (K 2,5–3,0 mEq/L)',
+      conduta: '40–120 mEq/dia VO a cada 3–4 h em 2–4 doses.',
+    };
+  }
+  return {
+    gravidade: 'grave',
+    rotulo: 'Hipocalemia grave (K < 2,5 mEq/L)',
+    conduta: 'KCl 20–40 mEq/L IV a 10 mEq/h com monitorização; reavaliar K a cada 2–4 h.',
+  };
+}
+
+function formatGravidadeResult(classification) {
+  if (!classification) return 'Informe o potássio sérico (mEq/L).';
+  return `<strong>${classification.rotulo}</strong><br>${classification.conduta}`;
+}
+return { classifyGravidadeHipocalemia: classifyGravidadeHipocalemia, formatGravidadeResult: formatGravidadeResult };
+})();
+
+var __mod_limites_infusao_k_2 = (function () {
+/**
+ * Dose diária de KCl por gravidade da hipocalemia (DynaMed) e limites de
+ * segurança da infusão IV (Marino PL, The ICU Book, cap. Potassium).
+ *
+ * Limites: 10–20 mEq/h pela periferia (0,5 mEq/kg/h até máximo de 10–20 mEq/h);
+ * concentração máxima de 80 mEq/L na periferia; até 40 mEq/h apenas com via
+ * central e monitorização contínua em situações excepcionais; nunca em bolus
+ * fora da urgência. Na CAD: KCl 10–30 mEq/L/h para manter K entre 4 e 5 mEq/L;
+ * reter insulina se K < 3,3 mEq/L; déficit médio de 3 a 5 mEq/kg.
+ */
+function limiteVelocidadePeriferica(weightKg) {
+  if (typeof weightKg !== 'number' || !Number.isFinite(weightKg) || weightKg <= 0) {
+    return null;
+  }
+  return { min: 10, max: 20, porPeso: 0.5 * weightKg };
+}
+
+function limiteVelocidadePorPeso(weightKg) {
+  const periferica = limiteVelocidadePeriferica(weightKg);
+  if (!periferica) return null;
+  return Math.min(periferica.porPeso, 20);
+}
+
+/**
+ * Valida a soma do aporte total de K do dia (KCl do dia + K do fosfato de
+ * potássio) contra o limite de velocidade de infusão ajustado ao peso.
+ * Retorna mensagem de texto pronta.
+ */
+function validarAporteTotalK(aporteTotalMEqDia, velocidadeMEqH, weightKg) {
+  if (
+    typeof aporteTotalMEqDia !== 'number' || !Number.isFinite(aporteTotalMEqDia) ||
+    typeof velocidadeMEqH !== 'number' || !Number.isFinite(velocidadeMEqH)
+  ) {
+    return 'Informe aporte total e velocidade de infusão válidos.';
+  }
+  const limite = limiteVelocidadePorPeso(weightKg);
+  if (limite === null) return 'Informe um peso válido para validar os limites.';
+  const maxDia = limite * 24;
+  let texto = `Limite pela periferia: ${limite.toFixed(0)} mEq/h e ~${Math.round(maxDia)} mEq em 24 h`;
+  if (velocidadeMEqH > 20) {
+    texto += '. ⚠️ Velocidade acima de 20 mEq/h exige via central e monitorização contínua.';
+  } else if (velocidadeMEqH > limite) {
+    texto += '. ⚠️ Velocidade acima do limite periférico ajustado ao peso.';
+  }
+  if (aporteTotalMEqDia > maxDia) {
+    texto += ' ⚠️ Aporte total do dia excede o máximo seguro em infusão contínua.';
+  }
+  return texto;
+}
+
+function formatLimitesSeguranca(weightKg) {
+  const limite = limiteVelocidadePorPeso(weightKg);
+  if (limite === null) {
+    return 'Velocidade periférica: 10–20 mEq/h (0,5 mEq/kg/h).';
+  }
+  return `Velocidade periférica: 10–20 mEq/h (0,5 mEq/kg/h → ${limite.toFixed(0)} mEq/h neste peso). Concentração máxima periférica: 80 mEq/L. Via central excepcional: até 40 mEq/h com monitorização contínua. Nunca bolus fora da urgência; cautela na insuficiência renal; verificar magnesemia na reposição refratária.`;
+}
+return { limiteVelocidadePeriferica: limiteVelocidadePeriferica, limiteVelocidadePorPeso: limiteVelocidadePorPeso, validarAporteTotalK: validarAporteTotalK, formatLimitesSeguranca: formatLimitesSeguranca };
+})();
+
+var __mod_fosfato_potassio_3 = (function () {
+/**
+ * Reposição de fosfato de potássio (KH₂PO₄) — Tabela 38.5 de Marino,
+ * The ICU Book, cap. Calcium and Phosphorus.
+ * Solução com 3 mmol de PO₄/mL e 4,3 mEq de K/mL.
+ *
+ * Dose (mmol) por fosfatemia (mg/dL) e faixa de peso:
+ *   < 1,0 → 30/40/50 mmol (40–60 / 61–80 / 81–120 kg)
+ *   1,0–1,7 → 20/30/40 mmol
+ *   1,8–2,5 → 10/15/20 mmol
+ * Volume (mL) = dose ÷ 3; K concomitante (mEq) = volume × 4,3;
+ * tempo de infusão: 6 horas.
+ * Seleção do sal: fosfato de potássio se K plasmático < 4 mEq/L;
+ * fosfato de sódio se K ≥ 4 mEq/L.
+ */
+const PHOSPHATE_MMOL_PER_ML = 3;
+const POTASSIUM_MEQ_PER_ML = 4.3;
+const INFUSION_HOURS = 6;
+
+function faixaPeso(weightKg) {
+  if (typeof weightKg !== 'number' || !Number.isFinite(weightKg) || weightKg <= 0) {
+    return null;
+  }
+  if (weightKg >= 40 && weightKg <= 60) return '40-60';
+  if (weightKg > 60 && weightKg <= 80) return '61-80';
+  if (weightKg > 80 && weightKg <= 120) return '81-120';
+  return 'fora';
+}
+
+function doseTabela(phosphorus, faixa) {
+  if (phosphorus < 1.0) return { '40-60': 30, '61-80': 40, '81-120': 50 }[faixa];
+  if (phosphorus >= 1.0 && phosphorus <= 1.7) {
+    return { '40-60': 20, '61-80': 30, '81-120': 40 }[faixa];
+  }
+  if (phosphorus >= 1.8 && phosphorus <= 2.5) {
+    return { '40-60': 10, '61-80': 15, '81-120': 20 }[faixa];
+  }
+  return null;
+}
+
+function selecionarSal(potassium) {
+  if (typeof potassium !== 'number' || !Number.isFinite(potassium)) return null;
+  return potassium < 4
+    ? 'fosfato de potássio'
+    : 'fosfato de sódio';
+}
+
+function calculateFosfatoPotassio(phosphorus, weightKg) {
+  if (typeof phosphorus !== 'number' || !Number.isFinite(phosphorus) || phosphorus < 0) {
+    return null;
+  }
+  const faixa = faixaPeso(weightKg);
+  if (!faixa || faixa === 'fora') return null;
+  const dose = doseTabela(phosphorus, faixa);
+  if (dose == null) return null;
+  const volumeMl = dose / PHOSPHATE_MMOL_PER_ML;
+  const potassiumMEq = volumeMl * POTASSIUM_MEQ_PER_ML;
+  return {
+    doseMmol: dose,
+    volumeMl: Math.round(volumeMl * 10) / 10,
+    potassiumMEq: Math.round(potassiumMEq * 10) / 10,
+    infusionHours: INFUSION_HOURS,
+  };
+}
+
+function formatFosfatoResult(result) {
+  if (!result) {
+    return 'Fosfato indicado apenas se < 1,0 mg/dL ou hipofosfatemia sintomática. Tabela válida para 40–120 kg e fosfatemia até 2,5 mg/dL.';
+  }
+  return `Dose: <strong>${result.doseMmol} mmol</strong> de PO₄ → ${result.volumeMl} mL da solução, ` +
+    `com <strong>${result.potassiumMEq} mEq de K</strong> concomitante, em ${result.infusionHours} h.`;
+}
+return { selecionarSal: selecionarSal, calculateFosfatoPotassio: calculateFosfatoPotassio, formatFosfatoResult: formatFosfatoResult };
+})();
+
+var __mod_index_4 = (function (calculateDeficitPotassio, faixaAlternativa70kg, formatDeficitPotassioResult, classifyGravidadeHipocalemia, formatGravidadeResult, limiteVelocidadePorPeso, validarAporteTotalK, formatLimitesSeguranca, selecionarSal, calculateFosfatoPotassio, formatFosfatoResult) {
+// Exporta todas as funções de cálculo de reposição de potássio
+return { calculateDeficitPotassio: calculateDeficitPotassio, faixaAlternativa70kg: faixaAlternativa70kg, formatDeficitPotassioResult: formatDeficitPotassioResult, classifyGravidadeHipocalemia: classifyGravidadeHipocalemia, formatGravidadeResult: formatGravidadeResult, limiteVelocidadePorPeso: limiteVelocidadePorPeso, validarAporteTotalK: validarAporteTotalK, formatLimitesSeguranca: formatLimitesSeguranca, selecionarSal: selecionarSal, calculateFosfatoPotassio: calculateFosfatoPotassio, formatFosfatoResult: formatFosfatoResult };
+})(__mod_deficit_potassio_0.calculateDeficitPotassio, __mod_deficit_potassio_0.faixaAlternativa70kg, __mod_deficit_potassio_0.formatDeficitPotassioResult, __mod_gravidade_hipocalemia_1.classifyGravidadeHipocalemia, __mod_gravidade_hipocalemia_1.formatGravidadeResult, __mod_limites_infusao_k_2.limiteVelocidadePorPeso, __mod_limites_infusao_k_2.validarAporteTotalK, __mod_limites_infusao_k_2.formatLimitesSeguranca, __mod_fosfato_potassio_3.selecionarSal, __mod_fosfato_potassio_3.calculateFosfatoPotassio, __mod_fosfato_potassio_3.formatFosfatoResult);
+
+var __mod_state_5 = (function (calculations) {
+/**
+ * Gerenciador de estado para a calculadora de reposição de potássio
+ * Mantém inputs e outputs sincronizados e recalcula automaticamente
+ */
+
+
+const state = {
+  inputs: {
+    peso: 70,
+    potassio: 3.0,
+    urgencia: 'nao',
+    fosfato: 1.2,
+    'potassio-plasma': 3.1,
+    'kcl-dia': 0,
+  },
+  outputs: {
+    deficit: null,
+    faixa: null,
+    gravidade: null,
+    fosfato: null,
+    sal: null,
+    aporteTotal: null,
+  },
+};
+
+function updateInput(name, value) {
+  state.inputs[name] = value;
+}
+
+function toNumber(value) {
+  const parsed = typeof value === 'number' ? value : parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function calcular() {
+  const peso = toNumber(state.inputs.peso);
+  const potassio = toNumber(state.inputs.potassio);
+  state.outputs.deficit = calculations.calculateDeficitPotassio(potassio, peso);
+  state.outputs.faixa = calculations.faixaAlternativa70kg(potassio);
+  state.outputs.gravidade = calculations.classifyGravidadeHipocalemia(
+    potassio,
+    state.inputs.urgencia === 'sim'
+  );
+}
+
+function calcularFosfato() {
+  const peso = toNumber(state.inputs.peso);
+  const fosfato = toNumber(state.inputs.fosfato);
+  const potassioPlasma = toNumber(state.inputs['potassio-plasma']);
+  const kclDia = toNumber(state.inputs['kcl-dia']);
+  state.outputs.fosfato = calculations.calculateFosfatoPotassio(fosfato, peso);
+  state.outputs.sal = calculations.selecionarSal(potassioPlasma);
+  const kFosfato = state.outputs.fosfato ? state.outputs.fosfato.potassiumMEq : 0;
+  state.outputs.aporteTotal = {
+    total: (kclDia || 0) + kFosfato,
+    limite: calculations.limiteVelocidadePorPeso(peso),
+  };
+}
+
+calcular();
+calcularFosfato();
+return { updateInput: updateInput, calcular: calcular, calcularFosfato: calcularFosfato, state: state };
+})(__mod_index_4);
+
+var __mod_feedback_6 = (function () {
+/**
+ * Módulo de feedback clínico compartilhado
+ * Renderiza um link de feedback no fim de cada ferramenta,
+ * com contexto pré-preenchido (valores de entrada), sem exigir conta GitHub.
+ */
+
+var ISSUE_URL = 'https://github.com/p-ofjardim/uti-toolkit-mjardim/issues/new?template=bug-report.yml';
+var DISCUSSIONS_URL = 'https://github.com/p-ofjardim/uti-toolkit-mjardim/discussions';
+var CONTACT_EMAIL = 'p-ofjardim@users.noreply.github.com';
+var BODY_MAX_CHARS = 2000;
+
+function collectInputs() {
+  var inputs = document.querySelectorAll('input, select');
+  var lines = [];
+  inputs.forEach(function (el) {
+    var label = null;
+    if (el.id) {
+      var labelEl = document.querySelector('label[for="' + el.id + '"]');
+      if (labelEl) label = labelEl.textContent.trim();
+    }
+    if (!label) label = el.name || el.id || 'campo';
+    var value = el.type === 'checkbox' || el.type === 'radio' ? (el.checked ? el.value : '') : el.value;
+    if (value === '' || value == null) return;
+    lines.push('- ' + label + ': ' + value);
+  });
+  return lines.join('\n');
+}
+
+function buildFeedbackBody(toolName) {
+  var lines = [
+    'Ferramenta: ' + toolName,
+    '',
+    'Valores usados:',
+    collectInputs(),
+    '',
+    'O que eu esperava:',
+    '',
+    'O que apareceu:',
+  ];
+  return lines.join('\n');
+}
+
+function truncateBody(text) {
+  if (text.length <= BODY_MAX_CHARS) return text;
+  return text.slice(0, BODY_MAX_CHARS) + '\n(…texto truncado por limite de tamanho)';
+}
+
+function renderFeedback(toolName) {
+  var container = document.querySelector('.container');
+  if (!container || document.getElementById('clinical-feedback')) return;
+
+  var body = encodeURIComponent(truncateBody(buildFeedbackBody(toolName)));
+  var issueUrl = ISSUE_URL + '&title=' + encodeURIComponent('[' + toolName + '] Resultado parece errado') +
+    '&body=' + body;
+  var mailto = 'mailto:' + CONTACT_EMAIL +
+    '?subject=' + encodeURIComponent('Feedback UTI Toolkit – ' + toolName) +
+    '&body=' + body;
+
+  var box = document.createElement('div');
+  box.id = 'clinical-feedback';
+  box.className = 'feedback-box';
+  box.innerHTML =
+    '<p>Esta estimativa parece errada? Avise-nos.</p>' +
+    '<a class="feedback-link feedback-issue" href="' + issueUrl + '" target="_blank" rel="noopener">Reportar problema (GitHub)</a>' +
+    '<a class="feedback-link feedback-mail" href="' + mailto + '">Reportar por e-mail</a>' +
+    '<a class="feedback-link feedback-discussion" href="' + DISCUSSIONS_URL + '" target="_blank" rel="noopener">Tirar dúvida nas Discussions</a>';
+
+  container.appendChild(box);
+}
+return { renderFeedback: renderFeedback, collectInputs: collectInputs, buildFeedbackBody: buildFeedbackBody, truncateBody: truncateBody, ISSUE_URL: ISSUE_URL, DISCUSSIONS_URL: DISCUSSIONS_URL, CONTACT_EMAIL: CONTACT_EMAIL };
+})();
+
+var __mod_ui_7 = (function (state, updateInput, calcular, calcularFosfato, calculations, renderFeedback) {
+/**
+ * Manipulação de DOM e eventos para a calculadora de reposição de potássio
+ * Conecta os inputs do usuário ao state e atualiza o DOM com os outputs
+ */
+
+
+
+
+function updateDOM() {
+  for (const [id, value] of Object.entries(state.inputs)) {
+    const element = document.getElementById(id);
+    if (element) element.value = value;
+  }
+  document.getElementById('deficit-result').innerHTML =
+    calculations.formatDeficitPotassioResult(state.outputs.deficit);
+  const faixa = state.outputs.faixa;
+  document.getElementById('faixa-result').textContent = faixa
+    ? `Faixa alternativa de estimativa (adulto de 70 kg): ${faixa.min}–${faixa.max} mEq.`
+    : '';
+  document.getElementById('gravidade-result').innerHTML =
+    calculations.formatGravidadeResult(state.outputs.gravidade);
+  document.getElementById('limites-result').textContent =
+    calculations.formatLimitesSeguranca(parseFloat(state.inputs.peso));
+  document.getElementById('fosfato-result').innerHTML =
+    calculations.formatFosfatoResult(state.outputs.fosfato);
+  const sal = state.outputs.sal;
+  document.getElementById('sal-result').textContent = sal
+    ? `Sal selecionado para K plasmático informado: ${sal} (fosfato de potássio se K < 4 mEq/L; fosfato de sódio se K ≥ 4 mEq/L).`
+    : 'Informe o K plasmático para selecionar o sal.';
+  const aporte = state.outputs.aporteTotal;
+  document.getElementById('aporte-result').textContent = aporte
+    ? `Aporte total de K do dia (KCl + K do fosfato): ${Math.round(aporte.total)} mEq. Limite de velocidade periférico ajustado ao peso: ${aporte.limite ? aporte.limite.toFixed(0) : '?'} mEq/h.`
+    : '';
+}
+
+const actions = {
+  calcular: () => {
+    calcular();
+    updateDOM();
+  },
+  calcularFosfato: () => {
+    calcularFosfato();
+    updateDOM();
+  },
+};
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderFeedback('Reposição de potássio e fosfato');
+  document.querySelectorAll('[data-action]').forEach((el) => {
+    const action = el.getAttribute('data-action');
+    if (actions[action]) {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        actions[action](e);
+      });
+    }
+  });
+  document.querySelectorAll('input, select').forEach((input) => {
+    const id = input.id;
+    if (id) {
+      input.addEventListener('input', () => {
+        updateInput(id, input.value);
+        calcular();
+        calcularFosfato();
+        updateDOM();
+      });
+      input.addEventListener('change', () => {
+        updateInput(id, input.value);
+        calcular();
+        calcularFosfato();
+        updateDOM();
+      });
+    }
+  });
+  updateDOM();
+});
+return { actions: actions };
+})(__mod_state_5.state, __mod_state_5.updateInput, __mod_state_5.calcular, __mod_state_5.calcularFosfato, __mod_index_4, __mod_feedback_6.renderFeedback);
+</script>
+</body>
+</html>

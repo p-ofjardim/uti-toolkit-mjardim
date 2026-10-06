@@ -12,6 +12,8 @@ const ASSETS = [
   BASE + 'tools/infusao.html',
   BASE + 'tools/agua-livre.html',
   BASE + 'tools/evolucao.html',
+  BASE + 'tools/reposicao-potassio.html',
+  BASE + 'tools/calcio-corrigido.html',
 ];
 
 self.addEventListener('install', (e) => {
