@@ -12,7 +12,13 @@
     "test": "node --test",
     "test:watch": "node --watch --test"
   },
-  "keywords": ["uti", "medical", "calculator", "pwa", "firefox-extension"],
+  "keywords": [
+    "uti",
+    "medical",
+    "calculator",
+    "pwa",
+    "firefox-extension"
+  ],
   "author": "MJardim Serviços Médicos",
   "license": "MIT"
 }

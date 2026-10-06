@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uti-toolkit-v8';
+const CACHE_NAME = 'uti-toolkit-v9';
 const BASE = '/';
 
 const ASSETS = [

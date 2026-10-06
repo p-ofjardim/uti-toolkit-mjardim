@@ -606,6 +606,11 @@ var __mod_ui_11 = (function (state, updateInput, openTab, calcularPotassio, calc
 
 
 
+function toNumber(value) {
+  const parsed = typeof value === 'number' ? value : parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 function updateDOM() {
   for (const [id, value] of Object.entries(state.inputs)) {
     const element = document.getElementById(id);
