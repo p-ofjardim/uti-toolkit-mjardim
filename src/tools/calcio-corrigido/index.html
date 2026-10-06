@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Cálcio Corrigido pela Albumina</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🦴 Cálcio Corrigido pela Albumina</h1>
+
+        <form id="calcioForm">
+            <div class="form-group">
+                <label for="calcio-total">Cálcio total (mg/dL):</label>
+                <input type="number" id="calcio-total" data-field="calcio-total" step="0.1" min="0" max="20" value="7.5" required>
+            </div>
+            <div class="form-group">
+                <label for="albumina">Albumina (g/dL):</label>
+                <input type="number" id="albumina" data-field="albumina" step="0.1" min="0" max="10" value="2.5" required>
+            </div>
+            <button type="submit" data-action="calcular">Calcular cálcio corrigido</button>
+        </form>
+
+        <div id="result" class="result">
+            <h3>Resultado:</h3>
+            <div id="calcio-resultado" class="result-value"></div>
+            <p id="calcio-classificacao"></p>
+        </div>
+
+        <div class="warning">
+            <strong>Aviso clínico:</strong> os fatores de correção pela albumina não são confiáveis para diagnóstico de hipo e hipercalcemia em pacientes críticos; o único método confiável é a dosagem do cálcio iônico com eletrodos ion-seletivos (Slomp, Crit Care Med 2003; Byrnes, Am J Surg 2005, citados em The ICU Book, cap. Cálcio e Fósforo). Esta ferramenta é uma estimativa de triagem quando o cálcio iônico não estiver disponível.
+        </div>
+
+        <div class="explanation">
+            <h3>📊 Explicação:</h3>
+            <p>Estima o cálcio corrigido quando a albumina está baixa (sepse, cirrose, pós-operatório):</p>
+            <p class="formula">
+                Ca corrigido (mg/dL) = Ca total (mg/dL) + 0,8 × (4,0 − albumina em g/dL)
+            </p>
+            <p><strong>Classificação:</strong> hipocalcemia &lt; 8,0 mg/dL; hipercalcemia &gt; 11,0 mg/dL (limiar do INCA para hipercalcemia).</p>
+        </div>
+
+        <div class="reference">
+            Referência: Marino PL. The ICU Book, cap. Cálcio e Fósforo; INCA — Cuidados paliativos em oncologia, seção Hipercalcemia
+        </div>
+    </div>
+</body>
+</html>
