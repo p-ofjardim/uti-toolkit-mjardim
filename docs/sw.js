@@ -1,4 +1,4 @@
-const CACHE_NAME = 'uti-toolkit-gh-pages-v9';
+const CACHE_NAME = 'uti-toolkit-gh-pages-v10';
 const BASE = '/uti-toolkit-mjardim/';
 
 const ASSETS = [
