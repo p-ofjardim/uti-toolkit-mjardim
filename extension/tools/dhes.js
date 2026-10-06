@@ -144,10 +144,10 @@ var __mod_limites_infusao_k_2 = (function () {
  * Dose diária de KCl por gravidade da hipocalemia (DynaMed) e limites de
  * segurança da infusão IV (Marino PL, The ICU Book, cap. Potassium).
  *
- * Limites: 10–20 mEq/h pela periferia (0,5 mEq/kg/h até máximo de 10–20 mEq/h);
- * concentração máxima de 80 mEq/L na periferia; até 40 mEq/h apenas com via
- * central e monitorização contínua em situações excepcionais; nunca em bolus
- * fora da urgência. Na CAD: KCl 10–30 mEq/L/h para manter K entre 4 e 5 mEq/L;
+ * Limites: velocidade máxima de 10–20 mEq/h tanto em cateter periférico
+ * quanto central (0,5 mEq/kg/h até máximo de 20 mEq/h); concentração
+ * máxima de 40 mEq/L na periferia e 40 mEq/100 mL na via central; nunca em
+ * bolus fora da urgência. Na CAD: KCl 10–30 mEq/L/h para manter K entre 4 e 5 mEq/L;
  * reter insulina se K < 3,3 mEq/L; déficit médio de 3 a 5 mEq/kg.
  */
 function limiteVelocidadePeriferica(weightKg) {
@@ -180,7 +180,7 @@ function validarAporteTotalK(aporteTotalMEqDia, velocidadeMEqH, weightKg) {
   const maxDia = limite * 24;
   let texto = `Limite pela periferia: ${limite.toFixed(0)} mEq/h e ~${Math.round(maxDia)} mEq em 24 h`;
   if (velocidadeMEqH > 20) {
-    texto += '. ⚠️ Velocidade acima de 20 mEq/h exige via central e monitorização contínua.';
+    texto += '. ⚠️ Velocidade acima de 20 mEq/h não é recomendada nem em cateter central.';
   } else if (velocidadeMEqH > limite) {
     texto += '. ⚠️ Velocidade acima do limite periférico ajustado ao peso.';
   }
@@ -193,9 +193,9 @@ function validarAporteTotalK(aporteTotalMEqDia, velocidadeMEqH, weightKg) {
 function formatLimitesSeguranca(weightKg) {
   const limite = limiteVelocidadePorPeso(weightKg);
   if (limite === null) {
-    return 'Velocidade periférica: 10–20 mEq/h (0,5 mEq/kg/h).';
+    return 'Velocidade máxima: 10–20 mEq/h em cateter periférico ou central (0,5 mEq/kg/h).';
   }
-  return `Velocidade periférica: 10–20 mEq/h (0,5 mEq/kg/h → ${limite.toFixed(0)} mEq/h neste peso). Concentração máxima periférica: 80 mEq/L. Via central excepcional: até 40 mEq/h com monitorização contínua. Nunca bolus fora da urgência; cautela na insuficiência renal; verificar magnesemia na reposição refratária.`;
+  return `Velocidade máxima: 10–20 mEq/h em cateter periférico ou central (0,5 mEq/kg/h → ${limite.toFixed(0)} mEq/h neste peso). Concentração máxima: 40 mEq/L na periferia; 40 mEq/100 mL em via central. Nunca bolus fora da urgência; cautela na insuficiência renal; verificar magnesemia na reposição refratária.`;
 }
 return { limiteVelocidadePeriferica: limiteVelocidadePeriferica, limiteVelocidadePorPeso: limiteVelocidadePorPeso, validarAporteTotalK: validarAporteTotalK, formatLimitesSeguranca: formatLimitesSeguranca };
 })();

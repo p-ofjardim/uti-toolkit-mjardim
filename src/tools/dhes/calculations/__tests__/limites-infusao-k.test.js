@@ -25,12 +25,19 @@ test('aporte total de K do dia integra os limites', () => {
   ok(!texto.includes('⚠️'));
 });
 
-test('aporte excedente gera aviso', () => {
+test('velocidade acima de 20 mEq/h gera aviso mesmo em cateter central', () => {
   const texto = validarAporteTotalK(600, 30, 70);
-  ok(texto.includes('via central'));
+  ok(texto.includes('não é recomendada nem em cateter central'));
+});
+
+test('aporte diario acima do limite seguro em 24 h gera aviso', () => {
+  const texto = validarAporteTotalK(600, 20, 70);
+  ok(texto.includes('excede o máximo seguro'));
 });
 
 test('formata limites de segurança com peso', () => {
-  ok(formatLimitesSeguranca(70).includes('80 mEq/L'));
+  ok(formatLimitesSeguranca(70).includes('40 mEq/L'));
+  ok(formatLimitesSeguranca(70).includes('40 mEq/100 mL'));
+  ok(formatLimitesSeguranca(70).includes('periférico ou central'));
   ok(formatLimitesSeguranca(NaN).includes('10–20 mEq/h'));
 });
